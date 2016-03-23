@@ -16,7 +16,7 @@ import javax.xml.parsers.*;
 
 import java.io.*;
 
-public class AnimatedSprite extends Sprite{
+public class AnimatedSprite extends Sprite {
 
 	private BufferedImage imageSheet;
 	private boolean playing;
@@ -29,8 +29,7 @@ public class AnimatedSprite extends Sprite{
 	private Document document;
 	private File sheetXML;
 	private float gravity;
-	
-	
+
 	public File getSheetXML() {
 		return sheetXML;
 	}
@@ -109,7 +108,7 @@ public class AnimatedSprite extends Sprite{
 		this.animationSpeed = .05;
 		this.imageSheet = super.getDisplayImage();
 		this.gravity = 0;
-		}
+	}
 
 	public AnimatedSprite(String id) throws ParserConfigurationException {
 		super(id);
@@ -132,69 +131,70 @@ public class AnimatedSprite extends Sprite{
 		this.endFrame = 0;
 		this.animationSpeed = .05;
 		this.gravity = 0;
-		}
-	
+	}
+
 	@Override
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
-		if(super.isPhysics()){
-			//position updates based on speed
-			this.setxPos(this.getxPos()+(int)this.getDx());
-			this.setyPos(this.getyPos()+(int)this.getDy());
-			//gravity
-			super.setDy(this.getDy()+this.gravity);
-			//friction
-			super.setDx(this.getDx()*0.95f);
-			//maximum horizontal speeds
-			if(super.getDx()>4.0f){
+		if (super.isPhysics()) {
+			// position updates based on speed
+			this.setxPos(this.getxPos() + (int) this.getDx());
+			this.setyPos(this.getyPos() + (int) this.getDy());
+			// gravity
+			super.setDy(this.getDy() + this.gravity);
+			// friction
+			super.setDx(this.getDx() * 0.95f);
+			// maximum horizontal speeds
+			if (super.getDx() > 4.0f) {
 				super.setDx(4.0f);
 			}
-			if(super.getDx()<-4.0f){
+			if (super.getDx() < -4.0f) {
 				super.setDx(-4.0f);
 			}
 		}
 	}
-	
-	
-	
-	public void draw(Graphics g){
-			super.draw(g);
+
+	public void draw(Graphics g) {
+		super.draw(g);
 	}
-	
-	public void walk(){	
+
+	public void walk() {
 		NodeList n = this.document.getElementsByTagName("Run");
 		this.startFrame = 0;
 		this.endFrame = ((Element) n.item(0)).getElementsByTagName("SubTexture").getLength();
-		this.currentFrame = (((this.currentFrame+this.animationSpeed)%this.endFrame));
+		this.currentFrame = (((this.currentFrame + this.animationSpeed) % this.endFrame));
 
-		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int)this.currentFrame);
-		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")), Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")), Integer.parseInt(e2.getAttribute("height"))));
+		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int) this.currentFrame);
+		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")),
+				Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")),
+				Integer.parseInt(e2.getAttribute("height"))));
 
 	}
-	
-	public void stop(){
+
+	public void stop() {
 		NodeList n = this.document.getElementsByTagName("Stop");
 		this.startFrame = 0;
 		this.endFrame = ((Element) n.item(0)).getElementsByTagName("SubTexture").getLength();
-		this.currentFrame = (this.currentFrame+1)%this.endFrame;
+		this.currentFrame = (this.currentFrame + 1) % this.endFrame;
 
-		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int)this.currentFrame);
-		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")), Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")), Integer.parseInt(e2.getAttribute("height"))));
+		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int) this.currentFrame);
+		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")),
+				Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")),
+				Integer.parseInt(e2.getAttribute("height"))));
 
 	}
-	
-	public void jump(){
+
+	public void jump() {
 		NodeList n = this.document.getElementsByTagName("Jump");
 		this.startFrame = 0;
 		this.endFrame = ((Element) n.item(0)).getElementsByTagName("SubTexture").getLength();
-		this.currentFrame = (this.currentFrame+1)%this.endFrame;
+		this.currentFrame = (this.currentFrame + 1) % this.endFrame;
 
-		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int)this.currentFrame);
-		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")), Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")), Integer.parseInt(e2.getAttribute("height"))));
+		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int) this.currentFrame);
+		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")),
+				Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")),
+				Integer.parseInt(e2.getAttribute("height"))));
 
 	}
-
-
-	
 
 }

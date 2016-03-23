@@ -9,14 +9,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.EventDispatcher;
 
-public class DisplayObject extends EventDispatcher{
+public class DisplayObject extends EventDispatcher {
 
-	//All the fields
+	// All the fields
 	private String id;
 	private int xPos;
 	private int yPos;
@@ -34,9 +36,9 @@ public class DisplayObject extends EventDispatcher{
 	private Rectangle hitbox;
 	private DisplayObject parent;
 	private BufferedImage displayImage;
-	
-	
-	//Three constructors. Id | Id and imageFile | Id, imageFile and coordinates
+	private List<DisplayObject> collidableObjects;
+
+	// Three constructors. Id | Id and imageFile | Id, imageFile and coordinates
 	public DisplayObject(String id) {
 		this.id = id;
 		this.xPos = 0;
@@ -52,9 +54,10 @@ public class DisplayObject extends EventDispatcher{
 		this.visible = true;
 		this.physics = false;
 		this.tweening = false;
-		this.hitbox = new Rectangle(0,0);
+		this.hitbox = new Rectangle(0, 0);
 		this.parent = null;
 		this.displayImage = null;
+		collidableObjects = new ArrayList<>();
 	}
 
 	public DisplayObject(String id, String imageFileName) {
@@ -62,8 +65,8 @@ public class DisplayObject extends EventDispatcher{
 		this.id = id;
 		this.xPos = 0;
 		this.yPos = 0;
-		this.xPivot = this.getUnscaledWidth()/2;
-		this.yPivot = this.getUnscaledHeight()/2;
+		this.xPivot = this.getUnscaledWidth() / 2;
+		this.yPivot = this.getUnscaledHeight() / 2;
 		this.scaleX = 1.0;
 		this.scaleY = 1.0;
 		this.rotation = 0.0;
@@ -73,17 +76,18 @@ public class DisplayObject extends EventDispatcher{
 		this.visible = true;
 		this.physics = false;
 		this.tweening = false;
-		this.hitbox = new Rectangle(0,0);
+		this.hitbox = new Rectangle(0, 0);
 		this.parent = null;
+		collidableObjects = new ArrayList<>();
 	}
-	
+
 	public DisplayObject(String id, String imageFileName, int xPos, int yPos) {
 		this.setDisplayImage(imageFileName);
 		this.id = id;
 		this.xPos = xPos;
 		this.yPos = yPos;
-		this.xPivot = this.getUnscaledWidth()/2;
-		this.yPivot = this.getUnscaledHeight()/2;
+		this.xPivot = this.getUnscaledWidth() / 2;
+		this.yPivot = this.getUnscaledHeight() / 2;
 		this.scaleX = 1.0;
 		this.scaleY = 1.0;
 		this.rotation = 0.0;
@@ -93,12 +97,12 @@ public class DisplayObject extends EventDispatcher{
 		this.visible = true;
 		this.physics = false;
 		this.tweening = false;
-		this.hitbox = new Rectangle(xPos,yPos);
+		this.hitbox = new Rectangle(xPos, yPos);
 		this.parent = null;
+		collidableObjects = new ArrayList<>();
 	}
 
-	
-	//Getters and setters for every field
+	// Getters and setters for every field
 	public String getId() {
 		return this.id;
 	}
@@ -228,13 +232,25 @@ public class DisplayObject extends EventDispatcher{
 	}
 
 	public int getUnscaledWidth() {
-		if(this.displayImage == null) return 0;
+		if (this.displayImage == null)
+			return 0;
 		return this.displayImage.getWidth();
 	}
 
 	public int getUnscaledHeight() {
-		if(this.displayImage == null) return 0;
+		if (this.displayImage == null)
+			return 0;
 		return this.displayImage.getHeight();
+	}
+
+	public boolean collidesWith(DisplayObject obj) {
+		Rectangle globalRectangle1 = this.getHitbox();
+		Rectangle globalRectangle2 = obj.getHitbox();
+		return globalRectangle1.intersects(globalRectangle2);
+	}
+
+	public void addCollidableObject(DisplayObject obj) {
+		collidableObjects.add(obj);
 	}
 
 	public BufferedImage getDisplayImage() {
@@ -249,8 +265,8 @@ public class DisplayObject extends EventDispatcher{
 		if (this.displayImage == null) {
 			System.err.println("[DisplayObject.setImage] ERROR: " + imageName + " does not exist!");
 		}
-		this.xPivot = this.getUnscaledWidth()/2;
-		this.yPivot = this.getUnscaledHeight()/2;
+		this.xPivot = this.getUnscaledWidth() / 2;
+		this.yPivot = this.getUnscaledHeight() / 2;
 	}
 
 	public BufferedImage readImage(String imageName) {
@@ -266,34 +282,39 @@ public class DisplayObject extends EventDispatcher{
 	}
 
 	public void setDisplayImage(BufferedImage image) {
-		if(image == null) return;
+		if (image == null)
+			return;
 		this.displayImage = image;
-		this.xPivot = this.getUnscaledWidth()/2;
-		this.yPivot = this.getUnscaledHeight()/2;
+		this.xPivot = this.getUnscaledWidth() / 2;
+		this.yPivot = this.getUnscaledHeight() / 2;
 	}
 
-	//sets hitbox to match sprite location
+	// sets hitbox to match sprite location
 	public void resetHitbox() {
-		this.hitbox.setLocation(this.xPos,this.yPos);
+		this.hitbox.setLocation(this.xPos, this.yPos);
 		this.hitbox.setBounds(this.xPos, this.yPos, this.getUnscaledWidth(), this.getUnscaledHeight());
 	}
-	
-	//updates hitbox location.
+
+	// updates hitbox location.
 	protected void update(ArrayList<String> pressedKeys) {
-		if(this.hitbox!=null){
+		if (this.hitbox != null) {
 			this.resetHitbox();
+		}
+		for (DisplayObject each : collidableObjects) {
+			if (this.collidesWith(each)) {
+				dispatchEvent(new Event(Event.COLLIDE, this));
+			}
 		}
 	}
 
-	//applies translations, rotations, scaling, transparency and visibility to image
+	// applies translations, rotations, scaling, transparency and visibility to
+	// image
 	public void draw(Graphics g) {
 		if (this.displayImage != null) {
 			Graphics2D g2d = (Graphics2D) g;
-			if(this.isVisible()){
+			if (this.isVisible()) {
 				applyTransformations(g2d);
-				g2d.drawImage(this.displayImage, 0, 0,
-						(int) (getUnscaledWidth()),
-						(int) (getUnscaledHeight()), null);
+				g2d.drawImage(this.displayImage, 0, 0, (int) (getUnscaledWidth()), (int) (getUnscaledHeight()), null);
 				reverseTransformations(g2d);
 			}
 		}
@@ -301,15 +322,15 @@ public class DisplayObject extends EventDispatcher{
 
 	protected void applyTransformations(Graphics2D g2d) {
 		g2d.translate(this.xPos, this.yPos);
-		g2d.rotate(this.rotation,this.xPivot*this.scaleX,this.yPivot*this.scaleY);
+		g2d.rotate(this.rotation, this.xPivot * this.scaleX, this.yPivot * this.scaleY);
 		g2d.scale(this.scaleX, this.scaleY);
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,this.alpha));
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.alpha));
 	}
 
 	protected void reverseTransformations(Graphics2D g2d) {
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f));
-		g2d.scale(1/this.scaleX, 1/this.scaleY);
-		g2d.rotate(-this.rotation,this.xPivot*this.scaleX,this.yPivot*this.scaleY);
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		g2d.scale(1 / this.scaleX, 1 / this.scaleY);
+		g2d.rotate(-this.rotation, this.xPivot * this.scaleX, this.yPivot * this.scaleY);
 		g2d.translate(-this.xPos, -this.yPos);
 	}
 
