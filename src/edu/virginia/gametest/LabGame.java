@@ -24,42 +24,48 @@ import edu.virginia.engine.events.TweenEvent;
 
 public class LabGame extends Game {
 
-	
+	private static final float DELTA = 0.2f;
 	QuestManager qm = new QuestManager();
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
 	Event PickedUpEvent = new Event();
-//	AnimatedSprite startWall = new AnimatedSprite("startWall", "wall.png", "l");
-//	ArrayList<AnimatedSprite> walls = new ArrayList<>();
-	ArrayList<AnimatedSprite> spriteList;
-	
-	
+
+	private AnimatedSprite megaman;
+	private AnimatedSprite ghost;
+	private Sprite wall;
+	// AnimatedSprite startWall = new AnimatedSprite("startWall", "wall.png",
+	// "l");
+	// ArrayList<AnimatedSprite> walls = new ArrayList<>();
+	ArrayList<Sprite> spriteList;
+
 	ArrayList<Point> locationTracker;
 	int currIndex;
 
-	
 	public LabGame() throws ParserConfigurationException {
 		super("Lab Test Game", 1000, 550);
-		
+
 		SoundManager.playMusic(bgm);
-		
-		AnimatedSprite megaman = new AnimatedSprite("megaman", "sprites.png", "resources/sprites.xml");
+
+		megaman = new AnimatedSprite("megaman", "sprites.png", "resources/sprites.xml");
 		megaman.setPhysics(true);
 		megaman.stop();
-		
-		AnimatedSprite ghost = new AnimatedSprite("ghost", "sprites.png", "resources/sprites.xml");
+
+		ghost = new AnimatedSprite("ghost", "sprites.png", "resources/sprites.xml");
 		ghost.stop();
 		ghost.setAlpha(0.5f);
 		ghost.setVisible(false);
-		
-		
-		
-		spriteList = new ArrayList<AnimatedSprite>();
+
+		wall = new Sprite("wall", "wall.png");
+		wall.setxPos(100);
+		wall.setyPos(100);
+
+		megaman.addCollidableObject(wall);
+
+		spriteList = new ArrayList<>();
 		spriteList.add(megaman);
 		spriteList.add(ghost);
-		
-		
-		
+		spriteList.add(wall);
+
 		this.locationTracker = new ArrayList<Point>();
 		this.currIndex = 0;
 	}
@@ -68,68 +74,77 @@ public class LabGame extends Game {
 	public void update(ArrayList<String> pressedKeys) {
 
 		super.update(pressedKeys);
-		if(spriteList!=null){
-			for(AnimatedSprite aSprite: spriteList){
+		if (spriteList != null) {
+			for (Sprite aSprite : spriteList) {
 				aSprite.update(pressedKeys);
 			}
-		} 
-		if(pressedKeys.contains("K"))
-			spriteList.get(0).walk();
-		
-		if(pressedKeys.contains("J"))
-			spriteList.get(0).jump();
-		
-		if(pressedKeys.contains("A")){
-			spriteList.get(0).setDx(spriteList.get(0).getDx()-0.2f);
 		}
-		if(pressedKeys.contains("D")){
-			spriteList.get(0).setDx(spriteList.get(0).getDx()+0.2f);
+
+		if (pressedKeys.contains("K"))
+			megaman.walk();
+
+		if (pressedKeys.contains("J"))
+			megaman.jump();
+
+		if (pressedKeys.contains("A")) {
+			megaman.setDx(megaman.getDx() - DELTA);
+			if (megaman.collidesWith(wall)) {
+				megaman.setDx(megaman.getDx() + DELTA);
+			}
 		}
-		if(pressedKeys.contains("W")){
-			spriteList.get(0).setDy(spriteList.get(0).getDy()-0.2f);
+		if (pressedKeys.contains("D")) {
+			megaman.setDx(megaman.getDx() + DELTA);
+			if (megaman.collidesWith(wall)) {
+				megaman.setDx(megaman.getDx() - DELTA);
+			}
 		}
-		if(pressedKeys.contains("S")){
-			spriteList.get(0).setDy(spriteList.get(0).getDy()+0.2f);
+		if (pressedKeys.contains("W")) {
+			megaman.setDy(megaman.getDy() - DELTA);
+			if (megaman.collidesWith(wall)) {
+				megaman.setDy(megaman.getDx() + DELTA);
+			}
 		}
-		
-		
-		
-		
-		if(pressedKeys.contains("N")){
-			if(currIndex<300){
-				locationTracker.add(new Point(spriteList.get(0).getxPos(),spriteList.get(0).getyPos()));
+		if (pressedKeys.contains("S")) {
+			megaman.setDy(megaman.getDy() + DELTA);
+			if (megaman.collidesWith(wall)) {
+				megaman.setDy(megaman.getDy() - DELTA);
+			}
+		}
+
+		if (pressedKeys.contains("N")) {
+			if (currIndex < 300) {
+				locationTracker.add(new Point(megaman.getxPos(), megaman.getyPos()));
 				currIndex++;
 			}
 		}
-		if(pressedKeys.contains("M")){
-			if(!spriteList.get(1).isVisible()){
+		if (pressedKeys.contains("M")) {
+			if (!spriteList.get(1).isVisible()) {
 				spriteList.get(1).setVisible(true);
 			}
-			if(currIndex>=locationTracker.size()){
+			if (currIndex >= locationTracker.size()) {
 				currIndex = 0;
 			}
-			
+
 			spriteList.get(1).setxPos(locationTracker.get(currIndex).x);
 			spriteList.get(1).setyPos(locationTracker.get(currIndex).y);
 			currIndex++;
-			
+
 		}
-		
-		
+
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
 		super.draw(g);
 
-		if(spriteList != null){
-			for(Sprite sprite : spriteList){
-				if(sprite != null){
+		if (spriteList != null) {
+			for (Sprite sprite : spriteList) {
+				if (sprite != null) {
 					sprite.draw(g);
 				}
 			}
 		}
-		
+
 	}
 
 	public static void main(String[] args) throws ParserConfigurationException {

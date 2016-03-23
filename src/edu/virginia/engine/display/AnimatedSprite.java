@@ -144,6 +144,13 @@ public class AnimatedSprite extends Sprite {
 			super.setDy(this.getDy() + this.gravity);
 			// friction
 			super.setDx(this.getDx() * 0.95f);
+			for(DisplayObject each : collidableObjects) {
+				if(this.collidesWith(each)) {
+					this.setxPos(this.getxPos() - (int) this.getDx());
+					this.setyPos(this.getyPos() - (int) this.getDy());
+					break;
+				}
+			}
 			// maximum horizontal speeds
 			if (super.getDx() > 4.0f) {
 				super.setDx(4.0f);

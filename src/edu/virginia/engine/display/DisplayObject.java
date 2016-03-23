@@ -36,7 +36,7 @@ public class DisplayObject extends EventDispatcher {
 	private Rectangle hitbox;
 	private DisplayObject parent;
 	private BufferedImage displayImage;
-	private List<DisplayObject> collidableObjects;
+	public List<DisplayObject> collidableObjects;
 
 	// Three constructors. Id | Id and imageFile | Id, imageFile and coordinates
 	public DisplayObject(String id) {
@@ -216,7 +216,7 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public Rectangle getHitbox() {
-		return this.hitbox;
+		return new Rectangle(xPos, yPos, getUnscaledWidth(), getUnscaledHeight());
 	}
 
 	public void setHitbox(Rectangle hitbox) {
@@ -246,6 +246,7 @@ public class DisplayObject extends EventDispatcher {
 	public boolean collidesWith(DisplayObject obj) {
 		Rectangle globalRectangle1 = this.getHitbox();
 		Rectangle globalRectangle2 = obj.getHitbox();
+		System.out.println(globalRectangle1 + " and " + globalRectangle2);
 		return globalRectangle1.intersects(globalRectangle2);
 	}
 
