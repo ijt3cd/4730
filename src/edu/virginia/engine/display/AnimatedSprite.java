@@ -1,51 +1,94 @@
 package edu.virginia.engine.display;
 
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.geom.Point2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-import edu.virginia.engine.util.GameClock;
-
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.*;
-
-import java.io.*;
-
-public class AnimatedSprite extends Sprite {
-
-	private BufferedImage imageSheet;
+public class AnimatedSprite extends Sprite{
+	private BufferedImage spriteSheet;
+	private BufferedImage currentSprite;
+	private int spriteHeight;
+	private int spriteWidth;
+	private long animationSpeed;
+	private boolean repeat;
 	private boolean playing;
-	private double currentFrame;
-	private int startFrame;
-	private int endFrame;
-	private double animationSpeed;
-	private DocumentBuilderFactory factory;
-	private DocumentBuilder builder;
-	private Document document;
-	private File sheetXML;
-	private float gravity;
-
-	public File getSheetXML() {
-		return sheetXML;
+	private int animationRow;
+	private int startIndex;
+	private int currentIndex;
+	private int endIndex;
+	private long startTime;
+	private String currentAnimation;
+	private HashMap<String, int[]> animations;
+	
+	public AnimatedSprite(String id) {
+		super(id);
 	}
 
-	public void setSheetXML(File sheetXML) {
-		this.sheetXML = sheetXML;
+	public AnimatedSprite(String id, String imageFileName, int width, int height) {
+		super(id, imageFileName);
+		animations = new HashMap<String, int[]>();
+		spriteSheet = this.getDisplayImage();
+		spriteHeight = height;
+		spriteWidth = width;
+		currentSprite = spriteSheet.getSubimage(0, 0, spriteWidth, spriteHeight);
+		this.setImage(currentSprite);
+	}
+	
+	public BufferedImage getSpriteSheet() {
+		return this.spriteSheet;
+	}
+	public void landOnPlatform(Sprite platform){
+		this.setPositionY((float)(platform.getyPos() - this.getUnscaledHeight()*this.getScaleY()+ 20));
+		this.setVelocityY(0);
+		this.setAccelerationY(0);
+		this.setOnFloor(true);
+	}
+	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row){
+		int[] arr = new int[5];
+		arr[0] = start;
+		arr[1] = end; 
+		arr[2] = speed;
+		arr[3] = repeat;
+		arr[4] = row;
+		animations.put(animation, arr);
+	}
+	public boolean setAnimation(String animation){
+		if(animations.containsKey(animation)){
+			if(currentAnimation == animation){
+				return false;
+			}
+			currentAnimation = animation;
+			return true;
+		}
+		return false;
+	}
+	public void play(){
+		playing = true;
+		int arr[] = animations.get(currentAnimation);
+		currentIndex = startIndex = arr[0];
+		endIndex = arr[1];
+		animationSpeed = (long)arr[2];
+		repeat = (arr[3] == 1);
+		animationRow = arr[4];
+		currentSprite = spriteSheet.getSubimage(0, animationRow*spriteHeight, spriteWidth, spriteHeight);
+		startTime = System.nanoTime();
+	}
+	public int getSpriteWidth() {
+		return spriteWidth;
 	}
 
-	public BufferedImage getImageSheet() {
-		return imageSheet;
+	public void setSpriteWidth(int spriteWidth) {
+		this.spriteWidth = spriteWidth;
 	}
 
-	public void setImageSheet(BufferedImage imageSheet) {
-		this.imageSheet = imageSheet;
+	public int getSpriteHeight() {
+		return spriteHeight;
 	}
 
+	public void setSpriteHeight(int spriteHeight) {
+		this.spriteHeight = spriteHeight;
+	}
 	public boolean isPlaying() {
 		return playing;
 	}
@@ -54,154 +97,59 @@ public class AnimatedSprite extends Sprite {
 		this.playing = playing;
 	}
 
-	public double getCurrentFrame() {
-		return currentFrame;
-	}
-
-	public void setCurrentFrame(double currentFrame) {
-		this.currentFrame = currentFrame;
-	}
-
-	public int getStartFrame() {
-		return startFrame;
-	}
-
-	public void setStartFrame(int startFrame) {
-		this.startFrame = startFrame;
-	}
-
-	public int getEndFrame() {
-		return endFrame;
-	}
-
-	public void setEndFrame(int endFrame) {
-		this.endFrame = endFrame;
-	}
-
-	public double getAnimationSpeed() {
+	public long getAnimationSpeed() {
 		return animationSpeed;
 	}
 
-	public void setAnimationSpeed(double animationSpeed) {
+	public void setAnimationSpeed(int animationSpeed) {
 		this.animationSpeed = animationSpeed;
-	}
-
-	public AnimatedSprite(String id, String sheetFileName, String xmlPath) throws ParserConfigurationException {
-		super(id, sheetFileName);
-		this.sheetXML = new File(xmlPath);
-		this.factory = DocumentBuilderFactory.newInstance();
-		this.builder = factory.newDocumentBuilder();
-		try {
-			this.document = this.builder.parse(this.sheetXML);
-			this.document.getDocumentElement().normalize();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.playing = true;
-		this.currentFrame = 0;
-		this.startFrame = 0;
-		this.endFrame = 0;
-		this.animationSpeed = .05;
-		this.imageSheet = super.getDisplayImage();
-		this.gravity = 0;
-	}
-
-	public AnimatedSprite(String id) throws ParserConfigurationException {
-		super(id);
-		this.sheetXML = new File("resources/sprites.xml");
-		this.factory = DocumentBuilderFactory.newInstance();
-		this.builder = factory.newDocumentBuilder();
-		try {
-			this.document = this.builder.parse(this.sheetXML);
-			this.document.getDocumentElement().normalize();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.playing = true;
-		this.currentFrame = 0;
-		this.startFrame = 0;
-		this.endFrame = 0;
-		this.animationSpeed = .05;
-		this.gravity = 0;
 	}
 
 	@Override
 	public void update(ArrayList<String> pressedKeys) {
-		super.update(pressedKeys);
-		if (super.isPhysics()) {
-			// position updates based on speed
-			this.setxPos(this.getxPos() + (int) this.getDx());
-			this.setyPos(this.getyPos() + (int) this.getDy());
-			// gravity
-			super.setDy(this.getDy() + this.gravity);
-			// friction
-			super.setDx(this.getDx() * 0.95f);
-			for(DisplayObject each : collidableObjects) {
-				if(this.collidesWith(each)) {
-					this.setxPos(this.getxPos() - (int) this.getDx());
-					this.setyPos(this.getyPos() - (int) this.getDy());
-					break;
-				}
-			}
-			// maximum horizontal speeds
-			if (super.getDx() > 4.0f) {
-				super.setDx(4.0f);
-			}
-			if (super.getDx() < -4.0f) {
-				super.setDx(-4.0f);
-			}
+		if(!playing){
+			this.stopAnimation();
 		}
+		if(System.nanoTime() - startTime > animationSpeed && playing){
+			startTime = System.nanoTime();
+			currentIndex++;
+			playing = false;
+		}
+		if(currentIndex > endIndex){
+			if(repeat){
+				currentIndex = startIndex;
+			}
+			else
+				currentIndex = endIndex;
+		}
+		currentSprite = spriteSheet.getSubimage(currentIndex*spriteWidth, animationRow*spriteHeight, spriteWidth, spriteHeight);
+		this.setImage(currentSprite);
+		super.update(pressedKeys);
 	}
 
-	public void draw(Graphics g) {
-		super.draw(g);
+	private void stopAnimation() {
+		currentIndex = this.startIndex;
+		
 	}
 
-	public void walk() {
-		NodeList n = this.document.getElementsByTagName("Run");
-		this.startFrame = 0;
-		this.endFrame = ((Element) n.item(0)).getElementsByTagName("SubTexture").getLength();
-		this.currentFrame = (((this.currentFrame + this.animationSpeed) % this.endFrame));
-
-		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int) this.currentFrame);
-		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")),
-				Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")),
-				Integer.parseInt(e2.getAttribute("height"))));
-
+	public boolean checkPlatformCollision(Sprite platform) {
+		Rectangle platformRec = platform.getHitbox();
+		Rectangle spriteRec = this.getHitbox();
+		boolean intersection = spriteRec.intersects(platformRec);
+		boolean movingDown = this.getVelocityY() >= 0;
+		boolean notOnFloor = !this.isOnFloor();
+		boolean halfOnPlatformRight = (spriteRec.getMaxX() - platformRec.getMaxX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
+		boolean halfOnPlatformLeft = (platformRec.getX() - spriteRec.getX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
+		boolean abovePlatform = (spriteRec.getY() < platformRec.getY() - 20);
+		boolean fullLanding = spriteRec.getMaxY() > platformRec.getY() + 10;
+		return intersection && movingDown && notOnFloor && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding;
 	}
 
-	public void stop() {
-		NodeList n = this.document.getElementsByTagName("Stop");
-		this.startFrame = 0;
-		this.endFrame = ((Element) n.item(0)).getElementsByTagName("SubTexture").getLength();
-		this.currentFrame = (this.currentFrame + 1) % this.endFrame;
-
-		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int) this.currentFrame);
-		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")),
-				Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")),
-				Integer.parseInt(e2.getAttribute("height"))));
-
-	}
-
-	public void jump() {
-		NodeList n = this.document.getElementsByTagName("Jump");
-		this.startFrame = 0;
-		this.endFrame = ((Element) n.item(0)).getElementsByTagName("SubTexture").getLength();
-		this.currentFrame = (this.currentFrame + 1) % this.endFrame;
-
-		Element e2 = (Element) ((Element) n.item(0)).getElementsByTagName("SubTexture").item((int) this.currentFrame);
-		super.setDisplayImage(this.getImageSheet().getSubimage(Integer.parseInt(e2.getAttribute("x")),
-				Integer.parseInt(e2.getAttribute("y")), Integer.parseInt(e2.getAttribute("width")),
-				Integer.parseInt(e2.getAttribute("height"))));
-
+	public boolean checkPlatformFall(Sprite platform) {
+		Rectangle platformRec = platform.getHitbox();
+		Rectangle spriteRec = this.getHitbox();
+		boolean intersection = spriteRec.intersects(platformRec);
+		return !intersection && this.isOnFloor();
 	}
 
 }

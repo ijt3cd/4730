@@ -2,33 +2,40 @@ package edu.virginia.engine.display;
 
 import java.util.ArrayList;
 
-public class TweenJuggler {
+import edu.virginia.engine.events.EventDispatcher;
+import edu.virginia.engine.events.TweenEvent;
 
-	private ArrayList<Tween> tweenList;
-	
-	
-	public static void add(Tween tween){
-		instance.tweenList.add(tween);
+public class TweenJuggler extends EventDispatcher{
+	private static TweenJuggler instance = null;
+	private ArrayList<Tween> tweens;
+	public TweenJuggler(){
+		instance = this;
+		instance.tweens = new ArrayList<Tween>();
 	}
-	
-	public static void nextFrame(){
-		for(Tween tween: instance.tweenList){
-			tween.update();
-			
+	public static TweenJuggler getInstance() {
+		if(instance != null){
+			return instance;
+		}
+		else{
+			instance = new TweenJuggler();
+			return instance;
 		}
 	}
-	
-	
-	private static TweenJuggler instance = new TweenJuggler( );
-	
-	public TweenJuggler(){
-		if(instance != null) System.out.println("ERROR: Cannot re-initialize singleton class!");
-		this.tweenList = new ArrayList<Tween>();
-		instance = this;
+	public static void addTween(Tween tween){
+		for(TweenParam p : tween.getParams()){
+			p.setStartTime(System.currentTimeMillis());
+		}
+		instance.tweens.add(tween);
 	}
-	public static TweenJuggler getInstance(){
-		return instance;
+	public static void nextFrame(){
+		for(int i = 0; i < instance.tweens.size(); i++){
+			if(instance.tweens.get(i).isComplete()){
+				Tween completed = instance.tweens.remove(i);
+				instance.dispatchEvent(new TweenEvent(TweenEvent.TWEEN_COMPLETE_EVENT, instance, completed));
+			}
+			else{
+				instance.tweens.get(i).update();
+			}
+		}
 	}
-	
-	
 }

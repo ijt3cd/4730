@@ -4,88 +4,79 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-public class DisplayObjectContainer extends DisplayObject {
-
-	// Only one new field for container
+public class DisplayObjectContainer extends DisplayObject{
+	
 	private ArrayList<DisplayObject> children;
 
-	// 3 Constructors. mimics DisplayObject constructors, but also initializes
-	// child arrayList
 	public DisplayObjectContainer(String id) {
 		super(id);
-		this.children = new ArrayList<DisplayObject>();
+		setChildren(new ArrayList<DisplayObject>());
 	}
-
 	public DisplayObjectContainer(String id, String imageFileName) {
 		super(id, imageFileName);
-		this.children = new ArrayList<DisplayObject>();
+		setChildren(new ArrayList<DisplayObject>());
 	}
-
-	public DisplayObjectContainer(String id, String imageFileName, int xPos, int yPos) {
-		super(id, imageFileName, xPos, yPos);
-		this.children = new ArrayList<DisplayObject>();
+	public ArrayList<DisplayObject> getChildren() {
+		return children;
 	}
-
-	// A bunch of methods for altering the contents of the child arrayList
-	public void addChild(DisplayObject child) {
-		this.children.add(child);
-		child.setParent(this);
+	public void setChildren(ArrayList<DisplayObject> children) {
+		this.children = children;
 	}
-
-	public void addChildAtIndex(int index, DisplayObject child) {
-		this.children.add(index, child);
-		child.setParent(this);
+	public boolean contains(DisplayObject child){
+		return children.contains(child);
 	}
-
-	public void removeChild(DisplayObject child) {
-		this.children.remove(child);
-	}
-
-	public void removeChildByIndex(int index) {
-		this.children.remove(index);
-	}
-
-	public void removeAll() {
-		this.children.clear();
-	}
-
-	// Methods getting information about the contents of the child arrayList
-	public boolean contains(DisplayObject child) {
-		return this.children.contains(child);
-	}
-
-	public DisplayObject get(int index) {
-		return this.children.get(index);
-	}
-
-	public DisplayObject get(String id) {
-		for (DisplayObject child : this.children) {
-			if (child.getId().equals(id)) {
-				return child;
-			}
+	public DisplayObject findByID(String id){
+		int itr = children.size();
+		for(int i = 0; i < itr; i++){
+			if(children.get(i).getId().equals(id))
+				return children.get(i);
 		}
 		return null;
 	}
-
-	public ArrayList<DisplayObject> getChildren() {
-		return this.children;
-	}
-
-	// Draw method overriden to draw children as well. Children are drawn last,
-	// and thus appear in front.
-	public void draw(Graphics g) {
-		if (this.isVisible()) {
-			super.draw(g);
-			if (!this.children.isEmpty()) {
-				Graphics2D g2d = (Graphics2D) g;
-				super.applyTransformations(g2d);
-				for (DisplayObject child : this.children) {
-					child.setAlpha(child.getParent().getAlpha());
-					child.draw(g);
-				}
-				super.reverseTransformations(g2d);
-			}
+	public void addChild(DisplayObject child){
+		if(!this.contains(child)){
+			this.children.add(child);
+			child.setParent(this);
 		}
 	}
+	public void addChildAtIndex(int index, DisplayObject child){
+		this.children.add(index, child);
+		child.setParent(this);
+	}
+	public void removeChild(DisplayObject child){
+		this.children.remove(child);
+		child.setParent(null);
+	}
+	public void removeByIndex(int index){
+		DisplayObject child = this.children.remove(index);
+		child.setParent(null);
+	}
+	public void removeAll(){
+		while(!this.children.isEmpty()){
+			DisplayObject child = this.children.remove(0);
+			child.setParent(null);
+		}			
 
+	}
+	@Override
+	public void update(ArrayList<String> pressedKeys){
+		super.update(pressedKeys);
+		for(int i = 0; i < children.size(); i++){
+			children.get(i).setAlpha(this.getAlpha());
+			children.get(i).setScaleX(this.getScaleX());
+			children.get(i).setScaleY(this.getScaleY());
+		}
+	}
+	@Override
+	public void draw(Graphics g){
+		super.draw(g);
+		if(this.isVisible()){
+			Graphics2D g2d = (Graphics2D) g;
+			this.applyTransformations(g2d);
+			for(int i = 0; i < this.children.size(); i++){
+				this.children.get(i).draw(g);
+			}
+			this.reverseTransformations(g2d);
+		}
+	}
 }

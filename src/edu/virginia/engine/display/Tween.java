@@ -2,104 +2,79 @@ package edu.virginia.engine.display;
 
 import java.util.ArrayList;
 
-import edu.virginia.engine.events.Event;
-import edu.virginia.engine.events.EventDispatcher;
-import edu.virginia.engine.events.IEventListener;
-
-public class Tween extends EventDispatcher implements IEventListener{
-
-	
-	private DisplayObject object;
-	private TweenTransitions transition;
-	public boolean isTweening;
-	private double startTime;
-	private ArrayList<TweenParam> fieldsToAnimate;
-	private Event PickedUpEvent;
-	private boolean completed;
-	
+public class Tween {
+	private DisplayObject tweenee;
+	private TweenTransition transition;
+	private ArrayList<TweenParam> params;
 	public Tween(DisplayObject object){
-		this.object = object;
-		this.isTweening = false;
-		this.fieldsToAnimate = new ArrayList<TweenParam>();
-		this.PickedUpEvent = new Event();
-		this.PickedUpEvent.setEventType("COIN_SHRINK");
-		this.completed = false;
-		
+		tweenee = object;
+		params = new ArrayList<TweenParam>();
 		
 	}
-	
-	public Tween(DisplayObject object, TweenTransitions transitions){
-		this.object = object;
-		this.transition = transitions;
-		this.isTweening = false;
-		this.fieldsToAnimate = new ArrayList<TweenParam>();
-		this.PickedUpEvent = new Event();
-		this.PickedUpEvent.setEventType("COIN_SHRINK");
-		this.completed = false;
-		
+	public Tween(DisplayObject object, TweenTransition transition){
+		tweenee = object;
+		this.transition = transition;
+		params = new ArrayList<TweenParam>();
 	}
-	
-	public void animate(TweenableParams fieldToAnimate, double startVal, double endVal, double time){
-		this.fieldsToAnimate.add(new TweenParam(fieldToAnimate,startVal,endVal,time,0));
+	public void animate(TweenParam param){
+		if(param.isFinished()){
+			return;
+		}
+		double value = (double)((float)(System.currentTimeMillis()-param.getStartTime())/(float)param.getTweenTime());
+		if(transition != null){
+			value = transition.applyTransition(value);
+		}
+		double change = param.getEndVal() - param.getStartVal();
+		value = param.getStartVal() + (value * change);
+		setValue(param.getParamToTween(), value);
 	}
-	
 	public void update(){
-		if (!this.isTweening){
-			this.startTime = System.currentTimeMillis();
-			this.isTweening = true;
-		}
-		else{
-
-			for(TweenParam tweenParam  : this.fieldsToAnimate){
-				if(    (!(((System.currentTimeMillis()-this.startTime)/1000) > (tweenParam.getTime())+tweenParam.getDelay())) && (((System.currentTimeMillis()-this.startTime)/1000)>tweenParam.getDelay())   ){
-				this.setValue(tweenParam.getParam(), tweenParam.getStartVal()+((System.currentTimeMillis()-this.startTime)/1000-tweenParam.getDelay())/tweenParam.getTime()*(tweenParam.getEndVal()-tweenParam.getStartVal()));
-				
-					
-				
-				}
-				else{
-					
-				}
-			}
-			
+		for(TweenParam param : params){
+			animate(param);
 		}
 	}
-	
+	public DisplayObject getTweenee(){
+		return this.tweenee;
+	}
 	public boolean isComplete(){
-		return false;
-	}
-	
-	public void setValue(TweenableParams param, double value){
-		        
-	        switch (param) {
-	            case POSX:  this.object.setxPos((int)value);
-	                     break;
-	            case POSY:  this.object.setyPos((int)value);
-	                     break;
-	            case SCALEX:  this.object.setScaleX(value);;
-	                     break;
-	            case SCALEY:  this.object.setScaleY(value);;
-	                     break;
-	            case ROTATION:  this.object.setRotation(value);;
-	                     break;
-	            case ALPHA:  this.object.setAlpha((float)value);
-	                     break;
-
-	        }
-	
-	}
-
-	@Override
-	public void handleEvent(Event event) {
-		if(event.getEventType()=="COIN_SHRINK"){
-			this.animate(TweenableParams.ALPHA, 1, 0, 2);
+		for(TweenParam param : params){
+			if(!param.isFinished()){
+				return false;
+			}
+			else{
+				setValue(param.getParamToTween(), param.getEndVal());
+			}
 		}
-		
+		return true;
 	}
-
-	public void animate(TweenableParams fieldToAnimate, double startVal, double endVal, double time, double delay){
-		this.fieldsToAnimate.add(new TweenParam(fieldToAnimate,startVal,endVal,time,delay));
+	public ArrayList<TweenParam> getParams(){
+		return params;
 	}
-	
-	
+	public void addParam(TweenParam param){
+		this.params.add(param);
+	}
+	public void setValue(TweenableParams param, double value){
+		switch(param){
+		case X : tweenee.setxPos((int)value);
+				 tweenee.setPositionX((int)value);
+				 break;
+		case Y : tweenee.setyPos((int)value);
+		 		 tweenee.setPositionY((int)value);
+		         break;
+		case SCALE_X : tweenee.setScaleX(value);
+					   break;
+		case SCALE_Y : tweenee.setScaleY(value);
+					   break;
+		case VELOCITY_X : tweenee.setVelocityX((float)value);
+		                  break;
+		case VELOCITY_Y : tweenee.setVelocityY((float)value);
+						  break;
+		case ALPHA : tweenee.setAlpha((float)value);
+					 break;
+		case ROTATION : tweenee.setRotation(value);
+						break;
+		case VISIBLE : if(value == 1) tweenee.setVisible(true);
+						if(value == 0) tweenee.setVisible(false);
+		}
+	}
 }

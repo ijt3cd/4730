@@ -1,7 +1,5 @@
 package edu.virginia.engine.display;
 
 public enum TweenableParams {
-
-	POSX, POSY, SCALEX, SCALEY, ROTATION, ALPHA
-	
+	X, Y, SCALE_X, SCALE_Y, VELOCITY_X, VELOCITY_Y, ALPHA, ROTATION, VISIBLE
 }

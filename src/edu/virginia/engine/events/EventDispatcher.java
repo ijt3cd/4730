@@ -3,51 +3,51 @@ package edu.virginia.engine.events;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EventDispatcher implements IEventDispatcher {
-
-	private HashMap<String, ArrayList<IEventListener>> ieMap = new HashMap<String, ArrayList<IEventListener>>();
-	// Hashmap where key is eventType and value is list of listeners
-
+public class EventDispatcher implements IEventDispatcher{
+	private HashMap<String, ArrayList<IEventListener>> listeners;
+	
+	public EventDispatcher(){
+		listeners = new HashMap<String, ArrayList<IEventListener>>();
+	}
 	@Override
 	public void addEventListener(IEventListener listener, String eventType) {
-		if (listener != null && eventType != null) {
-			if (this.ieMap.get(eventType) == null) {
-				this.ieMap.put(eventType, new ArrayList<IEventListener>());
+		if(listener != null && eventType != null){
+			if(listeners.get(eventType) == null){
+				ArrayList<IEventListener> list = new ArrayList<IEventListener>();
+				list.add(listener);
+				listeners.put(eventType, list);
 			}
-			this.ieMap.get(eventType).add(listener);
+			else if(!listeners.get(eventType).contains(listener)){
+				listeners.get(eventType).add(listener);
+			}
 		}
 	}
 
 	@Override
 	public void removeEventListener(IEventListener listener, String eventType) {
-		if (listener != null && eventType != null) {
-			if (this.ieMap.get(eventType) != null) {
-				this.ieMap.get(eventType).remove(listener);
+		if(listener != null && eventType != null){
+			if(listeners.containsKey(eventType)){
+				listeners.get(eventType).remove(listener);
 			}
-		}
+		}		
 	}
 
 	@Override
 	public void dispatchEvent(Event event) {
-		if (event != null) {
-			String eType = event.getEventType();
-			if (this.ieMap.get(eType) != null) {
-				for (IEventListener ie : this.ieMap.get(eType)) {
-					ie.handleEvent(event);
-				}
+		if(event != null && listeners.containsKey(event.getEventType())){
+			ArrayList<IEventListener> relevantListeners = listeners.get(event.getEventType());
+			for(int i = 0; i < relevantListeners.size(); i++){
+				relevantListeners.get(i).handleEvent(event);
 			}
 		}
 	}
 
 	@Override
 	public boolean hasEventListener(IEventListener listener, String eventType) {
-		if (listener != null && eventType != null) {
-			for (IEventListener ie : this.ieMap.get(eventType)) {
-				if (ie == listener) {
-					return true;
-				}
-			}
+		if(eventType != null && listener != null){
+			return listeners.get(eventType).contains(listener);
 		}
 		return false;
 	}
+
 }

@@ -3,116 +3,117 @@ package edu.virginia.engine.display;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import edu.virginia.engine.events.Event;
+import edu.virginia.engine.events.CollisionEvent;
 import edu.virginia.engine.events.EventDispatcher;
 
-public class DisplayObject extends EventDispatcher {
+/**
+ * A very basic display object for a java based gaming engine
+ * 
+ * */
+public class DisplayObject extends EventDispatcher{
+	
 
-	// All the fields
+	/* All DisplayObject have a unique id */
 	private String id;
+
+	/* The image that is displayed by this object */
+	private BufferedImage displayImage;
+	
+	private boolean visible;
+	
 	private int xPos;
 	private int yPos;
-	private int xPivot;
-	private int yPivot;
+	private int pivotPointX;
+	private int pivotPointY;
 	private double scaleX;
 	private double scaleY;
 	private double rotation;
 	private float alpha;
-	private float dx;
-	private float dy;
-	private boolean visible;
-	private boolean physics;
-	private boolean tweening;
-	private Rectangle hitbox;
 	private DisplayObject parent;
-	private BufferedImage displayImage;
-	public List<DisplayObject> collidableObjects;
+	private boolean hasPhysics;
+	private int mass;
+	private float positionX;
+	private float positionY;
+	private float velocityX;
+	private float velocityY;
+	private float accelerationX;
+	private float accelerationY;
+	private long lastUpdate;
+	private boolean isCollidable;
 
-	// Three constructors. Id | Id and imageFile | Id, imageFile and coordinates
+	private boolean onFloor;
+	/**
+	 * Constructors: can pass in the id OR the id and image's file path and
+	 * position OR the id and a buffered image and position
+	 */
 	public DisplayObject(String id) {
-		this.id = id;
-		this.xPos = 0;
-		this.yPos = 0;
-		this.xPivot = 0;
-		this.yPivot = 0;
-		this.scaleX = 1.0;
-		this.scaleY = 1.0;
-		this.rotation = 0.0;
-		this.alpha = 1.0f;
-		this.dx = 0;
-		this.dy = 0;
-		this.visible = true;
-		this.physics = false;
-		this.tweening = false;
-		this.hitbox = new Rectangle(0, 0);
-		this.parent = null;
-		this.displayImage = null;
-		collidableObjects = new ArrayList<>();
+		super();
+		this.setId(id);
+		this.setVisible(true);
+		this.setxPos(0);
+		this.setyPos(0);
+		this.setPivotPointX(0);
+		this.setPivotPointY(0);
+		this.setScaleX(1.0);
+		this.setScaleY(1.0);
+		this.setRotation(0);
+		this.setAlpha(1.0f);
+		this.isCollidable = true;
+		this.lastUpdate = System.nanoTime();
 	}
 
-	public DisplayObject(String id, String imageFileName) {
-		this.setDisplayImage(imageFileName);
-		this.id = id;
-		this.xPos = 0;
-		this.yPos = 0;
-		this.xPivot = this.getUnscaledWidth() / 2;
-		this.yPivot = this.getUnscaledHeight() / 2;
-		this.scaleX = 1.0;
-		this.scaleY = 1.0;
-		this.rotation = 0.0;
-		this.alpha = 1.0f;
-		this.dx = 0;
-		this.dy = 0;
-		this.visible = true;
-		this.physics = false;
-		this.tweening = false;
-		this.hitbox = new Rectangle(0, 0);
-		this.parent = null;
-		collidableObjects = new ArrayList<>();
-	}
-
-	public DisplayObject(String id, String imageFileName, int xPos, int yPos) {
-		this.setDisplayImage(imageFileName);
-		this.id = id;
-		this.xPos = xPos;
-		this.yPos = yPos;
-		this.xPivot = this.getUnscaledWidth() / 2;
-		this.yPivot = this.getUnscaledHeight() / 2;
-		this.scaleX = 1.0;
-		this.scaleY = 1.0;
-		this.rotation = 0.0;
-		this.alpha = 1.0f;
-		this.dx = 0;
-		this.dy = 0;
-		this.visible = true;
-		this.physics = false;
-		this.tweening = false;
-		this.hitbox = new Rectangle(xPos, yPos);
-		this.parent = null;
-		collidableObjects = new ArrayList<>();
-	}
-
-	// Getters and setters for every field
-	public String getId() {
-		return this.id;
+	public DisplayObject(String id, String fileName) {
+		super();
+		this.setId(id);
+		this.setImage(fileName);
+		this.setVisible(true);
+		this.setxPos(0);
+		this.setyPos(0);
+		this.setPivotPointX(0);
+		this.setPivotPointY(0);
+		this.setScaleX(1.0);
+		this.setScaleY(1.0);
+		this.setRotation(0);
+		this.setAlpha(1.0f);
+		this.isCollidable = true;
+		this.lastUpdate = System.nanoTime();
 	}
 
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+
+	public DisplayObject getParent() {
+		return parent;
+	}
+
+	public void setParent(DisplayObject parent) {
+		this.parent = parent;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
 	public int getxPos() {
-		return this.xPos;
+		return xPos;
 	}
 
 	public void setxPos(int xPos) {
@@ -120,31 +121,37 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public int getyPos() {
-		return this.yPos;
+		return yPos;
 	}
 
 	public void setyPos(int yPos) {
 		this.yPos = yPos;
 	}
 
-	public int getxPivot() {
-		return this.xPivot;
+	public int getPivotPointX() {
+		return pivotPointX;
+	}
+	public void setOnFloor(boolean b){
+		onFloor = b;
+	}
+	public boolean isOnFloor(){
+		return this.onFloor;
 	}
 
-	public void setxPivot(int xPivot) {
-		this.xPivot = xPivot;
+	public void setPivotPointX(int pivotPointX) {
+		this.pivotPointX = pivotPointX;
 	}
 
-	public int getyPivot() {
-		return this.yPivot;
+	public int getPivotPointY() {
+		return pivotPointY;
 	}
 
-	public void setyPivot(int yPivot) {
-		this.yPivot = yPivot;
+	public void setPivotPointY(int pivotPointY) {
+		this.pivotPointY = pivotPointY;
 	}
 
 	public double getScaleX() {
-		return this.scaleX;
+		return scaleX;
 	}
 
 	public void setScaleX(double scaleX) {
@@ -152,7 +159,7 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public double getScaleY() {
-		return this.scaleY;
+		return scaleY;
 	}
 
 	public void setScaleY(double scaleY) {
@@ -160,116 +167,53 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public double getRotation() {
-		return this.rotation;
+		return rotation;
 	}
 
-	public void setRotation(double rotation) {
-		this.rotation = rotation;
+	public void setRotation(double d) {
+		this.rotation = d;
 	}
 
 	public float getAlpha() {
-		return this.alpha;
+		return alpha;
 	}
 
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
 
-	public float getDx() {
-		return this.dx;
-	}
-
-	public void setDx(float dx) {
-		this.dx = dx;
-	}
-
-	public float getDy() {
-		return this.dy;
-	}
-
-	public void setDy(float dy) {
-		this.dy = dy;
-	}
-
-	public boolean isVisible() {
-		return this.visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-	public boolean isPhysics() {
-		return this.physics;
-	}
-
-	public void setPhysics(boolean physics) {
-		this.physics = physics;
-	}
-
-	public boolean isTweening() {
-		return this.tweening;
-	}
-
-	public void setTweening(boolean tweening) {
-		this.tweening = tweening;
-	}
-
-	public Rectangle getHitbox() {
-		return new Rectangle(xPos, yPos, getUnscaledWidth(), getUnscaledHeight());
-	}
-
-	public void setHitbox(Rectangle hitbox) {
-		this.hitbox = hitbox;
-	}
-
-	public DisplayObject getParent() {
-		return this.parent;
-	}
-
-	public void setParent(DisplayObject parent) {
-		this.parent = parent;
-	}
-
+	/**
+	 * Returns the unscaled width and height of this display object
+	 * */
 	public int getUnscaledWidth() {
-		if (this.displayImage == null)
-			return 0;
-		return this.displayImage.getWidth();
+		if(displayImage == null) return 0;
+		return displayImage.getWidth();
 	}
 
 	public int getUnscaledHeight() {
-		if (this.displayImage == null)
-			return 0;
-		return this.displayImage.getHeight();
-	}
-
-	public boolean collidesWith(DisplayObject obj) {
-		Rectangle globalRectangle1 = this.getHitbox();
-		Rectangle globalRectangle2 = obj.getHitbox();
-		System.out.println(globalRectangle1 + " and " + globalRectangle2);
-		return globalRectangle1.intersects(globalRectangle2);
-	}
-
-	public void addCollidableObject(DisplayObject obj) {
-		collidableObjects.add(obj);
+		if(displayImage == null) return 0;
+		return displayImage.getHeight();
 	}
 
 	public BufferedImage getDisplayImage() {
 		return this.displayImage;
 	}
 
-	protected void setDisplayImage(String imageName) {
+	protected void setImage(String imageName) {
 		if (imageName == null) {
 			return;
 		}
-		this.displayImage = readImage(imageName);
-		if (this.displayImage == null) {
+		displayImage = readImage(imageName);
+		if (displayImage == null) {
 			System.err.println("[DisplayObject.setImage] ERROR: " + imageName + " does not exist!");
 		}
-		this.xPivot = this.getUnscaledWidth() / 2;
-		this.yPivot = this.getUnscaledHeight() / 2;
 	}
 
+
+	/**
+	 * Helper function that simply reads an image from the given image name
+	 * (looks in resources\\) and returns the bufferedimage for that filename
+	 * */
 	public BufferedImage readImage(String imageName) {
 		BufferedImage image = null;
 		try {
@@ -282,57 +226,201 @@ public class DisplayObject extends EventDispatcher {
 		return image;
 	}
 
-	public void setDisplayImage(BufferedImage image) {
-		if (image == null)
-			return;
-		this.displayImage = image;
-		this.xPivot = this.getUnscaledWidth() / 2;
-		this.yPivot = this.getUnscaledHeight() / 2;
+	public void setImage(BufferedImage image) {
+		if(image == null) return;
+		displayImage = image;
 	}
 
-	// sets hitbox to match sprite location
-	public void resetHitbox() {
-		this.hitbox.setLocation(this.xPos, this.yPos);
-		this.hitbox.setBounds(this.xPos, this.yPos, this.getUnscaledWidth(), this.getUnscaledHeight());
-	}
 
-	// updates hitbox location.
+	/**
+	 * Invoked on every frame before drawing. Used to update this display
+	 * objects state before the draw occurs. Should be overridden if necessary
+	 * to update objects appropriately.
+	 * */
 	protected void update(ArrayList<String> pressedKeys) {
-		if (this.hitbox != null) {
-			this.resetHitbox();
-		}
-		for (DisplayObject each : collidableObjects) {
-			if (this.collidesWith(each)) {
-				dispatchEvent(new Event(Event.COLLIDE, this));
+		if(this.hasPhysics){
+			if(System.nanoTime() - this.lastUpdate > 500000){
+				if(!this.onFloor){
+					this.accelerationY = (float) 0.25;
+				}
+				this.setPositionX((float) (this.getPositionX() + this.velocityX));
+				this.setPositionY((float) (this.getPositionY() + this.velocityY));
+				this.velocityX /= 2;
+				this.velocityY += accelerationY;
+				this.checkBoundaries();
+				this.xPos = (int) this.positionX;
+				this.yPos = (int) this.positionY;
 			}
 		}
 	}
+	public boolean checkCollision(DisplayObject other) {
+		return this.getHitbox().intersects(other.getHitbox());
+	}
+	private void checkBoundaries() {
+		if(this.positionX < 0){
+			this.positionX = 2;
+			this.velocityX = (float) (-this.velocityX * .5);
+		}
+		if(this.positionY < 0){
+			this.positionY = 2;
+			this.velocityY = (float) (-this.velocityY * .5);
+		}
+		/*if(this.positionY + this.getUnscaledHeight()*this.scaleY > 290){
+			this.positionY = (float)(290 - this.getUnscaledHeight()*this.scaleY - 2);
+			this.velocityY = 0;
+			this.accelerationY = 0;
+			this.onFloor = true;
+		} */
+		if(this.positionX + this.getUnscaledWidth()*this.scaleX > 500){
+			this.positionX = (float)(500 - this.getUnscaledWidth()*this.scaleX - 2);
+			this.velocityX = (float) (-this.velocityY * .5);
+		}
+		
+	}
 
-	// applies translations, rotations, scaling, transparency and visibility to
-	// image
+	/**
+	 * Draws this image. This should be overloaded if a display object should
+	 * draw to the screen differently. This method is automatically invoked on
+	 * every frame.
+	 * */
 	public void draw(Graphics g) {
-		if (this.displayImage != null) {
+		
+		if (displayImage != null) {
+			
+			/*
+			 * Get the graphics and apply this objects transformations
+			 * (rotation, etc.)
+			 */
 			Graphics2D g2d = (Graphics2D) g;
-			if (this.isVisible()) {
-				applyTransformations(g2d);
-				g2d.drawImage(this.displayImage, 0, 0, (int) (getUnscaledWidth()), (int) (getUnscaledHeight()), null);
-				reverseTransformations(g2d);
+			applyTransformations(g2d);
+
+			/* Actually draw the image, perform the pivot point translation here */
+			if(this.isVisible()){g2d.drawImage(displayImage, -this.getPivotPointX(), -this.getPivotPointY(),
+					(int) (getUnscaledWidth()*this.getScaleX()),
+					(int) (getUnscaledHeight()*this.getScaleY()), null);
 			}
+			/*
+			 * undo the transformations so this doesn't affect other display
+			 * objects
+			 */
+			reverseTransformations(g2d);
 		}
 	}
 
+	/**
+	 * Applies transformations for this display object to the given graphics
+	 * object
+	 * */
 	protected void applyTransformations(Graphics2D g2d) {
-		g2d.translate(this.xPos, this.yPos);
-		g2d.rotate(this.rotation, this.xPivot * this.scaleX, this.yPivot * this.scaleY);
-		g2d.scale(this.scaleX, this.scaleY);
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.alpha));
+		g2d.translate(this.getxPos(), this.getyPos());
+		g2d.rotate(this.getRotation());
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+				this.getAlpha()));
 	}
 
+	/**
+	 * Reverses transformations for this display object to the given graphics
+	 * object
+	 * */
 	protected void reverseTransformations(Graphics2D g2d) {
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		g2d.scale(1 / this.scaleX, 1 / this.scaleY);
-		g2d.rotate(-this.rotation, this.xPivot * this.scaleX, this.yPivot * this.scaleY);
-		g2d.translate(-this.xPos, -this.yPos);
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+				1.0f));
+		g2d.rotate(-this.getRotation());
+		g2d.translate(-this.getxPos(), -this.getyPos());
+
+	}
+	public int getGlobalX(){
+		return this.xPos;
+	}
+	public int getGlobalY(){
+		return this.yPos;
+	}
+	public Rectangle getHitbox(){
+		return new Rectangle(this.getGlobalX(), this.getGlobalY(), (int)(this.getUnscaledWidth()*this.getScaleX()),  (int)(this.getUnscaledHeight() * this.getScaleY()));
+	}
+	public Rectangle getReducedHitbox(){
+		return new Rectangle(this.getGlobalX(), this.getGlobalY(), (int)(this.getUnscaledWidth()*this.getScaleX()*.75),  (int)(this.getUnscaledHeight() * this.getScaleY()*.75));
+	}
+	public boolean collidesWith(DisplayObject other, String type){
+		if(!isCollidable || !other.isCollidable){
+			return false;
+		}
+		if(this.getHitbox().intersects(other.getHitbox())){
+			this.dispatchEvent(new CollisionEvent(type, this));
+			return true;
+		}
+		return false;
 	}
 
+	public int getMass() {
+		return mass;
+	}
+
+	public void setMass(int mass) {
+		this.mass = mass;
+	}
+
+	public float getVelocityX() {
+		return velocityX;
+	}
+
+	public void setVelocityX(float velocityX) {
+		this.velocityX = velocityX;
+	}
+
+	public float getVelocityY() {
+		return velocityY;
+	}
+
+	public void setVelocityY(float velocityY) {
+		this.velocityY = velocityY;
+	}
+
+	public float getAccelerationX() {
+		return accelerationX;
+	}
+
+	public void setAccelerationX(float accelerationX) {
+		this.accelerationX = accelerationX;
+	}
+
+	public float getAccelerationY() {
+		return accelerationY;
+	}
+
+	public void setAccelerationY(float accelerationY) {
+		this.accelerationY = accelerationY;
+	}
+
+	public boolean hasPhysics() {
+		return hasPhysics;
+	}
+
+	public void setHasPhysics(boolean hasPhysics) {
+		this.hasPhysics = hasPhysics;
+	}
+
+	public float getPositionY() {
+		return positionY;
+	}
+
+	public void setPositionY(float positionY) {
+		this.positionY = positionY;
+	}
+
+	public float getPositionX() {
+		return positionX;
+	}
+
+	public void setPositionX(float positionX) {
+		this.positionX = positionX;
+	}
+
+	public boolean isCollidable() {
+		return isCollidable;
+	}
+
+	public void setCollidable(boolean isCollidable) {
+		this.isCollidable = isCollidable;
+	}
 }
