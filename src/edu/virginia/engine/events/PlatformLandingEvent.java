@@ -1,9 +1,7 @@
-package edu.virginia.lab1test;
+package edu.virginia.engine.events;
 
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.Sprite;
-import edu.virginia.engine.events.Event;
-import edu.virginia.engine.events.IEventDispatcher;
 
 public class PlatformLandingEvent extends Event{
 	public static final String PLATFORM_LANDED_ON = "Platform landed on";

@@ -1,7 +1,4 @@
-package edu.virginia.lab1test;
-
-import edu.virginia.engine.events.Event;
-import edu.virginia.engine.events.IEventDispatcher;
+package edu.virginia.engine.events;
 
 public class PickedUpEvent extends Event{
 	public static final String COIN_PICKED_UP = "Coin picked up";
