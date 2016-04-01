@@ -343,14 +343,9 @@ public class DisplayObject extends EventDispatcher {
 			if (this.isVisible()) {
 				g2d.drawImage(displayImage, -this.getPivotPointX(), -this.getPivotPointY(),
 						(int) (getUnscaledWidth() * this.getScaleX()), (int) (getUnscaledHeight() * this.getScaleY()),
-						null);
-//				Rectangle rect = getHitbox();
-//				Color oldColor = g2d.getColor();
-//				g2d.setColor(Color.BLACK);
-//				g2d.drawRect(50, 50, 60, 65);
-//				System.out.println(rect.x + " " + rect.y + " " + rect.width + " " + rect.height);
-//				g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
-//				g2d.setColor(oldColor);
+						null);	
+				Rectangle rect = getHitbox();
+				g2d.drawRect(0, 0, rect.width, rect.height);
 			}
 			/*
 			 * undo the transformations so this doesn't affect other display
