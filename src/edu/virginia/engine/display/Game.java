@@ -1,6 +1,7 @@
 package edu.virginia.engine.display;
 
 import java.awt.AlphaComposite;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -35,13 +36,14 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 
 	public Game(String gameId, int width, int height) {
 		super(gameId);
-		
 		setUpMainFrame(gameId, width, height);
 		
 		setScenePanel(new GameScenePanel(this));
 		
 		/* Use an absolute layout */
 		scenePanel.setLayout(null);
+		getMainFrame().setSize(width, height);
+		getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 	
 	

@@ -339,6 +339,7 @@ public class DisplayObject extends EventDispatcher {
 						(int) (getUnscaledWidth() * this.getScaleX()), (int) (getUnscaledHeight() * this.getScaleY()),
 						null);
 				Rectangle rect = getHitbox();
+
 				g2d.drawRect(0, 0, rect.width, rect.height);
 			}
 			/*

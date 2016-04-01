@@ -51,6 +51,7 @@ public class LabOneGame extends Game {
 	 */
 	public LabOneGame() {
 		super("Lab One Test Game", 500, 300);
+		getMainFrame().setBounds(0, 0, 500, 300); // Fixing weird size bug.
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
 		ghost.setScaleX(1.875);
