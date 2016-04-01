@@ -92,12 +92,15 @@ public class DisplayObject extends EventDispatcher {
 		this.lastUpdate = System.nanoTime();
 		this.collidableObjects = new ArrayList<>();
 	}
-	public void setPlatform(DisplayObject plat){
+
+	public void setPlatform(DisplayObject plat) {
 		this.platform = plat;
 	}
-	public DisplayObject getPlatform(){
+
+	public DisplayObject getPlatform() {
 		return this.platform;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -274,15 +277,6 @@ public class DisplayObject extends EventDispatcher {
 						//System.out.println(this.getHitbox() + " " + each.getHitbox());
 						this.velocityX = 1.0f;
 					}
-
-					// if (this.collidesWith(each)) {
-					// if (this.yPos - this.velocityY < each.yPos +
-					// each.getUnscaledHeight()) {
-					// this.velocityY = this.velocityY + 1.0f;
-					//
-					// }
-					// this.velocityX = 0.0f;
-					// }
 				}
 				this.setPositionX((float) (this.getPositionX() + this.velocityX));
 				this.setPositionY((float) (this.getPositionY() + this.velocityY));
@@ -343,7 +337,7 @@ public class DisplayObject extends EventDispatcher {
 			if (this.isVisible()) {
 				g2d.drawImage(displayImage, -this.getPivotPointX(), -this.getPivotPointY(),
 						(int) (getUnscaledWidth() * this.getScaleX()), (int) (getUnscaledHeight() * this.getScaleY()),
-						null);	
+						null);
 				Rectangle rect = getHitbox();
 				g2d.drawRect(0, 0, rect.width, rect.height);
 			}
@@ -410,7 +404,7 @@ public class DisplayObject extends EventDispatcher {
 		if (collidesWith(other)) {
 			Rectangle myRectangle = this.getHitbox();
 			Rectangle otherRectangle = other.getHitbox();
-			return myRectangle.y < otherRectangle.y + otherRectangle.getHeight();
+			return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y;
 		} else {
 			return false;
 		}
@@ -420,7 +414,7 @@ public class DisplayObject extends EventDispatcher {
 		if (collidesWith(other)) {
 			Rectangle myRectangle = this.getHitbox();
 			Rectangle otherRectangle = other.getHitbox();
-			return myRectangle.x + myRectangle.getWidth() > otherRectangle.x;
+			return myRectangle.x + myRectangle.getWidth() > otherRectangle.x && otherRectangle.x > myRectangle.x;
 		} else {
 			return false;
 		}
@@ -430,7 +424,7 @@ public class DisplayObject extends EventDispatcher {
 		if (collidesWith(other)) {
 			Rectangle myRectangle = this.getHitbox();
 			Rectangle otherRectangle = other.getHitbox();
-			return otherRectangle.x + otherRectangle.getWidth() > myRectangle.x;
+			return otherRectangle.x + otherRectangle.getWidth() > myRectangle.x && myRectangle.x > otherRectangle.x;
 		} else {
 			return false;
 		}
