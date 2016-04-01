@@ -98,17 +98,30 @@ public class LabOneGame extends Game{
 				link.setOnFloor(false);
 			}
 			else if(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A)) || pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))){
-				link.setVelocityX(-5);
+				if(link.getPlatform() != null){
+					link.setVelocityX(link.getPlatform().getVelocityX() - 5);
+				}
+				else{
+					link.setVelocityX(-5);
+				}
 				if (link.setAnimation("run_left"))
 					link.play();
 				link.setPlaying(true);
 	
 			}
 			else if(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D)) || pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))){
-				link.setVelocityX(5);
+				if(link.getPlatform() != null){
+					link.setVelocityX(link.getPlatform().getVelocityX() + 5);
+				}
+				else{
+					link.setVelocityX(5);
+				}				
 				if (link.setAnimation("run_right"))
 					link.play();
 				link.setPlaying(true);
+			}
+			else if(link.getPlatform() != null){
+				link.setVelocityX(link.getPlatform().getVelocityX());
 			}
 		}
 		if(record){

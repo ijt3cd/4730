@@ -38,6 +38,7 @@ public class DisplayObject extends EventDispatcher{
 	private double rotation;
 	private float alpha;
 	private DisplayObject parent;
+	private DisplayObject platform;
 	private boolean hasPhysics;
 	private int mass;
 	private float positionX;
@@ -86,7 +87,12 @@ public class DisplayObject extends EventDispatcher{
 		this.isCollidable = true;
 		this.lastUpdate = System.nanoTime();
 	}
-
+	public void setPlatform(DisplayObject plat){
+		this.platform = plat;
+	}
+	public DisplayObject getPlatform(){
+		return this.platform;
+	}
 	public void setId(String id) {
 		this.id = id;
 	}
