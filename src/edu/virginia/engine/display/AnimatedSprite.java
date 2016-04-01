@@ -43,6 +43,7 @@ public class AnimatedSprite extends Sprite{
 		this.setVelocityY(0);
 		this.setAccelerationY(0);
 		this.setOnFloor(true);
+		this.setPlatform(platform);
 	}
 	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row){
 		int[] arr = new int[5];

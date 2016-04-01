@@ -18,6 +18,7 @@ import edu.virginia.engine.display.TweenJuggler;
 import edu.virginia.engine.display.TweenParam;
 import edu.virginia.engine.display.TweenTransition;
 import edu.virginia.engine.display.TweenableParams;
+import edu.virginia.engine.events.PlatformLandingEvent;
 import edu.virginia.engine.events.TweenEvent;
 import edu.virginia.engine.sound.SoundManager;
 
@@ -32,11 +33,12 @@ public class LabOneGame extends Game {
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
 	Sprite platformOne = new Sprite("Platform1", "PlatformSprite.png");
 	Sprite floor = new Sprite("Floor", "PlatformSprite.png");
+	Sprite spike = new Sprite("Spike", "SpikeSprite.png");
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> platforms;
-	ArrayList<Point> locationTracker;
-	int currIndex;
-	int lastIndex;
+	ArrayList<double[]> locationTracker;
+	ArrayList<double[]> nextGhost;
+	int currIndex = 0;
 	boolean record;
 	Tween coinGrabbed;
 
@@ -67,11 +69,14 @@ public class LabOneGame extends Game {
 		platformOne.setScaleY(.2);
 		platformOne.setxPos(200);
 		platformOne.setyPos(180);
+		spike.setxPos(400);
+		spike.setyPos(269);
+		spike.setScaleX(.5);
+		spike.setScaleY(.5);
 		platformOne.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		link.addCollidable(platformOne);
 		floor.setScaleX(5);
 		floor.setScaleY(.2);
-		floor.setVisible(false);
 		floor.setxPos(0);
 		floor.setyPos(280);
 		floor.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
@@ -80,10 +85,9 @@ public class LabOneGame extends Game {
 		platforms.add(platformOne);
 		platforms.add(floor);
 		platforms.add(ghost);
-		locationTracker = new ArrayList<Point>();
-		currIndex = 0;
-		lastIndex = 0;
-		record = false;
+		locationTracker = new ArrayList<double[]>();
+		nextGhost = new ArrayList<double[]>();
+		record = true;
 	}
 
 	/**
@@ -101,60 +105,47 @@ public class LabOneGame extends Game {
 				link.setOnFloor(false);
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
-				link.setVelocityX(-5);
+				if (link.getPlatform() != null) {
+					link.setVelocityX(link.getPlatform().getVelocityX() - 5);
+				} else {
+					link.setVelocityX(-5);
+				}
 				if (link.setAnimation("run_left"))
 					link.play();
 				link.setPlaying(true);
 
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))) {
-				link.setVelocityX(5);
+				if (link.getPlatform() != null) {
+					link.setVelocityX(link.getPlatform().getVelocityX() + 5);
+				} else {
+					link.setVelocityX(5);
+				}
 				if (link.setAnimation("run_right"))
 					link.play();
 				link.setPlaying(true);
-			}
-			if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_N))) {
-				record = true;
-			}
-			if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_M))) {
-				if (record) {
-					lastIndex = currIndex;
-					record = false;
-					if (!ghost.isVisible()) {
-						ghost.setVisible(true);
-					}
-					currIndex = 0;
-				}
+			} else if (link.getPlatform() != null) {
+				link.setVelocityX(link.getPlatform().getVelocityX());
 			}
 		}
 		if (record) {
-			if (currIndex < 1000) {
-				locationTracker.add(new Point(link.getxPos(), link.getyPos()));
-				currIndex++;
-			} else {
-				record = false;
-			}
+			double[] ghostData = new double[4];
+			ghostData[0] = link.getxPos();
+			ghostData[1] = link.getyPos();
+			ghostData[2] = link.getVelocityX();
+			ghostData[3] = link.getVelocityY();
+			nextGhost.add(ghostData);
 		}
-		if (link != null && platformOne != null && questManager != null) {
-			if (link.checkPlatformCollision(platformOne)) {
-				platformOne.dispatchEvent(
-						new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_LANDED_ON, platformOne, link));
-				platformOne.addEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
-				platformOne.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
-			}
-		}
-		if (link != null && floor != null && questManager != null) {
-			if (link.checkPlatformCollision(floor)) {
-				floor.dispatchEvent(new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_LANDED_ON, floor, link));
-				floor.addEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
-				floor.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
-			}
-		}
-		if (link != null && ghost != null && ghost.isVisible() && questManager != null) {
-			if (link.checkPlatformCollision(ghost)) {
-				ghost.dispatchEvent(new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_LANDED_ON, ghost, link));
-				ghost.addEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
-				ghost.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
+		if (link != null && platforms != null) {
+			for (Sprite platform : platforms) {
+				if (link != null && platform != null && platform.isVisible() && questManager != null) {
+					if (link.checkPlatformCollision(platform)) {
+						platform.dispatchEvent(
+								new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_LANDED_ON, platform, link));
+						platform.addEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
+						platform.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
+					}
+				}
 			}
 		}
 		if (link != null && platforms != null) {
@@ -176,12 +167,31 @@ public class LabOneGame extends Game {
 			}
 		}
 		if (ghost != null && ghost.isVisible()) {
-			ghost.setxPos(locationTracker.get(currIndex).x);
-			ghost.setyPos(locationTracker.get(currIndex).y);
-			currIndex++;
-			if (currIndex >= lastIndex) {
+			if (locationTracker.size() > currIndex) {
+				ghost.setxPos((int) locationTracker.get(currIndex)[0]);
+				ghost.setyPos((int) locationTracker.get(currIndex)[1]);
+				ghost.setVelocityX((float) locationTracker.get(currIndex)[2]);
+				ghost.setVelocityY((float) locationTracker.get(currIndex)[3]);
+				currIndex++;
+			} else {
 				currIndex = 0;
-				ghost.setVisible(false);
+			}
+		}
+		if (link != null && spike != null) {
+			if (link.collidesWith(spike)) {
+				record = false;
+				locationTracker.clear();
+				for (double[] point : nextGhost) {
+					locationTracker.add(point);
+				}
+				nextGhost.clear();
+				currIndex = 0;
+				ghost.setVisible(true);
+				link.setPositionX(0);
+				link.setPositionY(230);
+				link.setVelocityX(0);
+				link.setVelocityY(0);
+				record = true;
 			}
 		}
 		/*
@@ -210,6 +220,8 @@ public class LabOneGame extends Game {
 			platformOne.draw(g);
 		if (ghost != null)
 			ghost.draw(g);
+		if (spike != null)
+			spike.draw(g);
 	}
 
 	/**

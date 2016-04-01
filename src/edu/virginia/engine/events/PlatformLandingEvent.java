@@ -1,4 +1,4 @@
-package edu.virginia.lab1test;
+package edu.virginia.engine.events;
 
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.Sprite;
@@ -19,6 +19,7 @@ public class PlatformLandingEvent extends Event{
 			lander.landOnPlatform((Sprite)src);
 		else if(type == PLATFORM_FALLEN_OFF){
 			lander.setOnFloor(false);
+			lander.setPlatform(null);
 		}
 	}
 }
