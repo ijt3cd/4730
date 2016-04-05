@@ -67,7 +67,7 @@ public class LabOneGame extends Game {
 		link.addAnimation("run_right", 0, 9, 75000000, 1, 7);
 		link.addAnimation("run_left", 0, 9, 75000000, 1, 5);
 		platformOne.setScaleX(.5);
-		platformOne.setScaleY(.2);
+		platformOne.setScaleY(.5);
 		platformOne.setxPos(200);
 		platformOne.setyPos(180);
 		spike.setxPos(400);
@@ -79,7 +79,7 @@ public class LabOneGame extends Game {
 		floor.setScaleX(5);
 		floor.setScaleY(.2);
 		floor.setxPos(0);
-		floor.setyPos(280);
+		floor.setyPos(282);
 		floor.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		ghost.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		platforms = new ArrayList<Sprite>();
@@ -101,9 +101,8 @@ public class LabOneGame extends Game {
 		if (link != null && link.hasPhysics()) {
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && link.isOnFloor()) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && link.getPlatform() != null) {
 				link.setVelocityY((float) -5.75);
-				link.setOnFloor(false);
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
 				if (link.getPlatform() != null) {
@@ -146,28 +145,16 @@ public class LabOneGame extends Game {
 						platform.addEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
 						platform.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 					}
+					else if(link.getPlatform() == platform){
+						platform.dispatchEvent(
+								new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_FALLEN_OFF, platform, link));
+						platform.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
+						platform.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
+					}
 				}
 			}
 		}
-		if (link != null && platforms != null) {
-			for (int i = 0; i < platforms.size(); i++) {
-				if (link.getHitbox().intersects(platforms.get(i).getReducedHitbox())) {
-					Rectangle spriteRec = link.getHitbox();
-					Rectangle platformRec = platforms.get(i).getHitbox();
-					boolean halfOnPlatformRight = (spriteRec.getMaxX()
-							- platformRec.getMaxX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
-					boolean halfOnPlatformLeft = (platformRec.getX()
-							- spriteRec.getX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
-					if (link.getHitbox().getMaxY() < platforms.get(i).getReducedHitbox().getMaxY()
-							&& (halfOnPlatformRight || halfOnPlatformLeft))
-						break;
-				}
-				if (i == platforms.size() - 1) {
-					link.setOnFloor(false);
-				}
-			}
-		}
-		if (ghost != null && ghost.isVisible()) {
+		if (ghost != null && ghost.isVisible() && locationTracker != null) {
 			if (locationTracker.size() > currIndex) {
 				ghost.setxPos((int) locationTracker.get(currIndex)[0]);
 				ghost.setyPos((int) locationTracker.get(currIndex)[1]);
@@ -178,7 +165,7 @@ public class LabOneGame extends Game {
 				currIndex = 0;
 			}
 		}
-		if (link != null && spike != null) {
+		if (link != null && spike != null && locationTracker != null) {
 			if (link.collidesWith(spike)) {
 				record = false;
 				locationTracker.clear();

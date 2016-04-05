@@ -52,7 +52,7 @@ public class DisplayObject extends EventDispatcher {
 	private boolean isCollidable;
 	private List<DisplayObject> collidableObjects;
 
-	private boolean onFloor;
+	//private boolean onFloor;
 
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and
@@ -145,13 +145,13 @@ public class DisplayObject extends EventDispatcher {
 		return pivotPointX;
 	}
 
-	public void setOnFloor(boolean b) {
+	/*public void setOnFloor(boolean b) {
 		onFloor = b;
 	}
 
 	public boolean isOnFloor() {
 		return this.onFloor;
-	}
+	} */
 
 	public void addCollidable(DisplayObject obj) {
 		collidableObjects.add(obj);
@@ -260,7 +260,7 @@ public class DisplayObject extends EventDispatcher {
 	protected void update(ArrayList<String> pressedKeys) {
 		if (this.hasPhysics) {
 			if (System.nanoTime() - this.lastUpdate > 500000) {
-				if (!this.onFloor) {
+				if (!(this.platform == null)) {
 					this.accelerationY = (float) 0.25;
 				}
 				for (DisplayObject each : collidableObjects) {
@@ -386,8 +386,8 @@ public class DisplayObject extends EventDispatcher {
 
 	public Rectangle getReducedHitbox() {
 		return new Rectangle(this.getGlobalX(), this.getGlobalY(),
-				(int) (this.getUnscaledWidth() * this.getScaleX() * .75),
-				(int) (this.getUnscaledHeight() * this.getScaleY() * .75));
+				(int) (this.getUnscaledWidth() * this.getScaleX()),
+				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
 
 	public boolean collidesWith(DisplayObject other) {

@@ -42,7 +42,7 @@ public class AnimatedSprite extends Sprite{
 		this.setPositionY((float)(platform.getyPos() - this.getUnscaledHeight()*this.getScaleY()+ 20));
 		this.setVelocityY(0);
 		this.setAccelerationY(0);
-		this.setOnFloor(true);
+		//this.setOnFloor(true);
 		this.setPlatform(platform);
 	}
 	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row){
@@ -138,7 +138,7 @@ public class AnimatedSprite extends Sprite{
 		Rectangle spriteRec = this.getHitbox();
 		boolean intersection = spriteRec.intersects(platformRec);
 		boolean movingDown = this.getVelocityY() >= 0;
-		boolean notOnFloor = !this.isOnFloor();
+		boolean notOnFloor = (this.getPlatform() == null);
 		boolean halfOnPlatformRight = (spriteRec.getMaxX() - platformRec.getMaxX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
 		boolean halfOnPlatformLeft = (platformRec.getX() - spriteRec.getX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
 		boolean abovePlatform = (spriteRec.getY() < platformRec.getY() - 20);
@@ -150,7 +150,7 @@ public class AnimatedSprite extends Sprite{
 		Rectangle platformRec = platform.getHitbox();
 		Rectangle spriteRec = this.getHitbox();
 		boolean intersection = spriteRec.intersects(platformRec);
-		return !intersection && this.isOnFloor();
+		return !intersection && !(this.getPlatform() == null);
 	}
 
 }
