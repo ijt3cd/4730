@@ -18,7 +18,6 @@ public class PlatformLandingEvent extends Event{
 		if(type == PLATFORM_LANDED_ON)
 			lander.landOnPlatform((Sprite)src);
 		else if(type == PLATFORM_FALLEN_OFF){
-			//lander.setOnFloor(false);
 			lander.setPlatform(null);
 		}
 	}

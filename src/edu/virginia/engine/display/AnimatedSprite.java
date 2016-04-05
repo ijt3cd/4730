@@ -39,10 +39,9 @@ public class AnimatedSprite extends Sprite{
 		return this.spriteSheet;
 	}
 	public void landOnPlatform(Sprite platform){
-		this.setPositionY((float)(platform.getyPos() - this.getUnscaledHeight()*this.getScaleY()+ 20));
+		this.setPositionY((float)(platform.getyPos() - ((double)this.getUnscaledHeight())*this.getScaleY()) + 18);
 		this.setVelocityY(0);
 		this.setAccelerationY(0);
-		//this.setOnFloor(true);
 		this.setPlatform(platform);
 	}
 	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row){
@@ -132,25 +131,25 @@ public class AnimatedSprite extends Sprite{
 		currentIndex = this.startIndex;
 		
 	}
+	public boolean checkStillOnPlatform(Sprite platform){
+		Rectangle platformRec = platform.getHitbox();
+		Rectangle spriteRec = this.getHitbox();
+		boolean intersection = spriteRec.intersects(platformRec);
+		boolean halfOnPlatformRight = (spriteRec.getMaxX() - platformRec.getMaxX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
+		boolean halfOnPlatformLeft = (platformRec.getX() - spriteRec.getX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
+		return intersection && halfOnPlatformRight && halfOnPlatformLeft;
+	}
 
 	public boolean checkPlatformCollision(Sprite platform) {
 		Rectangle platformRec = platform.getHitbox();
 		Rectangle spriteRec = this.getHitbox();
 		boolean intersection = spriteRec.intersects(platformRec);
 		boolean movingDown = this.getVelocityY() >= 0;
-		boolean notOnFloor = (this.getPlatform() == null);
 		boolean halfOnPlatformRight = (spriteRec.getMaxX() - platformRec.getMaxX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
 		boolean halfOnPlatformLeft = (platformRec.getX() - spriteRec.getX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
 		boolean abovePlatform = (spriteRec.getY() < platformRec.getY() - 20);
 		boolean fullLanding = spriteRec.getMaxY() > platformRec.getY() + 10;
-		return intersection && movingDown && notOnFloor && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding;
-	}
-
-	public boolean checkPlatformFall(Sprite platform) {
-		Rectangle platformRec = platform.getHitbox();
-		Rectangle spriteRec = this.getHitbox();
-		boolean intersection = spriteRec.intersects(platformRec);
-		return !intersection && !(this.getPlatform() == null);
+		return intersection && movingDown && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding;
 	}
 
 }

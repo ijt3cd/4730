@@ -102,7 +102,11 @@ public class LabOneGame extends Game {
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && link.getPlatform() != null) {
-				link.setVelocityY((float) -5.75);
+				if (link.getPlatform() != null) {
+					link.setVelocityY((float) (link.getPlatform().getVelocityX() - 5.75));
+				} else {
+					link.setVelocityY((float) -5.75);
+				}
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
 				if (link.getPlatform() != null) {
@@ -126,6 +130,7 @@ public class LabOneGame extends Game {
 				link.setPlaying(true);
 			} else if (link.getPlatform() != null) {
 				link.setVelocityX(link.getPlatform().getVelocityX());
+				link.setVelocityY(link.getPlatform().getVelocityY());
 			}
 		}
 		if (record) {
@@ -139,13 +144,13 @@ public class LabOneGame extends Game {
 		if (link != null && platforms != null) {
 			for (Sprite platform : platforms) {
 				if (link != null && platform != null && platform.isVisible() && questManager != null) {
-					if (link.checkPlatformCollision(platform)) {
+					if (link.checkPlatformCollision(platform) && link.getPlatform() != platform) {
 						platform.dispatchEvent(
 								new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_LANDED_ON, platform, link));
 						platform.addEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
 						platform.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 					}
-					else if(link.getPlatform() == platform){
+					else if(!link.checkStillOnPlatform(platform) && link.getPlatform() == platform){
 						platform.dispatchEvent(
 								new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_FALLEN_OFF, platform, link));
 						platform.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);

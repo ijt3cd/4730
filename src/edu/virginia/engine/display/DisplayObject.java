@@ -260,27 +260,22 @@ public class DisplayObject extends EventDispatcher {
 	protected void update(ArrayList<String> pressedKeys) {
 		if (this.hasPhysics) {
 			if (System.nanoTime() - this.lastUpdate > 500000) {
-				if (!(this.platform == null)) {
+				if ((this.platform == null)) {
 					this.accelerationY = (float) 0.25;
 				}
 				for (DisplayObject each : collidableObjects) {
-					if (this.collideFromBottom(each)) {
-						this.velocityY = 0;
-					}
-					if (this.collideFromLeft(each)) {
-						//System.out.println("collide from left");
-						//System.out.println(this.getHitbox() + " " + each.getHitbox());
-						this.velocityX = -1.0f;
-					}
-					if (this.collideFromRight(each)) {
-						//System.out.println("collide from right");
-						//System.out.println(this.getHitbox() + " " + each.getHitbox());
-						this.velocityX = 1.0f;
+					if(this.collidesWith(each) && this.platform != each){
+						if(this.xPos < each.getxPos()){
+							this.velocityX = Math.min(0, this.velocityX);
+						}
+						else{
+							this.velocityX = Math.max(0, this.velocityX);
+						}
+						this.velocityY = Math.max(0, velocityY);
 					}
 				}
 				this.setPositionX((float) (this.getPositionX() + this.velocityX));
 				this.setPositionY((float) (this.getPositionY() + this.velocityY));
-				this.velocityX /= 2;
 				this.velocityY += accelerationY;
 				this.checkBoundaries();
 				this.xPos = (int) this.positionX;
@@ -289,6 +284,7 @@ public class DisplayObject extends EventDispatcher {
 		}
 	}
 
+
 	public boolean checkCollision(DisplayObject other) {
 		return this.getHitbox().intersects(other.getHitbox());
 	}
@@ -296,21 +292,11 @@ public class DisplayObject extends EventDispatcher {
 	private void checkBoundaries() {
 		if (this.positionX < 0) {
 			this.positionX = 2;
-			this.velocityX = (float) (-this.velocityX * .5);
+			this.velocityX = 0;
 		}
 		if (this.positionY < 0) {
 			this.positionY = 2;
-			this.velocityY = (float) (-this.velocityY * .5);
-		}
-		/*
-		 * if(this.positionY + this.getUnscaledHeight()*this.scaleY > 290){
-		 * this.positionY = (float)(290 - this.getUnscaledHeight()*this.scaleY -
-		 * 2); this.velocityY = 0; this.accelerationY = 0; this.onFloor = true;
-		 * }
-		 */
-		if (this.positionX + this.getUnscaledWidth() * this.scaleX > 500) {
-			this.positionX = (float) (500 - this.getUnscaledWidth() * this.scaleX - 2);
-			this.velocityX = (float) (-this.velocityY * .5);
+			this.velocityY = 0;
 		}
 
 	}
@@ -402,33 +388,21 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public boolean collideFromBottom(DisplayObject other) {
-		if (collidesWith(other)) {
-			Rectangle myRectangle = this.getHitbox();
-			Rectangle otherRectangle = other.getHitbox();
-			return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y;
-		} else {
-			return false;
-		}
+		Rectangle myRectangle = this.getHitbox();
+		Rectangle otherRectangle = other.getHitbox();
+		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y;
 	}
 
 	public boolean collideFromLeft(DisplayObject other) {
-		if (collidesWith(other)) {
-			Rectangle myRectangle = this.getHitbox();
-			Rectangle otherRectangle = other.getHitbox();
-			return myRectangle.x + myRectangle.getWidth() > otherRectangle.x && otherRectangle.x > myRectangle.x;
-		} else {
-			return false;
-		}
+		Rectangle myRectangle = this.getHitbox();
+		Rectangle otherRectangle = other.getHitbox();
+		return myRectangle.x + myRectangle.getWidth() > otherRectangle.x && otherRectangle.x > myRectangle.x;
 	}
 
 	public boolean collideFromRight(DisplayObject other) {
-		if (collidesWith(other)) {
-			Rectangle myRectangle = this.getHitbox();
-			Rectangle otherRectangle = other.getHitbox();
-			return otherRectangle.x + otherRectangle.getWidth() > myRectangle.x && myRectangle.x > otherRectangle.x;
-		} else {
-			return false;
-		}
+		Rectangle myRectangle = this.getHitbox();
+		Rectangle otherRectangle = other.getHitbox();
+		return otherRectangle.x + otherRectangle.getWidth() > myRectangle.x && myRectangle.x > otherRectangle.x;
 	}
 
 	public int getMass() {
