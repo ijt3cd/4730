@@ -178,6 +178,16 @@ public class LabOneGame extends Game {
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
 		if (link != null && link.hasPhysics()) {
+			
+			//attempt at fixing some xVel physics
+			if(!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))){
+				link.setVelocityX((float)(link.getVelocityX()*0.5));
+			}
+			
+			
+			
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && link.getPlatform() != null) {
