@@ -300,11 +300,15 @@ public class LabOneGame extends Game {
 				link.setVelocityY(0);
 				record = true;
 				deathCount=0;
-			
-				
-				
-			
 		}
+		if (link != null  && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))) {
+			
+			
+			currIndex = 0;
+			
+			record = true;
+		
+	}
 		
 		
 		if (link != null)
