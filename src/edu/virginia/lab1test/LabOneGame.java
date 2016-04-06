@@ -190,7 +190,7 @@ public class LabOneGame extends Game {
 			
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && link.getPlatform() != null) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && (!(link.getPlatform() == null)||link.getVelocityY() == 0) && link.getAccelerationY() == 0) {
 				if (link.getPlatform() != null) {
 					link.setVelocityY((float) (link.getPlatform().getVelocityX() - 5.75));
 				} else {
@@ -327,15 +327,15 @@ public class LabOneGame extends Game {
 		 * Same, just check for null in case a frame gets thrown in before Mario
 		 * is initialized
 		 */
-		if (link != null)
-			link.draw(g);
 		if (platformOne != null)
 			platformOne.draw(g);
+		if (ghost != null)
+			ghost.draw(g);
+		if (link != null)
+			link.draw(g);
 		if (ring!=null){
 			ring.draw(g);
 		}
-		if (ghost != null)
-			ghost.draw(g);
 		if(spikes!=null){
 			for(Sprite spike: spikes){
 				if(spike!=null){
