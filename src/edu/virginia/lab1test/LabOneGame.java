@@ -28,19 +28,37 @@ import edu.virginia.engine.sound.SoundManager;
  * game :)
  */
 public class LabOneGame extends Game {
+	
+	public static int width = 1000;
+	public static int height = 600;
+	
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
 	Sprite platformOne = new Sprite("Platform1", "PlatformSprite.png");
+	Sprite ring = new Sprite("Ring", "Ring.png");
 	Sprite floor = new Sprite("Floor", "PlatformSprite.png");
-	Sprite spike = new Sprite("Spike", "SpikeSprite.png");
+	Sprite spike1 = new Sprite("Spike1", "SpikeSprite.png");
+	Sprite spike2 = new Sprite("Spike2", "SpikeSprite.png");
+	Sprite spike3= new Sprite("Spike3", "SpikeSprite.png");
+	Sprite spike4 = new Sprite("Spike4", "SpikeSprite.png");
+	Sprite spike5 = new Sprite("Spike5", "SpikeSprite.png");
+	Sprite spike6 = new Sprite("Spike6", "SpikeSprite.png");
+	Sprite spike7= new Sprite("Spike7", "SpikeSprite.png");
+	Sprite spike8 = new Sprite("Spike8", "SpikeSprite.png");
+	Sprite spike9 = new Sprite("Spike9", "SpikeSprite.png");
+	Sprite spike10 = new Sprite("Spike10", "SpikeSprite.png");
+	Sprite spike11= new Sprite("Spike11", "SpikeSprite.png");
+	Sprite spike12 = new Sprite("Spike12", "SpikeSprite.png");
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> platforms;
+	ArrayList<Sprite> spikes;
 	ArrayList<double[]> locationTracker;
 	ArrayList<double[]> nextGhost;
 	int currIndex = 0;
 	boolean record;
 	Tween coinGrabbed;
+	int deathCount = 0;
 
 	/**
 	 * Constructor. See constructor in Game.java for details on the parameters
@@ -50,42 +68,103 @@ public class LabOneGame extends Game {
 	 * @throws UnsupportedAudioFileException
 	 */
 	public LabOneGame() {
-		super("Lab One Test Game", 500, 300);
-		getMainFrame().setBounds(0, 0, 500, 300); // Fixing weird size bug.
+		super("Lab One Test Game", width, height);
+		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
 		ghost.setScaleX(1.875);
 		ghost.setScaleY(1.355);
 		ghost.addAnimation("float", 0, 2, 75000000, 1, 0);
 		link.setPositionX(0);
-		link.setPositionY(230);
+		link.setPositionY(height-70);
 		link.setxPos(0);
-		link.setyPos(230);
+		link.setyPos(height-70);
 		link.setScaleX(.5);
 		link.setScaleY(.5);
 		link.setHasPhysics(true);
 		link.addAnimation("run_right", 0, 9, 75000000, 1, 7);
 		link.addAnimation("run_left", 0, 9, 75000000, 1, 5);
+		ring.setScaleX(0.05);
+		ring.setScaleY(0.05);
+		ring.setxPos(850);
+		ring.setyPos(550);
 		platformOne.setScaleX(.5);
 		platformOne.setScaleY(.5);
-		platformOne.setxPos(200);
-		platformOne.setyPos(180);
-		spike.setxPos(400);
-		spike.setyPos(269);
-		spike.setScaleX(.5);
-		spike.setScaleY(.5);
+		platformOne.setxPos(250);
+		platformOne.setyPos(500);
+		spike1.setxPos(500);
+		spike1.setyPos(480);
+		spike1.setScaleX(.5);
+		spike1.setScaleY(.5);
+		spike2.setxPos(500);
+		spike2.setyPos(510);
+		spike2.setScaleX(.5);
+		spike2.setScaleY(.5);
+		spike3.setxPos(500);
+		spike3.setyPos(540);
+		spike3.setScaleX(.5);
+		spike3.setScaleY(.5);
+		spike4.setxPos(500);
+		spike4.setyPos(570);
+		spike4.setScaleX(.5);
+		spike4.setScaleY(.5);
+		spike5.setxPos(700);
+		spike5.setyPos(360);
+		spike5.setScaleX(.5);
+		spike5.setScaleY(.5);
+		spike6.setxPos(700);
+		spike6.setyPos(390);
+		spike6.setScaleX(.5);
+		spike6.setScaleY(.5);
+		spike7.setxPos(700);
+		spike7.setyPos(420);
+		spike7.setScaleX(.5);
+		spike7.setScaleY(.5);
+		spike8.setxPos(700);
+		spike8.setyPos(450);
+		spike8.setScaleX(.5);
+		spike8.setScaleY(.5);
+		spike9.setxPos(700);
+		spike9.setyPos(480);
+		spike9.setScaleX(.5);
+		spike9.setScaleY(.5);
+		spike10.setxPos(700);
+		spike10.setyPos(510);
+		spike10.setScaleX(.5);
+		spike10.setScaleY(.5);
+		spike11.setxPos(700);
+		spike11.setyPos(540);
+		spike11.setScaleX(.5);
+		spike11.setScaleY(.5);
+		spike12.setxPos(700);
+		spike12.setyPos(570);
+		spike12.setScaleX(.5);
+		spike12.setScaleY(.5);
 		platformOne.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		link.addCollidable(platformOne);
 		floor.setScaleX(5);
 		floor.setScaleY(.2);
 		floor.setxPos(0);
-		floor.setyPos(282);
+		floor.setyPos(height-12);
 		floor.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		ghost.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		platforms = new ArrayList<Sprite>();
 		platforms.add(platformOne);
 		platforms.add(floor);
 		platforms.add(ghost);
+		spikes = new ArrayList<Sprite>();
+		spikes.add(spike1);
+		spikes.add(spike2);
+		spikes.add(spike3);
+		spikes.add(spike4);
+		spikes.add(spike5);
+		spikes.add(spike6);
+		spikes.add(spike7);
+		spikes.add(spike8);
+		spikes.add(spike9);
+		spikes.add(spike10);
+		spikes.add(spike11);
+		spikes.add(spike12);
 		locationTracker = new ArrayList<double[]>();
 		nextGhost = new ArrayList<double[]>();
 		record = true;
@@ -170,21 +249,28 @@ public class LabOneGame extends Game {
 				currIndex = 0;
 			}
 		}
-		if (link != null && spike != null && locationTracker != null) {
-			if (link.collidesWith(spike)) {
-				record = false;
-				locationTracker.clear();
-				for (double[] point : nextGhost) {
-					locationTracker.add(point);
+		if(spikes!=null){
+			for(Sprite spike:spikes){
+				if (link != null && spike != null && locationTracker != null) {
+					if (link.collidesWith(spike)) {
+						record = false;
+						locationTracker.clear();
+						for (double[] point : nextGhost) {
+							locationTracker.add(point);
+						}
+						nextGhost.clear();
+						currIndex = 0;
+						
+						ghost.setVisible(true);
+						link.setPositionX(0);
+						link.setPositionY(height-70);
+						link.setVelocityX(0);
+						link.setVelocityY(0);
+						record = true;
+						deathCount+=1;
+						break;
+					}
 				}
-				nextGhost.clear();
-				currIndex = 0;
-				ghost.setVisible(true);
-				link.setPositionX(0);
-				link.setPositionY(230);
-				link.setVelocityX(0);
-				link.setVelocityY(0);
-				record = true;
 			}
 		}
 		/*
@@ -211,10 +297,20 @@ public class LabOneGame extends Game {
 			link.draw(g);
 		if (platformOne != null)
 			platformOne.draw(g);
+		if (ring!=null){
+			ring.draw(g);
+		}
 		if (ghost != null)
 			ghost.draw(g);
-		if (spike != null)
-			spike.draw(g);
+		if(spikes!=null){
+			for(Sprite spike: spikes){
+				if(spike!=null){
+					spike.draw(g);
+				}
+			}
+		}
+		g.drawString("Death Count: "+deathCount, 450, 90);
+		
 	}
 
 	/**
