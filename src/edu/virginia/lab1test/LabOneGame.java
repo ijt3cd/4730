@@ -183,7 +183,7 @@ public class LabOneGame extends Game {
 			if(!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))){
-				link.setVelocityX((float)(link.getVelocityX()*0.5));
+				link.setVelocityX((float)(link.getVelocityX()*0.90));
 			}
 			
 			
@@ -287,6 +287,26 @@ public class LabOneGame extends Game {
 		 * Make sure mario is not null. Sometimes Swing can auto cause an extra
 		 * frame to go before everything is initialized
 		 */
+		//attempting a reset button:
+		if (link != null  && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R))) {
+			
+				locationTracker.clear();
+				nextGhost.clear();
+				currIndex = 0;
+				ghost.setVisible(false);
+				link.setPositionX(0);
+				link.setPositionY(height-70);
+				link.setVelocityX(0);
+				link.setVelocityY(0);
+				record = true;
+				deathCount=0;
+			
+				
+				
+			
+		}
+		
+		
 		if (link != null)
 			link.update(pressedKeys);
 	}
@@ -319,6 +339,7 @@ public class LabOneGame extends Game {
 				}
 			}
 		}
+		g.drawString("PAR: 3", 450, 110);
 		g.drawString("Death Count: "+deathCount, 450, 90);
 		
 	}
