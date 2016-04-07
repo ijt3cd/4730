@@ -18,6 +18,7 @@ import edu.virginia.engine.display.TweenJuggler;
 import edu.virginia.engine.display.TweenParam;
 import edu.virginia.engine.display.TweenTransition;
 import edu.virginia.engine.display.TweenableParams;
+import edu.virginia.engine.events.PickedUpEvent;
 import edu.virginia.engine.events.PlatformLandingEvent;
 import edu.virginia.engine.events.TweenEvent;
 import edu.virginia.engine.sound.SoundManager;
@@ -57,7 +58,9 @@ public class LabOneGame extends Game {
 	ArrayList<double[]> nextGhost;
 	int currIndex = 0;
 	boolean record;
-	Tween coinGrabbed;
+	boolean pickedUp;
+	Tween ringGrabbed;
+	Tween ringFade;
 	int deathCount = 0;
 
 	/**
@@ -70,6 +73,7 @@ public class LabOneGame extends Game {
 	public LabOneGame() {
 		super("Lab One Test Game", width, height);
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
+		TweenJuggler.getInstance();
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
 		ghost.setScaleX(1.875);
@@ -165,8 +169,20 @@ public class LabOneGame extends Game {
 		spikes.add(spike10);
 		spikes.add(spike11);
 		spikes.add(spike12);
+		pickedUp = false;
 		locationTracker = new ArrayList<double[]>();
 		nextGhost = new ArrayList<double[]>();
+		TweenParam centerX = new TweenParam(TweenableParams.X, ring.getxPos(), 500, 1000);
+		TweenParam centerY = new TweenParam(TweenableParams.Y, ring.getyPos(), 300, 1000);
+		TweenParam scaleX = new TweenParam(TweenableParams.SCALE_X, ring.getScaleX(), ring.getScaleX() * 2, 1000);
+		TweenParam scaleY = new TweenParam(TweenableParams.SCALE_Y, ring.getScaleY(), ring.getScaleY() * 2, 1000);
+		TweenParam fadeOut = new TweenParam(TweenableParams.ALPHA, ring.getAlpha(), 0.0, 1500);
+		ringGrabbed = new Tween(ring);
+		ringGrabbed.addParam(centerX);
+		ringGrabbed.addParam(centerY);
+		ringGrabbed.addParam(scaleX);
+		ringGrabbed.addParam(scaleY);
+		ringGrabbed.addParam(fadeOut);
 		record = true;
 	}
 
@@ -190,7 +206,7 @@ public class LabOneGame extends Game {
 			
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && link.getPlatform() != null) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && (!(link.getPlatform() == null)||link.getVelocityY() == 0) && link.getAccelerationY() == 0) {
 				if (link.getPlatform() != null) {
 					link.setVelocityY((float) (link.getPlatform().getVelocityX() - 5.75));
 				} else {
@@ -257,6 +273,9 @@ public class LabOneGame extends Game {
 				currIndex++;
 			} else {
 				currIndex = 0;
+				if(link.getPlatform() == ghost){
+					link.setPlatform(null);
+				}
 			}
 		}
 		if(spikes!=null){
@@ -283,6 +302,16 @@ public class LabOneGame extends Game {
 				}
 			}
 		}
+		if(!pickedUp){
+			if(ring != null && link != null){
+				if(link.collidesWith(ring)){
+					TweenJuggler.addTween(ringGrabbed);
+					pickedUp = true;
+				}
+			}
+		}
+		if(TweenJuggler.getInstance() != null)
+			TweenJuggler.nextFrame();
 		/*
 		 * Make sure mario is not null. Sometimes Swing can auto cause an extra
 		 * frame to go before everything is initialized
@@ -298,6 +327,9 @@ public class LabOneGame extends Game {
 				link.setPositionY(height-70);
 				link.setVelocityX(0);
 				link.setVelocityY(0);
+				if(link.getPlatform() == ghost){
+					link.setPlatform(null);
+				}
 				record = true;
 				deathCount=0;
 		}
@@ -305,9 +337,10 @@ public class LabOneGame extends Game {
 			
 			
 			currIndex = 0;
-			
 			record = true;
-		
+			if(link.getPlatform() == ghost){
+				link.setPlatform(null);
+			}
 	}
 		
 		
@@ -327,16 +360,17 @@ public class LabOneGame extends Game {
 		 * Same, just check for null in case a frame gets thrown in before Mario
 		 * is initialized
 		 */
-		
+
 		if (platformOne != null)
 			platformOne.draw(g);
+		if (ghost != null)
+			ghost.draw(g);
+
 		if (link != null)
 			link.draw(g);
 		if (ring!=null){
 			ring.draw(g);
 		}
-		if (ghost != null)
-			ghost.draw(g);
 		if(spikes!=null){
 			for(Sprite spike: spikes){
 				if(spike!=null){
