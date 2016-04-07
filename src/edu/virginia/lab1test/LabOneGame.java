@@ -327,10 +327,11 @@ public class LabOneGame extends Game {
 		 * Same, just check for null in case a frame gets thrown in before Mario
 		 * is initialized
 		 */
-		if (link != null)
-			link.draw(g);
+		
 		if (platformOne != null)
 			platformOne.draw(g);
+		if (link != null)
+			link.draw(g);
 		if (ring!=null){
 			ring.draw(g);
 		}
