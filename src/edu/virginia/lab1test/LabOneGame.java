@@ -34,7 +34,7 @@ public class LabOneGame extends Game {
 	public static int height = 600;
 	
 	SoundManager sm = new SoundManager();
-	File bgm = new File("resources/Background.wav");
+	File bgm = new File("resources/brm.wav");
 	
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
