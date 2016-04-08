@@ -53,7 +53,7 @@ public class DisplayObject extends EventDispatcher {
 	private boolean isCollidable;
 	private List<DisplayObject> collidableObjects;
 
-	//private boolean onFloor;
+	// private boolean onFloor;
 
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and
@@ -146,13 +146,11 @@ public class DisplayObject extends EventDispatcher {
 		return pivotPointX;
 	}
 
-	/*public void setOnFloor(boolean b) {
-		onFloor = b;
-	}
-
-	public boolean isOnFloor() {
-		return this.onFloor;
-	} */
+	/*
+	 * public void setOnFloor(boolean b) { onFloor = b; }
+	 * 
+	 * public boolean isOnFloor() { return this.onFloor; }
+	 */
 
 	public void addCollidable(DisplayObject obj) {
 		collidableObjects.add(obj);
@@ -265,12 +263,12 @@ public class DisplayObject extends EventDispatcher {
 					this.accelerationY = (float) 0.25;
 				}
 				for (DisplayObject each : collidableObjects) {
-					if(this.collidesWith(each) && this.platform != each){
-						if(this.xPos < each.getxPos()){
-							this.velocityX = Math.min(0, this.velocityX);
+					if (this.collidesWith(each) && this.platform != each) {
+						if (!this.collideFromBottom(each) && this.collideFromLeft(each)) {
+							this.velocityX = -1.0f;
 						}
-						else{
-							this.velocityX = Math.max(0, this.velocityX);
+						if (!this.collideFromBottom(each) && this.collideFromRight(each)) {
+							this.velocityX = 1.0f;
 						}
 						this.velocityY = Math.max(0, velocityY);
 					}
@@ -285,7 +283,6 @@ public class DisplayObject extends EventDispatcher {
 		}
 	}
 
-
 	public boolean checkCollision(DisplayObject other) {
 		return this.getHitbox().intersects(other.getHitbox());
 	}
@@ -299,12 +296,12 @@ public class DisplayObject extends EventDispatcher {
 			this.positionY = 2;
 			this.velocityY = 0;
 		}
-		if (this.positionX > LabOneGame.width-this.getUnscaledWidth()/2){
-			this.positionX = LabOneGame.width-this.getUnscaledWidth()/2-2;
+		if (this.positionX > LabOneGame.width - this.getUnscaledWidth() / 2) {
+			this.positionX = LabOneGame.width - this.getUnscaledWidth() / 2 - 2;
 			this.velocityX = 0;
 		}
-		if (this.positionY > LabOneGame.height){
-			this.positionY = LabOneGame.height-2;
+		if (this.positionY > LabOneGame.height) {
+			this.positionY = LabOneGame.height - 2;
 			this.velocityY = 0;
 		}
 
@@ -335,7 +332,7 @@ public class DisplayObject extends EventDispatcher {
 						null);
 				Rectangle rect = getHitbox();
 
-				//g2d.drawRect(0, 0, rect.width, rect.height);
+				g2d.drawRect(0, 0, rect.width, rect.height);
 			}
 			/*
 			 * undo the transformations so this doesn't affect other display
@@ -380,8 +377,7 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public Rectangle getReducedHitbox() {
-		return new Rectangle(this.getGlobalX(), this.getGlobalY(),
-				(int) (this.getUnscaledWidth() * this.getScaleX()),
+		return new Rectangle(this.getGlobalX(), this.getGlobalY(), (int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
 

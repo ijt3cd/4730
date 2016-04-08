@@ -1,8 +1,6 @@
 package edu.virginia.lab1test;
 
 import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,18 +8,13 @@ import java.util.ArrayList;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import edu.virginia.engine.display.AnimatedSprite;
-import edu.virginia.engine.display.DisplayObjectContainer;
 import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;
 import edu.virginia.engine.display.Tween;
 import edu.virginia.engine.display.TweenJuggler;
 import edu.virginia.engine.display.TweenParam;
-import edu.virginia.engine.display.TweenTransition;
 import edu.virginia.engine.display.TweenableParams;
-import edu.virginia.engine.events.PickedUpEvent;
 import edu.virginia.engine.events.PlatformLandingEvent;
-import edu.virginia.engine.events.TweenEvent;
-import edu.virginia.engine.sound.SoundManager;
 
 /**
  * Example game that utilizes our engine. We can create a simple prototype game
@@ -29,10 +22,10 @@ import edu.virginia.engine.sound.SoundManager;
  * game :)
  */
 public class LabOneGame extends Game {
-	
+
 	public static int width = 1000;
 	public static int height = 600;
-	
+
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
@@ -41,15 +34,15 @@ public class LabOneGame extends Game {
 	Sprite floor = new Sprite("Floor", "PlatformSprite.png");
 	Sprite spike1 = new Sprite("Spike1", "SpikeSprite.png");
 	Sprite spike2 = new Sprite("Spike2", "SpikeSprite.png");
-	Sprite spike3= new Sprite("Spike3", "SpikeSprite.png");
+	Sprite spike3 = new Sprite("Spike3", "SpikeSprite.png");
 	Sprite spike4 = new Sprite("Spike4", "SpikeSprite.png");
 	Sprite spike5 = new Sprite("Spike5", "SpikeSprite.png");
 	Sprite spike6 = new Sprite("Spike6", "SpikeSprite.png");
-	Sprite spike7= new Sprite("Spike7", "SpikeSprite.png");
+	Sprite spike7 = new Sprite("Spike7", "SpikeSprite.png");
 	Sprite spike8 = new Sprite("Spike8", "SpikeSprite.png");
 	Sprite spike9 = new Sprite("Spike9", "SpikeSprite.png");
 	Sprite spike10 = new Sprite("Spike10", "SpikeSprite.png");
-	Sprite spike11= new Sprite("Spike11", "SpikeSprite.png");
+	Sprite spike11 = new Sprite("Spike11", "SpikeSprite.png");
 	Sprite spike12 = new Sprite("Spike12", "SpikeSprite.png");
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> platforms;
@@ -80,9 +73,9 @@ public class LabOneGame extends Game {
 		ghost.setScaleY(1.355);
 		ghost.addAnimation("float", 0, 2, 75000000, 1, 0);
 		link.setPositionX(0);
-		link.setPositionY(height-70);
+		link.setPositionY(height - 70);
 		link.setxPos(0);
-		link.setyPos(height-70);
+		link.setyPos(height - 70);
 		link.setScaleX(.5);
 		link.setScaleY(.5);
 		link.setHasPhysics(true);
@@ -149,7 +142,7 @@ public class LabOneGame extends Game {
 		floor.setScaleX(5);
 		floor.setScaleY(.2);
 		floor.setxPos(0);
-		floor.setyPos(height-12);
+		floor.setyPos(height - 12);
 		floor.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		ghost.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		platforms = new ArrayList<Sprite>();
@@ -194,19 +187,19 @@ public class LabOneGame extends Game {
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
 		if (link != null && link.hasPhysics()) {
-			
-			//attempt at fixing some xVel physics
-			if(!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))){
-				link.setVelocityX((float)(link.getVelocityX()*0.90));
+
+			// attempt at fixing some xVel physics
+			if (!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
+				link.setVelocityX((float) (link.getVelocityX() * 0.90));
 			}
-			
-			
-			
+
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))) && (!(link.getPlatform() == null)||link.getVelocityY() == 0) && link.getAccelerationY() == 0) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP)))
+					&& (!(link.getPlatform() == null) || link.getVelocityY() == 0) && link.getAccelerationY() == 0) {
 				if (link.getPlatform() != null) {
 					link.setVelocityY((float) (link.getPlatform().getVelocityX() - 5.75));
 				} else {
@@ -254,8 +247,7 @@ public class LabOneGame extends Game {
 								new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_LANDED_ON, platform, link));
 						platform.addEventListener(questManager, PlatformLandingEvent.PLATFORM_FALLEN_OFF);
 						platform.removeEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
-					}
-					else if(!link.checkStillOnPlatform(platform) && link.getPlatform() == platform){
+					} else if (!link.checkStillOnPlatform(platform) && link.getPlatform() == platform) {
 						platform.dispatchEvent(
 								new PlatformLandingEvent(PlatformLandingEvent.PLATFORM_FALLEN_OFF, platform, link));
 						platform.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
@@ -273,13 +265,13 @@ public class LabOneGame extends Game {
 				currIndex++;
 			} else {
 				currIndex = 0;
-				if(link.getPlatform() == ghost){
+				if (link.getPlatform() == ghost) {
 					link.setPlatform(null);
 				}
 			}
 		}
-		if(spikes!=null){
-			for(Sprite spike:spikes){
+		if (spikes != null) {
+			for (Sprite spike : spikes) {
 				if (link != null && spike != null && locationTracker != null) {
 					if (link.collidesWith(spike)) {
 						record = false;
@@ -289,61 +281,59 @@ public class LabOneGame extends Game {
 						}
 						nextGhost.clear();
 						currIndex = 0;
-						
+
 						ghost.setVisible(true);
 						link.setPositionX(0);
-						link.setPositionY(height-70);
+						link.setPositionY(height - 70);
 						link.setVelocityX(0);
 						link.setVelocityY(0);
 						record = true;
-						deathCount+=1;
+						deathCount += 1;
 						break;
 					}
 				}
 			}
 		}
-		if(!pickedUp){
-			if(ring != null && link != null){
-				if(link.collidesWith(ring)){
+		if (!pickedUp) {
+			if (ring != null && link != null) {
+				if (link.collidesWith(ring)) {
 					TweenJuggler.addTween(ringGrabbed);
 					pickedUp = true;
 				}
 			}
 		}
-		if(TweenJuggler.getInstance() != null)
+		if (TweenJuggler.getInstance() != null)
 			TweenJuggler.nextFrame();
 		/*
 		 * Make sure mario is not null. Sometimes Swing can auto cause an extra
 		 * frame to go before everything is initialized
 		 */
-		//attempting a reset button:
-		if (link != null  && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R))) {
-			
-				locationTracker.clear();
-				nextGhost.clear();
-				currIndex = 0;
-				ghost.setVisible(false);
-				link.setPositionX(0);
-				link.setPositionY(height-70);
-				link.setVelocityX(0);
-				link.setVelocityY(0);
-				if(link.getPlatform() == ghost){
-					link.setPlatform(null);
-				}
-				record = true;
-				deathCount=0;
-		}
-		if (link != null  && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))) {
-			
-			
+		// attempting a reset button:
+		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R))) {
+
+			locationTracker.clear();
+			nextGhost.clear();
 			currIndex = 0;
-			record = true;
-			if(link.getPlatform() == ghost){
+			ghost.setVisible(false);
+			link.setPositionX(0);
+			link.setPositionY(height - 70);
+			link.setVelocityX(0);
+			link.setVelocityY(0);
+			if (link.getPlatform() == ghost) {
 				link.setPlatform(null);
 			}
-	}
-		
-		
+			record = true;
+			deathCount = 0;
+		}
+		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))) {
+
+			currIndex = 0;
+			record = true;
+			if (link.getPlatform() == ghost) {
+				link.setPlatform(null);
+			}
+		}
+
 		if (link != null)
 			link.update(pressedKeys);
 	}
@@ -368,19 +358,19 @@ public class LabOneGame extends Game {
 
 		if (link != null)
 			link.draw(g);
-		if (ring!=null){
+		if (ring != null) {
 			ring.draw(g);
 		}
-		if(spikes!=null){
-			for(Sprite spike: spikes){
-				if(spike!=null){
+		if (spikes != null) {
+			for (Sprite spike : spikes) {
+				if (spike != null) {
 					spike.draw(g);
 				}
 			}
 		}
 		g.drawString("PAR: 3", 450, 110);
-		g.drawString("Death Count: "+deathCount, 450, 90);
-		
+		g.drawString("Death Count: " + deathCount, 450, 90);
+
 	}
 
 	/**
