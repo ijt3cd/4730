@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -21,7 +22,6 @@ import edu.virginia.engine.display.TweenableParams;
 import edu.virginia.engine.events.PickedUpEvent;
 import edu.virginia.engine.events.PlatformLandingEvent;
 import edu.virginia.engine.events.TweenEvent;
-import edu.virginia.engine.sound.SoundManager;
 
 /**
  * Example game that utilizes our engine. We can create a simple prototype game
@@ -32,6 +32,9 @@ public class LabOneGame extends Game {
 	
 	public static int width = 1000;
 	public static int height = 600;
+	
+	SoundManager sm = new SoundManager();
+	File bgm = new File("resources/Background.wav");
 	
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
@@ -74,6 +77,9 @@ public class LabOneGame extends Game {
 		super("Lab One Test Game", width, height);
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
 		TweenJuggler.getInstance();
+		
+		SoundManager.playMusic(bgm);
+		
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
 		ghost.setScaleX(1.875);
