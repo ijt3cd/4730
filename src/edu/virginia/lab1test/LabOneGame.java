@@ -2,6 +2,7 @@ package edu.virginia.lab1test;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -25,6 +26,9 @@ public class LabOneGame extends Game {
 
 	public static int width = 1000;
 	public static int height = 600;
+
+	SoundManager sm = new SoundManager();
+	File bgm = new File("resources/Background.wav");
 
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
@@ -67,6 +71,9 @@ public class LabOneGame extends Game {
 		super("Lab One Test Game", width, height);
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
 		TweenJuggler.getInstance();
+
+		SoundManager.playMusic(bgm);
+
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
 		ghost.setScaleX(1.875);
