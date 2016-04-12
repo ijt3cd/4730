@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 
 import edu.virginia.engine.events.CollisionEvent;
 import edu.virginia.engine.events.EventDispatcher;
-import edu.virginia.lab1test.LabOneGame;
+import edu.virginia.game.GhostGame;
 
 /**
  * A very basic display object for a java based gaming engine
@@ -296,12 +296,12 @@ public class DisplayObject extends EventDispatcher {
 			this.positionY = 2;
 			this.velocityY = 0;
 		}
-		if (this.positionX > LabOneGame.width - this.getUnscaledWidth() / 2) {
-			this.positionX = LabOneGame.width - this.getUnscaledWidth() / 2 - 2;
+		if (this.positionX > GhostGame.width - this.getUnscaledWidth() / 2) {
+			this.positionX = GhostGame.width - this.getUnscaledWidth() / 2 - 2;
 			this.velocityX = 0;
 		}
-		if (this.positionY > LabOneGame.height) {
-			this.positionY = LabOneGame.height - 2;
+		if (this.positionY > GhostGame.height) {
+			this.positionY = GhostGame.height - 2;
 			this.velocityY = 0;
 		}
 

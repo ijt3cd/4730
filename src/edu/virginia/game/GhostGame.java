@@ -1,4 +1,4 @@
-package edu.virginia.lab1test;
+package edu.virginia.game;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -22,7 +22,7 @@ import edu.virginia.engine.events.PlatformLandingEvent;
  * with just a couple lines of code although, for now, it won't be a very fun
  * game :)
  */
-public class LabOneGame extends Game {
+public class GhostGame extends Game {
 
 	public static int width = 1000;
 	public static int height = 600;
@@ -67,8 +67,8 @@ public class LabOneGame extends Game {
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
 	 */
-	public LabOneGame() {
-		super("Lab One Test Game", width, height);
+	public GhostGame() {
+		super("Ghost Game", width, height);
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
 		TweenJuggler.getInstance();
 
@@ -388,7 +388,7 @@ public class LabOneGame extends Game {
 	 * @throws UnsupportedAudioFileException
 	 */
 	public static void main(String[] args) {
-		LabOneGame game = new LabOneGame();
+		GhostGame game = new GhostGame();
 		game.start();
 
 	}
