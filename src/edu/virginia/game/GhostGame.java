@@ -303,7 +303,7 @@ public class GhostGame extends Game {
 		}
 		if (!pickedUp) {
 			if (ring != null && link != null) {
-				if (link.collidesWith(ring)) {
+				if (link.collidesWith(ring) && ringGrabbed != null) {
 					TweenJuggler.addTween(ringGrabbed);
 					pickedUp = true;
 				}
