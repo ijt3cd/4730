@@ -6,24 +6,24 @@ public class TweenParam {
 	private double endVal;
 	private long time;
 	private long startTime;
-	
-	public TweenParam(TweenableParams paramToTween, double startVal, double endVal, long time){
+
+	public TweenParam(TweenableParams paramToTween, double startVal, double endVal, long time) {
 		this.setParamToTween(paramToTween);
 		this.startVal = startVal;
 		this.endVal = endVal;
 		this.time = time;
 		this.setStartTime(System.currentTimeMillis());
 	}
-	
-	public double getStartVal(){
+
+	public double getStartVal() {
 		return startVal;
 	}
-	
-	public double getEndVal(){
+
+	public double getEndVal() {
 		return endVal;
 	}
-	
-	public long getTweenTime(){
+
+	public long getTweenTime() {
 		return time;
 	}
 
@@ -44,7 +44,7 @@ public class TweenParam {
 	}
 
 	public boolean isFinished() {
-		return (((System.currentTimeMillis()-startTime)) > time);
+		return (((System.currentTimeMillis() - startTime)) > time);
 	}
 
 }

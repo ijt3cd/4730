@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AnimatedSprite extends Sprite{
+public class AnimatedSprite extends Sprite {
 	private BufferedImage spriteSheet;
 	private BufferedImage currentSprite;
 	private int spriteHeight;
@@ -20,7 +20,7 @@ public class AnimatedSprite extends Sprite{
 	private long startTime;
 	private String currentAnimation;
 	private HashMap<String, int[]> animations;
-	
+
 	public AnimatedSprite(String id) {
 		super(id);
 	}
@@ -34,28 +34,31 @@ public class AnimatedSprite extends Sprite{
 		currentSprite = spriteSheet.getSubimage(0, 0, spriteWidth, spriteHeight);
 		this.setImage(currentSprite);
 	}
-	
+
 	public BufferedImage getSpriteSheet() {
 		return this.spriteSheet;
 	}
-	public void landOnPlatform(Sprite platform){
-		this.setPositionY((float)(platform.getPositionY() - this.getUnscaledHeight() * this.getScaleY() + 10));
+
+	public void landOnPlatform(Sprite platform) {
+		this.setPositionY((float) (platform.getPositionY() - this.getUnscaledHeight() * this.getScaleY() + 10));
 		this.setVelocityY(0);
 		this.setAccelerationY(0);
 		this.setPlatform(platform);
 	}
-	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row){
+
+	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row) {
 		int[] arr = new int[5];
 		arr[0] = start;
-		arr[1] = end; 
+		arr[1] = end;
 		arr[2] = speed;
 		arr[3] = repeat;
 		arr[4] = row;
 		animations.put(animation, arr);
 	}
-	public boolean setAnimation(String animation){
-		if(animations.containsKey(animation)){
-			if(currentAnimation == animation){
+
+	public boolean setAnimation(String animation) {
+		if (animations.containsKey(animation)) {
+			if (currentAnimation == animation) {
 				return false;
 			}
 			currentAnimation = animation;
@@ -63,17 +66,19 @@ public class AnimatedSprite extends Sprite{
 		}
 		return false;
 	}
-	public void play(){
+
+	public void play() {
 		playing = true;
 		int arr[] = animations.get(currentAnimation);
 		currentIndex = startIndex = arr[0];
 		endIndex = arr[1];
-		animationSpeed = (long)arr[2];
+		animationSpeed = (long) arr[2];
 		repeat = (arr[3] == 1);
 		animationRow = arr[4];
-		currentSprite = spriteSheet.getSubimage(0, animationRow*spriteHeight, spriteWidth, spriteHeight);
+		currentSprite = spriteSheet.getSubimage(0, animationRow * spriteHeight, spriteWidth, spriteHeight);
 		startTime = System.nanoTime();
 	}
+
 	public int getSpriteWidth() {
 		return spriteWidth;
 	}
@@ -89,6 +94,7 @@ public class AnimatedSprite extends Sprite{
 	public void setSpriteHeight(int spriteHeight) {
 		this.spriteHeight = spriteHeight;
 	}
+
 	public boolean isPlaying() {
 		return playing;
 	}
@@ -107,36 +113,39 @@ public class AnimatedSprite extends Sprite{
 
 	@Override
 	public void update(ArrayList<String> pressedKeys) {
-		if(!playing){
+		if (!playing) {
 			this.stopAnimation();
 		}
-		if(System.nanoTime() - startTime > animationSpeed && playing){
+		if (System.nanoTime() - startTime > animationSpeed && playing) {
 			startTime = System.nanoTime();
 			currentIndex++;
 			playing = false;
 		}
-		if(currentIndex > endIndex){
-			if(repeat){
+		if (currentIndex > endIndex) {
+			if (repeat) {
 				currentIndex = startIndex;
-			}
-			else
+			} else
 				currentIndex = endIndex;
 		}
-		currentSprite = spriteSheet.getSubimage(currentIndex*spriteWidth, animationRow*spriteHeight, spriteWidth, spriteHeight);
+		currentSprite = spriteSheet.getSubimage(currentIndex * spriteWidth, animationRow * spriteHeight, spriteWidth,
+				spriteHeight);
 		this.setImage(currentSprite);
 		super.update(pressedKeys);
 	}
 
 	private void stopAnimation() {
 		currentIndex = this.startIndex;
-		
+
 	}
-	public boolean checkStillOnPlatform(Sprite platform){
+
+	public boolean checkStillOnPlatform(Sprite platform) {
 		Rectangle platformRec = platform.getHitbox();
 		Rectangle spriteRec = this.getHitbox();
 		boolean intersection = spriteRec.intersects(platformRec);
-		boolean halfOnPlatformRight = (spriteRec.getMaxX() - platformRec.getMaxX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
-		boolean halfOnPlatformLeft = (platformRec.getX() - spriteRec.getX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
+		boolean halfOnPlatformRight = (spriteRec.getMaxX()
+				- platformRec.getMaxX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
+		boolean halfOnPlatformLeft = (platformRec.getX()
+				- spriteRec.getX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
 		return intersection && halfOnPlatformRight && halfOnPlatformLeft;
 	}
 
@@ -145,8 +154,10 @@ public class AnimatedSprite extends Sprite{
 		Rectangle spriteRec = this.getHitbox();
 		boolean intersection = spriteRec.intersects(platformRec);
 		boolean movingDown = this.getVelocityY() >= 0;
-		boolean halfOnPlatformRight = (spriteRec.getMaxX() - platformRec.getMaxX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
-		boolean halfOnPlatformLeft = (platformRec.getX() - spriteRec.getX() < ((this.getUnscaledWidth()*this.getScaleX())/2.0));
+		boolean halfOnPlatformRight = (spriteRec.getMaxX()
+				- platformRec.getMaxX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
+		boolean halfOnPlatformLeft = (platformRec.getX()
+				- spriteRec.getX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
 		boolean abovePlatform = (spriteRec.getY() < platformRec.getY() - 20);
 		boolean fullLanding = spriteRec.getMaxY() > platformRec.getY() + 10;
 		return intersection && movingDown && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding;

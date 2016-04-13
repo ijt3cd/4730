@@ -347,12 +347,14 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public Rectangle getHitbox() {
-		return new Rectangle((int) this.positionX, (int) this.positionY, (int) (this.getUnscaledWidth() * this.getScaleX()),
+		return new Rectangle((int) this.positionX, (int) this.positionY,
+				(int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
 
 	public Rectangle getReducedHitbox() {
-		return new Rectangle((int) this.positionX, (int) this.positionY, (int) (this.getUnscaledWidth() * this.getScaleX()),
+		return new Rectangle((int) this.positionX, (int) this.positionY,
+				(int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
 

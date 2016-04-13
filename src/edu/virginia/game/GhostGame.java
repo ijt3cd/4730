@@ -208,7 +208,7 @@ public class GhostGame extends Game {
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP)))
 					&& (!(link.getPlatform() == null) || link.getVelocityY() == 0) && link.getAccelerationY() == 0) {
 				if (link.getPlatform() != null) {
-					link.setVelocityY((float) (link.getPlatform().getVelocityX() - 5.75));
+					link.setVelocityY((float) (link.getPlatform().getVelocityY() - 5.75));
 				} else {
 					link.setVelocityY((float) -5.75);
 				}
