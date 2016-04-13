@@ -30,9 +30,6 @@ public class DisplayObject extends EventDispatcher {
 	private BufferedImage displayImage;
 
 	private boolean visible;
-
-	private int xPos;
-	private int yPos;
 	private int pivotPointX;
 	private int pivotPointY;
 	private double scaleX;
@@ -63,8 +60,6 @@ public class DisplayObject extends EventDispatcher {
 		super();
 		this.setId(id);
 		this.setVisible(true);
-		this.setxPos(0);
-		this.setyPos(0);
 		this.setPivotPointX(0);
 		this.setPivotPointY(0);
 		this.setScaleX(1.0);
@@ -81,8 +76,6 @@ public class DisplayObject extends EventDispatcher {
 		this.setId(id);
 		this.setImage(fileName);
 		this.setVisible(true);
-		this.setxPos(0);
-		this.setyPos(0);
 		this.setPivotPointX(0);
 		this.setPivotPointY(0);
 		this.setScaleX(1.0);
@@ -124,22 +117,6 @@ public class DisplayObject extends EventDispatcher {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-	}
-
-	public int getxPos() {
-		return xPos;
-	}
-
-	public void setxPos(int xPos) {
-		this.xPos = xPos;
-	}
-
-	public int getyPos() {
-		return yPos;
-	}
-
-	public void setyPos(int yPos) {
-		this.yPos = yPos;
 	}
 
 	public int getPivotPointX() {
@@ -277,8 +254,6 @@ public class DisplayObject extends EventDispatcher {
 				this.setPositionY((float) (this.getPositionY() + this.velocityY));
 				this.velocityY += accelerationY;
 				this.checkBoundaries();
-				this.xPos = (int) this.positionX;
-				this.yPos = (int) this.positionY;
 			}
 		}
 	}
@@ -332,7 +307,7 @@ public class DisplayObject extends EventDispatcher {
 						null);
 				Rectangle rect = getHitbox();
 
-				g2d.drawRect(0, 0, rect.width, rect.height);
+				// g2d.drawRect(0, 0, rect.width, rect.height);
 			}
 			/*
 			 * undo the transformations so this doesn't affect other display
@@ -347,7 +322,7 @@ public class DisplayObject extends EventDispatcher {
 	 * object
 	 */
 	protected void applyTransformations(Graphics2D g2d) {
-		g2d.translate(this.getxPos(), this.getyPos());
+		g2d.translate(this.getPositionX(), this.getPositionY());
 		g2d.rotate(this.getRotation());
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.getAlpha()));
 	}
@@ -359,25 +334,25 @@ public class DisplayObject extends EventDispatcher {
 	protected void reverseTransformations(Graphics2D g2d) {
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 		g2d.rotate(-this.getRotation());
-		g2d.translate(-this.getxPos(), -this.getyPos());
+		g2d.translate(-this.getPositionX(), -this.getPositionY());
 
 	}
 
-	public int getGlobalX() {
-		return this.xPos;
+	public float getGlobalX() {
+		return this.positionX;
 	}
 
-	public int getGlobalY() {
-		return this.yPos;
+	public float getGlobalY() {
+		return this.positionY;
 	}
 
 	public Rectangle getHitbox() {
-		return new Rectangle(this.getGlobalX(), this.getGlobalY(), (int) (this.getUnscaledWidth() * this.getScaleX()),
+		return new Rectangle((int) this.positionX, (int) this.positionY, (int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
 
 	public Rectangle getReducedHitbox() {
-		return new Rectangle(this.getGlobalX(), this.getGlobalY(), (int) (this.getUnscaledWidth() * this.getScaleX()),
+		return new Rectangle((int) this.positionX, (int) this.positionY, (int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
 

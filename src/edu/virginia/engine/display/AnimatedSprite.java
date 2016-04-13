@@ -39,7 +39,7 @@ public class AnimatedSprite extends Sprite{
 		return this.spriteSheet;
 	}
 	public void landOnPlatform(Sprite platform){
-		this.setPositionY((float)(platform.getyPos() - ((double)this.getUnscaledHeight())*this.getScaleY()) + 18);
+		this.setPositionY((float)(platform.getPositionY() - this.getUnscaledHeight() * this.getScaleY() + 10));
 		this.setVelocityY(0);
 		this.setAccelerationY(0);
 		this.setPlatform(platform);

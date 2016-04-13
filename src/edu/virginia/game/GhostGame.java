@@ -29,7 +29,7 @@ public class GhostGame extends Game {
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
-	
+
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
@@ -81,8 +81,8 @@ public class GhostGame extends Game {
 		ghost.addAnimation("float", 0, 2, 75000000, 1, 0);
 		link.setPositionX(0);
 		link.setPositionY(height - 70);
-		link.setxPos(0);
-		link.setyPos(height - 70);
+		link.setPositionX(0);
+		link.setPositionY(height - 70);
 		link.setScaleX(.5);
 		link.setScaleY(.5);
 		link.setHasPhysics(true);
@@ -90,66 +90,66 @@ public class GhostGame extends Game {
 		link.addAnimation("run_left", 0, 9, 75000000, 1, 5);
 		ring.setScaleX(0.05);
 		ring.setScaleY(0.05);
-		ring.setxPos(850);
-		ring.setyPos(550);
+		ring.setPositionX(850);
+		ring.setPositionY(550);
 		platformOne.setScaleX(.5);
 		platformOne.setScaleY(.5);
-		platformOne.setxPos(250);
-		platformOne.setyPos(500);
-		spike1.setxPos(500);
-		spike1.setyPos(480);
+		platformOne.setPositionX(250);
+		platformOne.setPositionY(500);
+		spike1.setPositionX(500);
+		spike1.setPositionY(480);
 		spike1.setScaleX(.5);
 		spike1.setScaleY(.5);
-		spike2.setxPos(500);
-		spike2.setyPos(510);
+		spike2.setPositionX(500);
+		spike2.setPositionY(510);
 		spike2.setScaleX(.5);
 		spike2.setScaleY(.5);
-		spike3.setxPos(500);
-		spike3.setyPos(540);
+		spike3.setPositionX(500);
+		spike3.setPositionY(540);
 		spike3.setScaleX(.5);
 		spike3.setScaleY(.5);
-		spike4.setxPos(500);
-		spike4.setyPos(570);
+		spike4.setPositionX(500);
+		spike4.setPositionY(570);
 		spike4.setScaleX(.5);
 		spike4.setScaleY(.5);
-		spike5.setxPos(700);
-		spike5.setyPos(360);
+		spike5.setPositionX(700);
+		spike5.setPositionY(360);
 		spike5.setScaleX(.5);
 		spike5.setScaleY(.5);
-		spike6.setxPos(700);
-		spike6.setyPos(390);
+		spike6.setPositionX(700);
+		spike6.setPositionY(390);
 		spike6.setScaleX(.5);
 		spike6.setScaleY(.5);
-		spike7.setxPos(700);
-		spike7.setyPos(420);
+		spike7.setPositionX(700);
+		spike7.setPositionY(420);
 		spike7.setScaleX(.5);
 		spike7.setScaleY(.5);
-		spike8.setxPos(700);
-		spike8.setyPos(450);
+		spike8.setPositionX(700);
+		spike8.setPositionY(450);
 		spike8.setScaleX(.5);
 		spike8.setScaleY(.5);
-		spike9.setxPos(700);
-		spike9.setyPos(480);
+		spike9.setPositionX(700);
+		spike9.setPositionY(480);
 		spike9.setScaleX(.5);
 		spike9.setScaleY(.5);
-		spike10.setxPos(700);
-		spike10.setyPos(510);
+		spike10.setPositionX(700);
+		spike10.setPositionY(510);
 		spike10.setScaleX(.5);
 		spike10.setScaleY(.5);
-		spike11.setxPos(700);
-		spike11.setyPos(540);
+		spike11.setPositionX(700);
+		spike11.setPositionY(540);
 		spike11.setScaleX(.5);
 		spike11.setScaleY(.5);
-		spike12.setxPos(700);
-		spike12.setyPos(570);
+		spike12.setPositionX(700);
+		spike12.setPositionY(570);
 		spike12.setScaleX(.5);
 		spike12.setScaleY(.5);
 		platformOne.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		link.addCollidable(platformOne);
 		floor.setScaleX(5);
 		floor.setScaleY(.2);
-		floor.setxPos(0);
-		floor.setyPos(height - 12);
+		floor.setPositionX(0);
+		floor.setPositionY(height - 12);
 		floor.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		ghost.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		platforms = new ArrayList<Sprite>();
@@ -172,8 +172,8 @@ public class GhostGame extends Game {
 		pickedUp = false;
 		locationTracker = new ArrayList<double[]>();
 		nextGhost = new ArrayList<double[]>();
-		TweenParam centerX = new TweenParam(TweenableParams.X, ring.getxPos(), 500, 1000);
-		TweenParam centerY = new TweenParam(TweenableParams.Y, ring.getyPos(), 300, 1000);
+		TweenParam centerX = new TweenParam(TweenableParams.X, ring.getPositionX(), 500, 1000);
+		TweenParam centerY = new TweenParam(TweenableParams.Y, ring.getPositionY(), 300, 1000);
 		TweenParam scaleX = new TweenParam(TweenableParams.SCALE_X, ring.getScaleX(), ring.getScaleX() * 2, 1000);
 		TweenParam scaleY = new TweenParam(TweenableParams.SCALE_Y, ring.getScaleY(), ring.getScaleY() * 2, 1000);
 		TweenParam fadeOut = new TweenParam(TweenableParams.ALPHA, ring.getAlpha(), 0.0, 1500);
@@ -240,8 +240,8 @@ public class GhostGame extends Game {
 		}
 		if (record) {
 			double[] ghostData = new double[4];
-			ghostData[0] = link.getxPos();
-			ghostData[1] = link.getyPos();
+			ghostData[0] = link.getPositionX();
+			ghostData[1] = link.getPositionY();
 			ghostData[2] = link.getVelocityX();
 			ghostData[3] = link.getVelocityY();
 			nextGhost.add(ghostData);
@@ -265,8 +265,8 @@ public class GhostGame extends Game {
 		}
 		if (ghost != null && ghost.isVisible() && locationTracker != null) {
 			if (locationTracker.size() > currIndex) {
-				ghost.setxPos((int) locationTracker.get(currIndex)[0]);
-				ghost.setyPos((int) locationTracker.get(currIndex)[1]);
+				ghost.setPositionX((int) locationTracker.get(currIndex)[0]);
+				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
 				ghost.setVelocityX((float) locationTracker.get(currIndex)[2]);
 				ghost.setVelocityY((float) locationTracker.get(currIndex)[3]);
 				currIndex++;
