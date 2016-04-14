@@ -45,21 +45,7 @@ public class GhostGame extends Game {
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
-	Sprite platformOne = new Sprite("Platform1", "PlatformSprite.png");
 	Sprite ring = new Sprite("Ring", "Ring.png");
-	Sprite floor = new Sprite("Floor", "PlatformSprite.png");
-	Sprite spike1 = new Sprite("Spike1", "SpikeSprite.png");
-	Sprite spike2 = new Sprite("Spike2", "SpikeSprite.png");
-	Sprite spike3 = new Sprite("Spike3", "SpikeSprite.png");
-	Sprite spike4 = new Sprite("Spike4", "SpikeSprite.png");
-	Sprite spike5 = new Sprite("Spike5", "SpikeSprite.png");
-	Sprite spike6 = new Sprite("Spike6", "SpikeSprite.png");
-	Sprite spike7 = new Sprite("Spike7", "SpikeSprite.png");
-	Sprite spike8 = new Sprite("Spike8", "SpikeSprite.png");
-	Sprite spike9 = new Sprite("Spike9", "SpikeSprite.png");
-	Sprite spike10 = new Sprite("Spike10", "SpikeSprite.png");
-	Sprite spike11 = new Sprite("Spike11", "SpikeSprite.png");
-	Sprite spike12 = new Sprite("Spike12", "SpikeSprite.png");
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> sprites;
 	ArrayList<Sprite> platforms;
@@ -94,7 +80,8 @@ public class GhostGame extends Game {
 		TweenJuggler.getInstance();
 
 		SoundManager.playMusic(bgm);
-		
+		platforms = new ArrayList<Sprite>();
+		spikes = new ArrayList<Sprite>();
 		for(MapLayer m : map.getLayers()){
 			if(m instanceof TileLayer){
 				TileLayer l = (TileLayer) m;
@@ -107,6 +94,13 @@ public class GhostGame extends Game {
 							s.setPositionX(j*t.getWidth());
 							s.setPositionY(i*t.getHeight());
 							sprites.add(s);
+							if(l.getName().equals("Platforms")){
+								platforms.add(s);
+								s.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
+							}
+							else if(l.getName() == "Spikes"){
+								spikes.add(s);
+							}
 						}
 					}
 				}
@@ -119,109 +113,15 @@ public class GhostGame extends Game {
 		ghost.setScaleY(1.355);
 		ghost.addAnimation("float", 0, 2, 75000000, 1, 0);
 		link.setPositionX(0);
-		link.setPositionY(height - 70);
-		link.setPositionX(0);
-		link.setPositionY(height - 70);
-		link.setScaleX(.5);
-		link.setScaleY(.5);
+		link.setPositionY(height - 170);
+		link.setScaleX(.3);
+		link.setScaleY(.3);
 		link.setHasPhysics(true);
 		link.addAnimation("run_right", 0, 9, 75000000, 1, 7);
 		link.addAnimation("run_left", 0, 9, 75000000, 1, 5);
-		ring.setScaleX(0.05);
-		ring.setScaleY(0.05);
-		ring.setPositionX(850);
-		ring.setPositionY(550);
-		platformOne.setScaleX(.5);
-		platformOne.setScaleY(.5);
-		platformOne.setPositionX(250);
-		platformOne.setPositionY(500);
-		spike1.setPositionX(500);
-		spike1.setPositionY(480);
-		spike1.setScaleX(.5);
-		spike1.setScaleY(.5);
-		spike2.setPositionX(500);
-		spike2.setPositionY(510);
-		spike2.setScaleX(.5);
-		spike2.setScaleY(.5);
-		spike3.setPositionX(500);
-		spike3.setPositionY(540);
-		spike3.setScaleX(.5);
-		spike3.setScaleY(.5);
-		spike4.setPositionX(500);
-		spike4.setPositionY(570);
-		spike4.setScaleX(.5);
-		spike4.setScaleY(.5);
-		spike5.setPositionX(700);
-		spike5.setPositionY(360);
-		spike5.setScaleX(.5);
-		spike5.setScaleY(.5);
-		spike6.setPositionX(700);
-		spike6.setPositionY(390);
-		spike6.setScaleX(.5);
-		spike6.setScaleY(.5);
-		spike7.setPositionX(700);
-		spike7.setPositionY(420);
-		spike7.setScaleX(.5);
-		spike7.setScaleY(.5);
-		spike8.setPositionX(700);
-		spike8.setPositionY(450);
-		spike8.setScaleX(.5);
-		spike8.setScaleY(.5);
-		spike9.setPositionX(700);
-		spike9.setPositionY(480);
-		spike9.setScaleX(.5);
-		spike9.setScaleY(.5);
-		spike10.setPositionX(700);
-		spike10.setPositionY(510);
-		spike10.setScaleX(.5);
-		spike10.setScaleY(.5);
-		spike11.setPositionX(700);
-		spike11.setPositionY(540);
-		spike11.setScaleX(.5);
-		spike11.setScaleY(.5);
-		spike12.setPositionX(700);
-		spike12.setPositionY(570);
-		spike12.setScaleX(.5);
-		spike12.setScaleY(.5);
-		platformOne.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
-		link.addCollidable(platformOne);
-		floor.setScaleX(5);
-		floor.setScaleY(.2);
-		floor.setPositionX(0);
-		floor.setPositionY(height - 12);
-		floor.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
 		ghost.addEventListener(questManager, PlatformLandingEvent.PLATFORM_LANDED_ON);
-		platforms = new ArrayList<Sprite>();
-		platforms.add(platformOne);
-		platforms.add(floor);
-		platforms.add(ghost);
-		spikes = new ArrayList<Sprite>();
-		spikes.add(spike1);
-		spikes.add(spike2);
-		spikes.add(spike3);
-		spikes.add(spike4);
-		spikes.add(spike5);
-		spikes.add(spike6);
-		spikes.add(spike7);
-		spikes.add(spike8);
-		spikes.add(spike9);
-		spikes.add(spike10);
-		spikes.add(spike11);
-		spikes.add(spike12);
-		pickedUp = false;
 		locationTracker = new ArrayList<double[]>();
 		nextGhost = new ArrayList<double[]>();
-		TweenParam centerX = new TweenParam(TweenableParams.X, ring.getPositionX(), 500, 1000);
-		TweenParam centerY = new TweenParam(TweenableParams.Y, ring.getPositionY(), 300, 1000);
-		TweenParam scaleX = new TweenParam(TweenableParams.SCALE_X, ring.getScaleX(), ring.getScaleX() * 2, 1000);
-		TweenParam scaleY = new TweenParam(TweenableParams.SCALE_Y, ring.getScaleY(), ring.getScaleY() * 2, 1000);
-		TweenParam fadeOut = new TweenParam(TweenableParams.ALPHA, ring.getAlpha(), 0.0, 1500);
-		ringGrabbed = new Tween(ring);
-		ringGrabbed.addParam(centerX);
-		ringGrabbed.addParam(centerY);
-		ringGrabbed.addParam(scaleX);
-		ringGrabbed.addParam(scaleY);
-		ringGrabbed.addParam(fadeOut);
 		record = true;
 	}
 
@@ -396,31 +296,17 @@ public class GhostGame extends Game {
 		 * Same, just check for null in case a frame gets thrown in before Mario
 		 * is initialized
 		 */
-
-/*		if (platformOne != null)
-			platformOne.draw(g);
-		if (ghost != null)
-			ghost.draw(g);
-
-		if (link != null)
-			link.draw(g);
-		if (ring != null) {
-			ring.draw(g);
-		}
-		if (spikes != null) {
-			for (Sprite spike : spikes) {
-				if (spike != null) {
-					spike.draw(g);
-				}
-			}
-		}
-		g.drawString("PAR: 3", 450, 110);
-		g.drawString("Death Count: " + deathCount, 450, 90); */
 		if(sprites != null){
 			for(Sprite s : sprites){
 				s.draw(g);
 			}
 		}
+		if (ghost != null)
+			ghost.draw(g);
+		if (link != null)
+			link.draw(g);
+		g.drawString("PAR: 3", 450, 110);
+		g.drawString("Death Count: " + deathCount, 450, 90); 
 
 	}
 
