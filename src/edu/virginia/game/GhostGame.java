@@ -2,11 +2,18 @@ package edu.virginia.game;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.Game;
@@ -16,6 +23,11 @@ import edu.virginia.engine.display.TweenJuggler;
 import edu.virginia.engine.display.TweenParam;
 import edu.virginia.engine.display.TweenableParams;
 import edu.virginia.engine.events.PlatformLandingEvent;
+import tiled.core.Map;
+import tiled.core.MapLayer;
+import tiled.core.Tile;
+import tiled.core.TileLayer;
+import tiled.io.TMXMapReader;
 
 /**
  * Example game that utilizes our engine. We can create a simple prototype game
@@ -24,8 +36,8 @@ import edu.virginia.engine.events.PlatformLandingEvent;
  */
 public class GhostGame extends Game {
 
-	public static int width = 1000;
-	public static int height = 600;
+	public static int width = 525;
+	public static int height = 525;
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
@@ -49,6 +61,7 @@ public class GhostGame extends Game {
 	Sprite spike11 = new Sprite("Spike11", "SpikeSprite.png");
 	Sprite spike12 = new Sprite("Spike12", "SpikeSprite.png");
 	QuestManager questManager = new QuestManager();
+	ArrayList<Sprite> sprites;
 	ArrayList<Sprite> platforms;
 	ArrayList<Sprite> spikes;
 	ArrayList<double[]> locationTracker;
@@ -59,7 +72,7 @@ public class GhostGame extends Game {
 	Tween ringGrabbed;
 	Tween ringFade;
 	int deathCount = 0;
-
+	Map map;
 	/**
 	 * Constructor. See constructor in Game.java for details on the parameters
 	 * given
@@ -70,10 +83,36 @@ public class GhostGame extends Game {
 	public GhostGame() {
 		super("Ghost Game", width, height);
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
+		sprites = new ArrayList<Sprite>();
+		TMXMapReader mapReader = new TMXMapReader();
+		try {
+			map = mapReader.readMap("resources/level3.tmx");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		TweenJuggler.getInstance();
 
 		SoundManager.playMusic(bgm);
+		
+		for(MapLayer m : map.getLayers()){
+			if(m instanceof TileLayer){
+				TileLayer l = (TileLayer) m;
+				for(int i = 0; i < map.getHeight(); i++){
+					for(int j = 0; j < map.getWidth(); j++){
+						Tile t = l.getTileAt(j, i);
+						if(t != null){
+							Sprite s = new Sprite(""+t.getId());
+							s.setImage((BufferedImage) t.getImage());
+							s.setPositionX(j*t.getWidth());
+							s.setPositionY(i*t.getHeight());
+							sprites.add(s);
+						}
+					}
+				}
+			}
 
+		}  
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
 		ghost.setScaleX(1.875);
@@ -358,7 +397,7 @@ public class GhostGame extends Game {
 		 * is initialized
 		 */
 
-		if (platformOne != null)
+/*		if (platformOne != null)
 			platformOne.draw(g);
 		if (ghost != null)
 			ghost.draw(g);
@@ -376,7 +415,12 @@ public class GhostGame extends Game {
 			}
 		}
 		g.drawString("PAR: 3", 450, 110);
-		g.drawString("Death Count: " + deathCount, 450, 90);
+		g.drawString("Death Count: " + deathCount, 450, 90); */
+		if(sprites != null){
+			for(Sprite s : sprites){
+				s.draw(g);
+			}
+		}
 
 	}
 
