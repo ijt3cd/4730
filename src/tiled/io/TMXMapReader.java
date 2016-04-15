@@ -681,7 +681,6 @@ public class TMXMapReader
                         for (int x = 0; x < ml.getWidth(); x++) {
                             String sTileId = csvTileIds[x + y * ml.getWidth()];
                             int tileId = Integer.parseInt(sTileId);
-                            
                             setTileAtFromTileId(ml, y, x, tileId);
                         }
                     }

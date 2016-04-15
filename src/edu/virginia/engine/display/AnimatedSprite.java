@@ -39,8 +39,8 @@ public class AnimatedSprite extends Sprite {
 		return this.spriteSheet;
 	}
 
-	public void landOnPlatform(Sprite platform) {
-		this.setPositionY((float) (platform.getPositionY() - this.getUnscaledHeight() * this.getScaleY() + 10));
+	public void landOnPlatform(Rectangle platform) {
+		this.setPositionY((float) (platform.y - this.getUnscaledHeight() * this.getScaleY() + 10));
 		this.setVelocityY(0);
 		this.setAccelerationY(0);
 		this.setPlatform(platform);
@@ -138,28 +138,25 @@ public class AnimatedSprite extends Sprite {
 
 	}
 
-	public boolean checkStillOnPlatform(Sprite platform) {
-		Rectangle platformRec = platform.getHitbox();
-		Rectangle spriteRec = this.getHitbox();
-		boolean intersection = spriteRec.intersects(platformRec);
-		boolean halfOnPlatformRight = (spriteRec.getMaxX()
-				- platformRec.getMaxX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
-		boolean halfOnPlatformLeft = (platformRec.getX()
-				- spriteRec.getX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
-		return intersection && halfOnPlatformRight && halfOnPlatformLeft;
+	public boolean checkStillOnPlatform(Rectangle platform) {
+		Rectangle spriteRec = this.getNextHitbox();
+		boolean above = Math.abs(spriteRec.getMaxY() - platform.getY()) < 5;
+		boolean checkLeft = (spriteRec.getX() - platform.getX() > -6);
+		boolean checkRight = (spriteRec.getMaxX() - platform.getMaxX() < 6);
+		return above && checkLeft && checkRight;
 	}
 
-	public boolean checkPlatformCollision(Sprite platform) {
-		Rectangle platformRec = platform.getHitbox();
-		Rectangle spriteRec = this.getHitbox();
-		boolean intersection = spriteRec.intersects(platformRec);
+	public boolean checkPlatformCollision(Rectangle platform) {
+		Rectangle spriteRec = this.getNextHitbox();
+		Rectangle currentRec = this.getHitbox();
+		boolean intersection = spriteRec.intersects(platform) || currentRec.intersects(platform);
 		boolean movingDown = this.getVelocityY() >= 0;
 		boolean halfOnPlatformRight = (spriteRec.getMaxX()
-				- platformRec.getMaxX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
-		boolean halfOnPlatformLeft = (platformRec.getX()
+				- platform.getMaxX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
+		boolean halfOnPlatformLeft = (platform.getX()
 				- spriteRec.getX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
-		boolean abovePlatform = (spriteRec.getY() < platformRec.getY() - 20);
-		boolean fullLanding = spriteRec.getMaxY() > platformRec.getY() + 10;
+		boolean abovePlatform = (spriteRec.getY() < platform.getY() - 10);
+		boolean fullLanding = spriteRec.getMaxY() > platform.getY() + 10;
 		return intersection && movingDown && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding;
 	}
 

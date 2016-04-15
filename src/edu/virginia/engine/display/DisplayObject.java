@@ -37,7 +37,7 @@ public class DisplayObject extends EventDispatcher {
 	private double rotation;
 	private float alpha;
 	private DisplayObject parent;
-	private DisplayObject platform;
+	private Rectangle platform;
 	private boolean hasPhysics;
 	private int mass;
 	private float positionX;
@@ -48,7 +48,7 @@ public class DisplayObject extends EventDispatcher {
 	private float accelerationY;
 	private long lastUpdate;
 	private boolean isCollidable;
-	private List<DisplayObject> collidableObjects;
+	private List<Rectangle> collidableObjects;
 
 	// private boolean onFloor;
 
@@ -87,11 +87,16 @@ public class DisplayObject extends EventDispatcher {
 		this.collidableObjects = new ArrayList<>();
 	}
 
-	public void setPlatform(DisplayObject plat) {
+	public void setPlatform(Rectangle plat) {
 		this.platform = plat;
+		if(plat != null){
+			this.positionY = (float) (plat.y - (this.getUnscaledHeight() * this.scaleY));
+			this.velocityY = 0;
+			this.accelerationY = 0;
+		}
 	}
 
-	public DisplayObject getPlatform() {
+	public Rectangle getPlatform() {
 		return this.platform;
 	}
 
@@ -129,7 +134,7 @@ public class DisplayObject extends EventDispatcher {
 	 * public boolean isOnFloor() { return this.onFloor; }
 	 */
 
-	public void addCollidable(DisplayObject obj) {
+	public void addCollidable(Rectangle obj) {
 		collidableObjects.add(obj);
 	}
 
@@ -237,10 +242,10 @@ public class DisplayObject extends EventDispatcher {
 		if (this.hasPhysics) {
 			if (System.nanoTime() - this.lastUpdate > 500000) {
 				if ((this.platform == null)) {
-					this.accelerationY = (float) 0.25;
+					this.accelerationY = (float) 0.55;
 				}
-				for (DisplayObject each : collidableObjects) {
-					if (this.collidesWith(each) && this.platform != each) {
+				for (Rectangle each : collidableObjects) {
+					if (this.collidesWith(each) && (this.platform == null || (this.platform.x != each.x || this.platform.y != each.y))) {
 						if (!this.collideFromBottom(each) && this.collideFromLeft(each)) {
 							this.velocityX = -1.0f;
 						}
@@ -351,39 +356,43 @@ public class DisplayObject extends EventDispatcher {
 				(int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
-
+	public Rectangle getNextHitbox() {
+		return new Rectangle((int) (this.positionX + this.velocityX), (int) (this.positionY + 2*this.velocityY),
+				(int) (this.getUnscaledWidth() * this.getScaleX()),
+				(int) (this.getUnscaledHeight() * this.getScaleY()));
+	}
 	public Rectangle getReducedHitbox() {
 		return new Rectangle((int) this.positionX, (int) this.positionY,
 				(int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
 
-	public boolean collidesWith(DisplayObject other) {
-		if (!isCollidable || !other.isCollidable) {
+	public boolean collidesWith(Rectangle other) {
+		if (!isCollidable) {
 			return false;
 		}
-		if (this.getHitbox().intersects(other.getHitbox())) {
+		if (this.getHitbox().intersects(other)) {
 			this.dispatchEvent(new CollisionEvent(CollisionEvent.COLLIDE_TYPE, this));
 			return true;
 		}
 		return false;
 	}
 
-	public boolean collideFromBottom(DisplayObject other) {
+	public boolean collideFromBottom(Rectangle each) {
 		Rectangle myRectangle = this.getHitbox();
-		Rectangle otherRectangle = other.getHitbox();
+		Rectangle otherRectangle = each;
 		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y;
-	}
+	} 
 
-	public boolean collideFromLeft(DisplayObject other) {
+	public boolean collideFromLeft(Rectangle each) {
 		Rectangle myRectangle = this.getHitbox();
-		Rectangle otherRectangle = other.getHitbox();
+		Rectangle otherRectangle = each;
 		return myRectangle.x + myRectangle.getWidth() > otherRectangle.x && otherRectangle.x > myRectangle.x;
 	}
 
-	public boolean collideFromRight(DisplayObject other) {
+	public boolean collideFromRight(Rectangle each) {
 		Rectangle myRectangle = this.getHitbox();
-		Rectangle otherRectangle = other.getHitbox();
+		Rectangle otherRectangle = each;
 		return otherRectangle.x + otherRectangle.getWidth() > myRectangle.x && myRectangle.x > otherRectangle.x;
 	}
 
