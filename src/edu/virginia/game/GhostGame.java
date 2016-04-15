@@ -40,16 +40,14 @@ public class GhostGame extends Game {
 	/* Create a sprite object for our game. We'll use mario */
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
-	Sprite ring = new Sprite("Ring", "Ring.png");
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> sprites;
 	ArrayList<Rectangle> platformHitboxes;
-	ArrayList<Sprite> spikes;
+	ArrayList<Rectangle> spikeHitboxes;
 	ArrayList<double[]> locationTracker;
 	ArrayList<double[]> nextGhost;
 	int currIndex = 0;
 	boolean record;
-	boolean pickedUp;
 	float startingX;
 	float startingY;
 	Tween ringGrabbed;
@@ -79,9 +77,10 @@ public class GhostGame extends Game {
 		}
 		TweenJuggler.getInstance();
 		SoundManager.playMusic(bgm);
-		spikes = new ArrayList<Sprite>();
+		spikeHitboxes = new ArrayList<Rectangle>();
 		platformHitboxes = new ArrayList<Rectangle>();
 		boolean[][] platformIndicators = new boolean[map.getHeight()][map.getWidth()];
+		boolean[][] spikeIndicators = new boolean[map.getHeight()][map.getWidth()];
 		for (MapLayer m : map.getLayers()) {
 			if (m instanceof TileLayer) {
 				TileLayer l = (TileLayer) m;
@@ -97,7 +96,7 @@ public class GhostGame extends Game {
 							if (l.getName().equals("Platforms")) {
 								platformIndicators[i][j] = true;
 							} else if (l.getName().equals("Spikes")) {
-								spikes.add(s);
+								spikeIndicators[i][j] = true;
 							} else if (l.getName().equals("Spawn")) {
 								startingX = j * t.getWidth();
 								startingY = i * t.getHeight();
@@ -107,7 +106,10 @@ public class GhostGame extends Game {
 				}
 			}
 		}
-		// Two passes, grabbing horizontal tile groups then vertical tile groups
+		/* Two passes, grabbing horizontal tile groups then vertical tile groups for
+		 * both the platforms and spikes(obstacles) to group adjacent tiles into one larger
+		 * hitbox
+		 */
 		for (int i = 0; i < map.getHeight(); i++) {
 			for (int j = 0; j < map.getWidth(); j++) {
 				if (platformIndicators[i][j] && ((j + 1 != map.getWidth() && platformIndicators[i][j + 1])
@@ -145,6 +147,41 @@ public class GhostGame extends Game {
 				}
 			}
 		}
+		for (int i = 0; i < map.getHeight(); i++) {
+			for (int j = 0; j < map.getWidth(); j++) {
+				if (spikeIndicators[i][j] && ((j + 1 != map.getWidth() && spikeIndicators[i][j + 1])
+						|| (i + 1 == map.getWidth() || !spikeIndicators[i + 1][j]))) {
+					int length = 0;
+					while (i == map.getHeight() - 1
+							|| (j + length) < map.getWidth() && spikeIndicators[i][j + length]) {
+						if (!spikeIndicators[i + 1][j + length])
+							spikeIndicators[i][j + length] = false;
+						length += 1;
+					}
+					Rectangle r = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+							length * map.getTileWidth(), map.getTileHeight());
+					spikeHitboxes.add(r);
+					j = j + length;
+					continue;
+				}
+			}
+		}
+		for (int i = 0; i < map.getWidth(); i++) {
+			for (int j = 0; j < map.getHeight(); j++) {
+				if (spikeIndicators[j][i]) {
+					int length = 0;
+					while((j+length) < map.getHeight() && spikeIndicators[j+length][i]){
+						spikeIndicators[j+length][i] = false;
+						length += 1;
+					}
+					Rectangle r = new Rectangle(i * map.getTileWidth(), j * map.getTileHeight(), map.getTileWidth(),
+							length * map.getTileHeight());
+					spikeHitboxes.add(r);
+					j = j + length;
+					continue;
+				}
+			}
+		}
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
 		ghost.addAnimation("float", 0, 2, 75000000, 1, 0);
@@ -177,6 +214,7 @@ public class GhostGame extends Game {
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
 					link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
 			}
+			//Gravity logic is dependent on being on a platform, ghost is no longer considered a platform, this line allows jumping off the ghost
 			if(onGhost)
 				link.setAccelerationY(0.0f);
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
@@ -200,47 +238,49 @@ public class GhostGame extends Game {
 				if (link.setAnimation("run_right"))
 					link.play();
 				link.setPlaying(true);
-			} else if (link.getPlatform() != null) {
-				// link.setVelocityX(link.getPlatform().getVelocityX());
-				// link.setVelocityY(link.getPlatform().getVelocityY());
 			}
 		}
+		/*
+		 * Grabs the position at each frame to give to the ghost
+		 */
 		if (record) {
 			double[] ghostData = new double[4];
 			ghostData[0] = link.getPositionX();
 			ghostData[1] = link.getPositionY();
-			ghostData[2] = link.getVelocityX();
-			ghostData[3] = link.getVelocityY();
 			nextGhost.add(ghostData);
 		}
+		/*
+		 * Updates the ghosts position
+		 */
 		if (ghost != null && ghost.isVisible() && locationTracker != null) {
 			if (locationTracker.size() > currIndex) {
 				ghost.setPositionX((int) locationTracker.get(currIndex)[0]);
 				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
 				currIndex++;
-				if (locationTracker.size() > currIndex) {
-					ghost.setVelocityX((float) locationTracker.get(currIndex)[2]);
-					ghost.setVelocityY((float) locationTracker.get(currIndex)[3]);
-				}
 			} else {
 				currIndex = 0;
 			}
 		}
+		/*
+		 * Checks if the player has landed on the ghost
+		 * Still need to make this collision easier for the player to force
+		 */
 		if (link != null && ghost != null && ghost.isVisible() && !onGhost) {
 			if (link.checkPlatformCollision(ghost.getNextHitbox())) {
 				onGhost = true;
 			}
 		}
+		/*
+		 * Checks to see if the player is still on the platform that he last landed on
+		 */
 		if (link != null && link.getPlatform() != null) {
-			if (onGhost) {
-				if (!link.checkStillOnPlatform(ghost.getNextHitbox())) {
-					link.setPlatform(null);
-					onGhost = !onGhost;
-				}
-			} else if (!link.checkStillOnPlatform(link.getPlatform())) {
+			if (!link.checkStillOnPlatform(link.getPlatform())) {
 				link.setPlatform(null);
 			}
 		}
+		/*
+		 * Checks all platforms in the world to see if the player has landed on one
+		 */
 		if (link != null && platformHitboxes != null && link.getPlatform() == null) {
 			for (Rectangle platform : platformHitboxes) {
 				if (link.checkPlatformCollision(platform)) {
@@ -249,10 +289,14 @@ public class GhostGame extends Game {
 				}
 			}
 		}
-		if (spikes != null) {
-			for (Sprite spike : spikes) {
+		/*
+		 * Checks if the player has collided with an obstacle
+		 * If a collision is present, the player is set back at the spawn point along with a ghost
+		 */
+		if (spikeHitboxes != null) {
+			for (Rectangle spike : spikeHitboxes) {
 				if (link != null && spike != null && locationTracker != null) {
-					if (link.collidesWith(spike.getHitbox())) {
+					if (link.collidesWith(spike)) {
 						record = false;
 						locationTracker.clear();
 						for (double[] point : nextGhost) {
@@ -260,7 +304,6 @@ public class GhostGame extends Game {
 						}
 						nextGhost.clear();
 						currIndex = 0;
-
 						ghost.setVisible(true);
 						link.setPositionX(startingX);
 						link.setPositionY(startingY);
@@ -269,16 +312,9 @@ public class GhostGame extends Game {
 						link.setAccelerationY(0);
 						record = true;
 						deathCount += 1;
+						onGhost = false;
 						break;
 					}
-				}
-			}
-		}
-		if (!pickedUp) {
-			if (ring != null && link != null) {
-				if (link.collidesWith(ring.getHitbox()) && ringGrabbed != null) {
-					TweenJuggler.addTween(ringGrabbed);
-					pickedUp = true;
 				}
 			}
 		}
@@ -302,22 +338,33 @@ public class GhostGame extends Game {
 			record = true;
 			deathCount = 0;
 		}
+		/*
+		 * Resets current ghost loop for convenience
+		 */
 		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))) {
 
 			currIndex = 0;
 			record = true;
 		}
-		if(onGhost){
-			link.setPositionX(ghost.getPositionX());
-			link.setPositionY((float) (ghost.getPositionY()-(link.getUnscaledHeight()*link.getScaleY())));
-			link.setVelocityX(0);
-			link.setVelocityY(0);
-		}
+		/*
+		 * Checks if the player has collided with any of the platforms
+		 * Any collisions will knock the player off of the ghost
+		 */
 		if(link != null){
 			boolean bumped = link.checkCollidables();
 			if(onGhost && bumped){
 				onGhost = false;
 			}
+		}
+		/*
+		 * Locks the player onto the ghost unless this update loop contained a user input or the player
+		 * hit another platform while riding the ghost
+		 */
+		if(onGhost){
+			link.setPositionX(ghost.getPositionX());
+			link.setPositionY((float) (ghost.getPositionY()-(link.getUnscaledHeight()*link.getScaleY())));
+			link.setVelocityX(0);
+			link.setVelocityY(0);
 		}
 		if (link != null)
 			link.update(pressedKeys);

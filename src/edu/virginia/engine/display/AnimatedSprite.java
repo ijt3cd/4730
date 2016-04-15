@@ -39,13 +39,6 @@ public class AnimatedSprite extends Sprite {
 		return this.spriteSheet;
 	}
 
-	public void landOnPlatform(Rectangle platform) {
-		this.setPositionY((float) (platform.y - this.getUnscaledHeight() * this.getScaleY() + 11));
-		this.setVelocityY(0);
-		this.setAccelerationY(0);
-		this.setPlatform(platform);
-	}
-
 	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row) {
 		int[] arr = new int[5];
 		arr[0] = start;
