@@ -28,7 +28,7 @@ import tiled.io.TMXMapReader;
  */
 public class GhostGame extends Game {
 
-	private static final int HORIZONTAL_MOVEMENT_DELTA = 3;
+	private static final int HORIZONTAL_MOVEMENT_DELTA = 6;
 	private static final double JUMP_UP_DELTA = 7.75;
 	private static final double HORIZONTAL_MOVEMENT_DECAY = 0.8;
 	public static int width = 1050;
@@ -175,36 +175,28 @@ public class GhostGame extends Game {
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
-				if (onGhost)
-					link.setVelocityX(ghost.getVelocityX());
-				else
 					link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
 			}
-
+			if(onGhost)
+				link.setAccelerationY(0.0f);
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP)))
-					&& (!(link.getPlatform() == null) || link.getVelocityY() == 0) && link.getAccelerationY() == 0) {
-				if (onGhost)
-					link.setVelocityY((float) -JUMP_UP_DELTA + ghost.getVelocityY());
-				else
-					link.setVelocityY((float) -JUMP_UP_DELTA);
+					&& (link.getPlatform() != null || onGhost) && link.getAccelerationY() == 0) {
+				link.setVelocityY((float) -JUMP_UP_DELTA);
+				onGhost = false;
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
-				if (onGhost)
-					link.setVelocityX((float) -HORIZONTAL_MOVEMENT_DELTA + ghost.getVelocityX());
-				else
-					link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
+				link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
+				onGhost = false;
 				if (link.setAnimation("run_left"))
 					link.play();
 				link.setPlaying(true);
 
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))) {
-				if (onGhost)
-					link.setVelocityX((float) HORIZONTAL_MOVEMENT_DELTA + ghost.getVelocityX());
-				else
-					link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
+				link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
+				onGhost = false;
 				if (link.setAnimation("run_right"))
 					link.play();
 				link.setPlaying(true);
@@ -234,14 +226,8 @@ public class GhostGame extends Game {
 				currIndex = 0;
 			}
 		}
-		if (onGhost) {
-			float yVelo = link.getVelocityY();
-			link.setPlatform(ghost.getNextHitbox());
-			link.setVelocityY(yVelo);
-		}
 		if (link != null && ghost != null && ghost.isVisible() && !onGhost) {
 			if (link.checkPlatformCollision(ghost.getNextHitbox())) {
-				link.setPlatform(ghost.getNextHitbox());
 				onGhost = true;
 			}
 		}
@@ -313,9 +299,6 @@ public class GhostGame extends Game {
 			link.setPositionY(startingY);
 			link.setVelocityX(0);
 			link.setVelocityY(0);
-			/*
-			 * if (link.getPlatform() == ghost) { link.setPlatform(null); }
-			 */
 			record = true;
 			deathCount = 0;
 		}
@@ -323,11 +306,19 @@ public class GhostGame extends Game {
 
 			currIndex = 0;
 			record = true;
-			/*
-			 * if (link.getPlatform() == ghost) { link.setPlatform(null); }
-			 */
 		}
-
+		if(onGhost){
+			link.setPositionX(ghost.getPositionX());
+			link.setPositionY((float) (ghost.getPositionY()-(link.getUnscaledHeight()*link.getScaleY())));
+			link.setVelocityX(0);
+			link.setVelocityY(0);
+		}
+		if(link != null){
+			boolean bumped = link.checkCollidables();
+			if(onGhost && bumped){
+				onGhost = false;
+			}
+		}
 		if (link != null)
 			link.update(pressedKeys);
 	}

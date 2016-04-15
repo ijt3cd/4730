@@ -141,8 +141,8 @@ public class AnimatedSprite extends Sprite {
 	public boolean checkStillOnPlatform(Rectangle platform) {
 		Rectangle spriteRec = this.getNextHitbox();
 		boolean above = Math.abs(spriteRec.getMaxY() - platform.getY()) < 5;
-		boolean checkLeft = (spriteRec.getX() - platform.getX() > -6);
-		boolean checkRight = (spriteRec.getMaxX() - platform.getMaxX() < 6);
+		boolean checkLeft = (spriteRec.getX() - platform.getX() > -20);
+		boolean checkRight = (spriteRec.getMaxX() - platform.getMaxX() < 20);
 		return above && checkLeft && checkRight;
 	}
 
