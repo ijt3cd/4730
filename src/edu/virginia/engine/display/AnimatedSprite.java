@@ -40,7 +40,7 @@ public class AnimatedSprite extends Sprite {
 	}
 
 	public void landOnPlatform(Rectangle platform) {
-		this.setPositionY((float) (platform.y - this.getUnscaledHeight() * this.getScaleY() + 10));
+		this.setPositionY((float) (platform.y - this.getUnscaledHeight() * this.getScaleY() + 11));
 		this.setVelocityY(0);
 		this.setAccelerationY(0);
 		this.setPlatform(platform);

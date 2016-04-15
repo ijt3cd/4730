@@ -9,20 +9,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;
 import edu.virginia.engine.display.Tween;
 import edu.virginia.engine.display.TweenJuggler;
-import edu.virginia.engine.display.TweenParam;
-import edu.virginia.engine.display.TweenableParams;
 import tiled.core.Map;
 import tiled.core.MapLayer;
 import tiled.core.Tile;
@@ -36,6 +28,9 @@ import tiled.io.TMXMapReader;
  */
 public class GhostGame extends Game {
 
+	private static final int HORIZONTAL_MOVEMENT_DELTA = 3;
+	private static final double JUMP_UP_DELTA = 7.75;
+	private static final double HORIZONTAL_MOVEMENT_DECAY = 0.8;
 	public static int width = 1050;
 	public static int height = 1050;
 
@@ -63,6 +58,7 @@ public class GhostGame extends Game {
 	boolean draw;
 	boolean onGhost;
 	Map map;
+
 	/**
 	 * Constructor. See constructor in Game.java for details on the parameters
 	 * given
@@ -86,63 +82,65 @@ public class GhostGame extends Game {
 		spikes = new ArrayList<Sprite>();
 		platformHitboxes = new ArrayList<Rectangle>();
 		boolean[][] platformIndicators = new boolean[map.getHeight()][map.getWidth()];
-		for(MapLayer m : map.getLayers()){
-			if(m instanceof TileLayer){
+		for (MapLayer m : map.getLayers()) {
+			if (m instanceof TileLayer) {
 				TileLayer l = (TileLayer) m;
-				for(int i = 0; i < map.getHeight(); i++){
-					for(int j = 0; j < map.getWidth(); j++){
+				for (int i = 0; i < map.getHeight(); i++) {
+					for (int j = 0; j < map.getWidth(); j++) {
 						Tile t = l.getTileAt(j, i);
-						if(t != null){
-							Sprite s = new Sprite(""+t.getId());
+						if (t != null) {
+							Sprite s = new Sprite("" + t.getId());
 							s.setImage((BufferedImage) t.getImage());
-							s.setPositionX(j*t.getWidth());
-							s.setPositionY(i*t.getHeight());
+							s.setPositionX(j * t.getWidth());
+							s.setPositionY(i * t.getHeight());
 							sprites.add(s);
-							if(l.getName().equals("Platforms")){
+							if (l.getName().equals("Platforms")) {
 								platformIndicators[i][j] = true;
-							}
-							else if(l.getName().equals("Spikes")){
+							} else if (l.getName().equals("Spikes")) {
 								spikes.add(s);
-							}
-							else if(l.getName().equals("Spawn")){
-								startingX = j*t.getWidth();
-								startingY = i*t.getHeight();
+							} else if (l.getName().equals("Spawn")) {
+								startingX = j * t.getWidth();
+								startingY = i * t.getHeight();
 							}
 						}
 					}
 				}
 			}
-		}  
-		//Two passes, grabbing horizontal tile groups then vertical tile groups
-		for(int i = 0; i < map.getHeight(); i++){
-			for(int j = 0; j < map.getWidth(); j++){
-				if(platformIndicators[i][j] && ((j+1 != map.getWidth() && platformIndicators[i][j+1]) || (i+1 == map.getWidth() || !platformIndicators[i+1][j]))){
+		}
+		// Two passes, grabbing horizontal tile groups then vertical tile groups
+		for (int i = 0; i < map.getHeight(); i++) {
+			for (int j = 0; j < map.getWidth(); j++) {
+				if (platformIndicators[i][j] && ((j + 1 != map.getWidth() && platformIndicators[i][j + 1])
+						|| (i + 1 == map.getWidth() || !platformIndicators[i + 1][j]))) {
 					int length = 0;
-					while(i == map.getHeight() - 1 || (j+length) < map.getWidth() && platformIndicators[i][j+length]){
-						if(!platformIndicators[i+1][j+length])
-							platformIndicators[i][j+length] = false;
+					while (i == map.getHeight() - 1
+							|| (j + length) < map.getWidth() && platformIndicators[i][j + length]) {
+						if (!platformIndicators[i + 1][j + length])
+							platformIndicators[i][j + length] = false;
 						length += 1;
 					}
-					Rectangle r = new Rectangle(j*map.getTileWidth(), i*map.getTileHeight(), length*map.getTileWidth(), map.getTileHeight());
+					Rectangle r = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+							length * map.getTileWidth(), map.getTileHeight());
 					platformHitboxes.add(r);
 					link.addCollidable(r);
-					j = j+length;
+					j = j + length;
 					continue;
 				}
 			}
 		}
-		for(int i = 0; i < map.getWidth(); i++){
-			for(int j = 0; j < map.getHeight(); j++){
-				if(platformIndicators[j][i]){
+		for (int i = 0; i < map.getWidth(); i++) {
+			for (int j = 0; j < map.getHeight(); j++) {
+				if (platformIndicators[j][i]) {
 					int length = 0;
 					while((j+length) < map.getHeight() && platformIndicators[j+length][i]){
 						platformIndicators[j+length][i] = false;
 						length += 1;
 					}
-					Rectangle r = new Rectangle(i*map.getTileWidth(), j*map.getTileHeight(), map.getTileWidth(), length*map.getTileHeight());
+					Rectangle r = new Rectangle(i * map.getTileWidth(), j * map.getTileHeight(), map.getTileWidth(),
+							length * map.getTileHeight());
 					platformHitboxes.add(r);
 					link.addCollidable(r);
-					j = j+length;
+					j = j + length;
 					continue;
 				}
 			}
@@ -177,42 +175,42 @@ public class GhostGame extends Game {
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
-				if(onGhost)
+				if (onGhost)
 					link.setVelocityX(ghost.getVelocityX());
 				else
-					link.setVelocityX((float) (link.getVelocityX() * 0.90));
+					link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
 			}
 
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP)))
 					&& (!(link.getPlatform() == null) || link.getVelocityY() == 0) && link.getAccelerationY() == 0) {
-				if(onGhost)
-					link.setVelocityY((float) -7.75 + ghost.getVelocityY());
+				if (onGhost)
+					link.setVelocityY((float) -JUMP_UP_DELTA + ghost.getVelocityY());
 				else
-					link.setVelocityY((float) -7.75);
+					link.setVelocityY((float) -JUMP_UP_DELTA);
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
-				if(onGhost)
-					link.setVelocityX((float) -5 + ghost.getVelocityX());
+				if (onGhost)
+					link.setVelocityX((float) -HORIZONTAL_MOVEMENT_DELTA + ghost.getVelocityX());
 				else
-					link.setVelocityX(-5);
+					link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
 				if (link.setAnimation("run_left"))
 					link.play();
 				link.setPlaying(true);
 
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))) {
-				if(onGhost)
-					link.setVelocityX((float) 5 + ghost.getVelocityX());
+				if (onGhost)
+					link.setVelocityX((float) HORIZONTAL_MOVEMENT_DELTA + ghost.getVelocityX());
 				else
-					link.setVelocityX(5);
+					link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
 				if (link.setAnimation("run_right"))
 					link.play();
 				link.setPlaying(true);
 			} else if (link.getPlatform() != null) {
-				//link.setVelocityX(link.getPlatform().getVelocityX());
-				//link.setVelocityY(link.getPlatform().getVelocityY());
+				// link.setVelocityX(link.getPlatform().getVelocityX());
+				// link.setVelocityY(link.getPlatform().getVelocityY());
 			}
 		}
 		if (record) {
@@ -228,7 +226,7 @@ public class GhostGame extends Game {
 				ghost.setPositionX((int) locationTracker.get(currIndex)[0]);
 				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
 				currIndex++;
-				if(locationTracker.size() > currIndex){
+				if (locationTracker.size() > currIndex) {
 					ghost.setVelocityX((float) locationTracker.get(currIndex)[2]);
 					ghost.setVelocityY((float) locationTracker.get(currIndex)[3]);
 				}
@@ -236,31 +234,30 @@ public class GhostGame extends Game {
 				currIndex = 0;
 			}
 		}
-		if(onGhost){
+		if (onGhost) {
 			float yVelo = link.getVelocityY();
 			link.setPlatform(ghost.getNextHitbox());
 			link.setVelocityY(yVelo);
 		}
-		if(link != null && ghost != null && ghost.isVisible() && !onGhost){
-			if(link.checkPlatformCollision(ghost.getNextHitbox())){
+		if (link != null && ghost != null && ghost.isVisible() && !onGhost) {
+			if (link.checkPlatformCollision(ghost.getNextHitbox())) {
 				link.setPlatform(ghost.getNextHitbox());
 				onGhost = true;
 			}
 		}
-		if(link != null && link.getPlatform() != null){
-			if(onGhost){
-				if(!link.checkStillOnPlatform(ghost.getNextHitbox())){
+		if (link != null && link.getPlatform() != null) {
+			if (onGhost) {
+				if (!link.checkStillOnPlatform(ghost.getNextHitbox())) {
 					link.setPlatform(null);
 					onGhost = !onGhost;
 				}
-			}
-			else if(!link.checkStillOnPlatform(link.getPlatform())){
+			} else if (!link.checkStillOnPlatform(link.getPlatform())) {
 				link.setPlatform(null);
 			}
 		}
-		if(link != null && platformHitboxes != null && link.getPlatform() == null){
-			for(Rectangle platform : platformHitboxes){
-				if(link.checkPlatformCollision(platform)){
+		if (link != null && platformHitboxes != null && link.getPlatform() == null) {
+			for (Rectangle platform : platformHitboxes) {
+				if (link.checkPlatformCollision(platform)) {
 					link.setPlatform(platform);
 					break;
 				}
@@ -316,9 +313,9 @@ public class GhostGame extends Game {
 			link.setPositionY(startingY);
 			link.setVelocityX(0);
 			link.setVelocityY(0);
-		/*	if (link.getPlatform() == ghost) {
-				link.setPlatform(null);
-			} */
+			/*
+			 * if (link.getPlatform() == ghost) { link.setPlatform(null); }
+			 */
 			record = true;
 			deathCount = 0;
 		}
@@ -326,9 +323,9 @@ public class GhostGame extends Game {
 
 			currIndex = 0;
 			record = true;
-		/*	if (link.getPlatform() == ghost) {
-				link.setPlatform(null);
-			} */
+			/*
+			 * if (link.getPlatform() == ghost) { link.setPlatform(null); }
+			 */
 		}
 
 		if (link != null)
@@ -342,14 +339,14 @@ public class GhostGame extends Game {
 	 */
 	@Override
 	public void draw(Graphics g) {
-		if(draw){
+		if (draw) {
 			super.draw(g);
 			/*
-			 * Same, just check for null in case a frame gets thrown in before Mario
-			 * is initialized
+			 * Same, just check for null in case a frame gets thrown in before
+			 * Mario is initialized
 			 */
-			if(sprites != null){
-				for(Sprite s : sprites){
+			if (sprites != null) {
+				for (Sprite s : sprites) {
 					s.draw(g);
 				}
 			}
@@ -358,10 +355,11 @@ public class GhostGame extends Game {
 			if (link != null)
 				link.draw(g);
 			g.drawString("PAR: 3", 450, 110);
-			g.drawString("Death Count: " + deathCount, 450, 90); 
-	
+			g.drawString("Death Count: " + deathCount, 450, 90);
+
 		}
 	}
+
 	/**
 	 * Quick main class that simply creates an instance of our game and starts
 	 * the timer that calls update() and draw() every frame
