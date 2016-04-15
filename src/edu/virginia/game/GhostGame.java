@@ -136,8 +136,7 @@ public class GhostGame extends Game {
 				if(platformIndicators[j][i]){
 					int length = 0;
 					while((j+length) < map.getHeight() && platformIndicators[j+length][i]){
-						if(i == map.getWidth() - 1 ||!platformIndicators[j+length][i+1])
-							platformIndicators[j+length][i] = false;
+						platformIndicators[j+length][i] = false;
 						length += 1;
 					}
 					Rectangle r = new Rectangle(i*map.getTileWidth(), j*map.getTileHeight(), map.getTileWidth(), length*map.getTileHeight());

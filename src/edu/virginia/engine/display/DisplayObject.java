@@ -128,12 +128,6 @@ public class DisplayObject extends EventDispatcher {
 		return pivotPointX;
 	}
 
-	/*
-	 * public void setOnFloor(boolean b) { onFloor = b; }
-	 * 
-	 * public boolean isOnFloor() { return this.onFloor; }
-	 */
-
 	public void addCollidable(Rectangle obj) {
 		collidableObjects.add(obj);
 	}
@@ -249,7 +243,7 @@ public class DisplayObject extends EventDispatcher {
 						if (!this.collideFromBottom(each) && this.collideFromLeft(each)) {
 							this.velocityX = -1.0f;
 						}
-						if (!this.collideFromBottom(each) && this.collideFromRight(each)) {
+						else if(!this.collideFromBottom(each) && this.collideFromRight(each)){
 							this.velocityX = 1.0f;
 						}
 						this.velocityY = Math.max(0, velocityY);
@@ -381,7 +375,8 @@ public class DisplayObject extends EventDispatcher {
 	public boolean collideFromBottom(Rectangle each) {
 		Rectangle myRectangle = this.getHitbox();
 		Rectangle otherRectangle = each;
-		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y;
+		boolean withinRange = myRectangle.x > otherRectangle.y && myRectangle.getMaxX() < myRectangle.getMaxX();
+		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y && withinRange;
 	} 
 
 	public boolean collideFromLeft(Rectangle each) {
