@@ -128,12 +128,6 @@ public class DisplayObject extends EventDispatcher {
 		return pivotPointX;
 	}
 
-	/*
-	 * public void setOnFloor(boolean b) { onFloor = b; }
-	 * 
-	 * public boolean isOnFloor() { return this.onFloor; }
-	 */
-
 	public void addCollidable(Rectangle obj) {
 		collidableObjects.add(obj);
 	}
@@ -244,17 +238,6 @@ public class DisplayObject extends EventDispatcher {
 				if ((this.platform == null)) {
 					this.accelerationY = (float) 0.55;
 				}
-				for (Rectangle each : collidableObjects) {
-					if (this.collidesWith(each) && (this.platform == null || (this.platform.x != each.x || this.platform.y != each.y))) {
-						if (!this.collideFromBottom(each) && this.collideFromLeft(each)) {
-							this.velocityX = -1.0f;
-						}
-						if (!this.collideFromBottom(each) && this.collideFromRight(each)) {
-							this.velocityX = 1.0f;
-						}
-						this.velocityY = Math.max(0, velocityY);
-					}
-				}
 				this.setPositionX((float) (this.getPositionX() + this.velocityX));
 				this.setPositionY((float) (this.getPositionY() + this.velocityY));
 				this.velocityY += accelerationY;
@@ -265,6 +248,23 @@ public class DisplayObject extends EventDispatcher {
 
 	public boolean checkCollision(DisplayObject other) {
 		return this.getHitbox().intersects(other.getHitbox());
+	}
+	public boolean checkCollidables(){
+		for (Rectangle each : collidableObjects) {
+			if (this.collidesWith(each) && (this.platform == null || (this.platform.x != each.x || this.platform.y != each.y))) {
+				if (!this.collideFromBottom(each) && this.collideFromLeft(each)) {
+					this.velocityX = -1.0f;
+					return true;
+				}
+				else if(!this.collideFromBottom(each) && this.collideFromRight(each)){
+					this.velocityX = 1.0f;
+					return true;
+				}
+				this.velocityY = Math.max(0, velocityY);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void checkBoundaries() {
@@ -381,7 +381,8 @@ public class DisplayObject extends EventDispatcher {
 	public boolean collideFromBottom(Rectangle each) {
 		Rectangle myRectangle = this.getHitbox();
 		Rectangle otherRectangle = each;
-		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y;
+		boolean withinRange = myRectangle.x > otherRectangle.y && myRectangle.getMaxX() < myRectangle.getMaxX();
+		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y && withinRange;
 	} 
 
 	public boolean collideFromLeft(Rectangle each) {

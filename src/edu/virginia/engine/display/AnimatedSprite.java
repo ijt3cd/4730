@@ -39,13 +39,6 @@ public class AnimatedSprite extends Sprite {
 		return this.spriteSheet;
 	}
 
-	public void landOnPlatform(Rectangle platform) {
-		this.setPositionY((float) (platform.y - this.getUnscaledHeight() * this.getScaleY() + 10));
-		this.setVelocityY(0);
-		this.setAccelerationY(0);
-		this.setPlatform(platform);
-	}
-
 	public void addAnimation(String animation, int start, int end, int speed, int repeat, int row) {
 		int[] arr = new int[5];
 		arr[0] = start;
@@ -141,8 +134,8 @@ public class AnimatedSprite extends Sprite {
 	public boolean checkStillOnPlatform(Rectangle platform) {
 		Rectangle spriteRec = this.getNextHitbox();
 		boolean above = Math.abs(spriteRec.getMaxY() - platform.getY()) < 5;
-		boolean checkLeft = (spriteRec.getX() - platform.getX() > -6);
-		boolean checkRight = (spriteRec.getMaxX() - platform.getMaxX() < 6);
+		boolean checkLeft = (spriteRec.getX() - platform.getX() > -20);
+		boolean checkRight = (spriteRec.getMaxX() - platform.getMaxX() < 20);
 		return above && checkLeft && checkRight;
 	}
 
