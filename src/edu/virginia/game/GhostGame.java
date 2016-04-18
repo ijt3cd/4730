@@ -224,7 +224,8 @@ public class GhostGame extends Game {
 //		System.out.println(square);
 //		System.out.println(width);
 //		game.setScaleX(square/width);
-		game.setScaleY(square/height);
+		if(game != null)
+			game.setScaleY(square/height);
 //		System.out.println(game.getScaleX());
 	
 		
@@ -355,6 +356,7 @@ public class GhostGame extends Game {
 			nextGhost.clear();
 			currIndex = 0;
 			ghost.setVisible(false);
+			onGhost = false;
 			link.setPositionX(startingX);
 			link.setPositionY(startingY);
 			link.setVelocityX(0);
@@ -366,8 +368,8 @@ public class GhostGame extends Game {
 		 * Resets current ghost loop for convenience
 		 */
 		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))) {
-
 			currIndex = 0;
+			onGhost = false;
 			record = true;
 		}
 		/*
