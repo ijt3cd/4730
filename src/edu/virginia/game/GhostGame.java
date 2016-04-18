@@ -17,6 +17,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import edu.virginia.engine.display.AnimatedSprite;
+import edu.virginia.engine.display.DisplayObject;
+import edu.virginia.engine.display.DisplayObjectContainer;
 import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;
 import edu.virginia.engine.display.Tween;
@@ -43,6 +45,7 @@ public class GhostGame extends Game {
 	File bgm = new File("resources/brm.wav");
 
 	/* Create a sprite object for our game. We'll use mario */
+	DisplayObjectContainer game = new DisplayObjectContainer("game");
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
 	Sprite ring = new Sprite("Ring", "Ring.png");
@@ -82,7 +85,7 @@ public class GhostGame extends Game {
 			e.printStackTrace();
 		}
 		TweenJuggler.getInstance();
-		SoundManager.playMusic(bgm);
+//		SoundManager.playMusic(bgm);
 		spikes = new ArrayList<Sprite>();
 		platformHitboxes = new ArrayList<Rectangle>();
 		boolean[][] platformIndicators = new boolean[map.getHeight()][map.getWidth()];
@@ -162,6 +165,11 @@ public class GhostGame extends Game {
 		nextGhost = new ArrayList<double[]>();
 		record = true;
 		draw = true;
+		for(Sprite s: sprites){
+			game.addChild(s);
+		}
+		game.addChild(ghost);
+		game.addChild(link);
 	}
 
 	/**
@@ -171,6 +179,18 @@ public class GhostGame extends Game {
 	@Override
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
+		
+		int w = getMainFrame().getWidth();
+		int h = getMainFrame().getHeight();
+		int square = Math.min(w,h);
+		System.out.println(square);
+		System.out.println(width);
+		game.setScaleX(square/width);
+		game.setScaleY(square/height);
+		System.out.println(game.getScaleX());
+	
+		
+		
 		if (link != null && link.hasPhysics()) {
 
 			// attempt at fixing some xVel physics
@@ -349,18 +369,14 @@ public class GhostGame extends Game {
 			 * Same, just check for null in case a frame gets thrown in before Mario
 			 * is initialized
 			 */
-			if(sprites != null){
-				for(Sprite s : sprites){
-					s.draw(g);
-				}
-			}
-			if (ghost != null)
-				ghost.draw(g);
-			if (link != null)
-				link.draw(g);
+			
+			game.draw(g);
+			
+			
 			g.drawString("PAR: 3", 450, 110);
 			g.drawString("Death Count: " + deathCount, 450, 90); 
 	
+			
 		}
 	}
 	/**
@@ -372,6 +388,7 @@ public class GhostGame extends Game {
 	 */
 	public static void main(String[] args) {
 		GhostGame game = new GhostGame();
+		
 		game.start();
 
 	}
