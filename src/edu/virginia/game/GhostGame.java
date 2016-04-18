@@ -33,6 +33,7 @@ public class GhostGame extends Game {
 	private static final int HORIZONTAL_MOVEMENT_DELTA = 6;
 	private static final double JUMP_UP_DELTA = 7.75;
 	private static final double HORIZONTAL_MOVEMENT_DECAY = 0.8;
+	private static final double GHOST_EXTENSION = 50;
 	public static int width = 1050;
 	public static int height = 1050;
 
@@ -56,6 +57,7 @@ public class GhostGame extends Game {
 	Tween ringGrabbed;
 	Tween ringFade;
 	int deathCount = 0;
+	float ghostOffset = 0;
 	boolean draw;
 	boolean onGhost;
 	Map map;
@@ -248,10 +250,17 @@ public class GhostGame extends Game {
 					&& (link.getPlatform() != null || onGhost) && link.getAccelerationY() == 0) {
 				link.setVelocityY((float) -JUMP_UP_DELTA);
 				onGhost = false;
+				ghostOffset = 0;
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
 				link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
-				onGhost = false;
+				if(onGhost){
+					ghostOffset += -HORIZONTAL_MOVEMENT_DELTA;
+					if(ghostOffset < -GHOST_EXTENSION){
+						onGhost = false;
+						ghostOffset = 0;
+					}
+				}
 				if (link.setAnimation("run_left"))
 					link.play();
 				link.setPlaying(true);
@@ -259,7 +268,13 @@ public class GhostGame extends Game {
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))) {
 				link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
-				onGhost = false;
+				if(onGhost){
+					ghostOffset += HORIZONTAL_MOVEMENT_DELTA;
+					if(ghostOffset > GHOST_EXTENSION){
+						onGhost = false;
+						ghostOffset = 0;
+					}
+				}
 				if (link.setAnimation("run_right"))
 					link.play();
 				link.setPlaying(true);
@@ -357,6 +372,7 @@ public class GhostGame extends Game {
 			currIndex = 0;
 			ghost.setVisible(false);
 			onGhost = false;
+			ghostOffset = 0;
 			link.setPositionX(startingX);
 			link.setPositionY(startingY);
 			link.setVelocityX(0);
@@ -370,6 +386,7 @@ public class GhostGame extends Game {
 		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))) {
 			currIndex = 0;
 			onGhost = false;
+			ghostOffset = 0;
 			record = true;
 		}
 		/*
@@ -380,6 +397,7 @@ public class GhostGame extends Game {
 			boolean bumped = link.checkCollidables();
 			if(onGhost && bumped){
 				onGhost = false;
+				ghostOffset = 0;
 			}
 		}
 		/*
@@ -387,7 +405,7 @@ public class GhostGame extends Game {
 		 * hit another platform while riding the ghost
 		 */
 		if(onGhost){
-			link.setPositionX(ghost.getPositionX());
+			link.setPositionX(ghost.getPositionX()+ghostOffset);
 			link.setPositionY((float) (ghost.getPositionY()-(link.getUnscaledHeight()*link.getScaleY())));
 			link.setVelocityX(0);
 			link.setVelocityY(0);
