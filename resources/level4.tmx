@@ -26,14 +26,14 @@
    eJztzjEBAAAIA6DZP5qljLFDSEACAAC/7bQH0HFu/QDN
   </data>
  </layer>
- <layer name="GreenPress" width="30" height="30">
+ <layer name="Door" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzrEJAEAIBEELtGwLswKN5OFhJtrsLgIAAN6roS/ksjW5/gA/aAYlA10=
+   eJztzgENAAAIA6D3z2UwY9w5SEACAMBn0w4AZy02vQDF
   </data>
  </layer>
- <layer name="GreenRemove" width="30" height="30">
+ <layer name="Button" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6DHN7YxPh0kIAEAgF+mHYAjFr1/AIk=
+   eJztzgENAAAIA6AHtH8eY9w5SEACAAA/TTsAxy38wABN
   </data>
  </layer>
 </map>

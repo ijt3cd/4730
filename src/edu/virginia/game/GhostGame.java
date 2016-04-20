@@ -62,6 +62,11 @@ public class GhostGame extends Game {
 	boolean onGhost;
 	Map map;
 
+	Rectangle door;
+	Sprite doorSprite;
+	Rectangle button;
+	Sprite buttonSprite;
+
 	/**
 	 * Constructor. See constructor in Game.java for details on the parameters
 	 * given
@@ -82,9 +87,9 @@ public class GhostGame extends Game {
 		}
 		TweenJuggler.getInstance();
 
-//		spikes = new ArrayList<Sprite>();
+		// spikes = new ArrayList<Sprite>();
 
-//		SoundManager.playMusic(bgm);
+		// SoundManager.playMusic(bgm);
 		spikeHitboxes = new ArrayList<Rectangle>();
 
 		platformHitboxes = new ArrayList<Rectangle>();
@@ -109,15 +114,28 @@ public class GhostGame extends Game {
 							} else if (l.getName().equals("Spawn")) {
 								startingX = j * t.getWidth();
 								startingY = i * t.getHeight();
+							} else if (l.getName().equals("Door")) {
+								door = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+										map.getTileWidth(), map.getTileHeight());
+								doorSprite = s;
+								platformHitboxes.add(door);
+								link.addCollidable(door);
+							} else if (l.getName().equals("Button")) {
+								button = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+										map.getTileWidth(), map.getTileHeight());
+								buttonSprite = s;
+								platformHitboxes.add(button);
+								//link.addCollidable(button);
 							}
 						}
 					}
 				}
 			}
 		}
-		/* Two passes, grabbing horizontal tile groups then vertical tile groups for
-		 * both the platforms and spikes(obstacles) to group adjacent tiles into one larger
-		 * hitbox
+		/*
+		 * Two passes, grabbing horizontal tile groups then vertical tile groups
+		 * for both the platforms and spikes(obstacles) to group adjacent tiles
+		 * into one larger hitbox
 		 */
 		for (int i = 0; i < map.getHeight(); i++) {
 			for (int j = 0; j < map.getWidth(); j++) {
@@ -143,8 +161,8 @@ public class GhostGame extends Game {
 			for (int j = 0; j < map.getHeight(); j++) {
 				if (platformIndicators[j][i]) {
 					int length = 0;
-					while((j+length) < map.getHeight() && platformIndicators[j+length][i]){
-						platformIndicators[j+length][i] = false;
+					while ((j + length) < map.getHeight() && platformIndicators[j + length][i]) {
+						platformIndicators[j + length][i] = false;
 						length += 1;
 					}
 					Rectangle r = new Rectangle(i * map.getTileWidth(), j * map.getTileHeight(), map.getTileWidth(),
@@ -179,8 +197,8 @@ public class GhostGame extends Game {
 			for (int j = 0; j < map.getHeight(); j++) {
 				if (spikeIndicators[j][i]) {
 					int length = 0;
-					while((j+length) < map.getHeight() && spikeIndicators[j+length][i]){
-						spikeIndicators[j+length][i] = false;
+					while ((j + length) < map.getHeight() && spikeIndicators[j + length][i]) {
+						spikeIndicators[j + length][i] = false;
 						length += 1;
 					}
 					Rectangle r = new Rectangle(i * map.getTileWidth(), j * map.getTileHeight(), map.getTileWidth(),
@@ -205,7 +223,7 @@ public class GhostGame extends Game {
 		nextGhost = new ArrayList<double[]>();
 		record = true;
 		draw = true;
-		for(Sprite s: sprites){
+		for (Sprite s : sprites) {
 			game.addChild(s);
 		}
 		game.addChild(ghost);
@@ -219,26 +237,50 @@ public class GhostGame extends Game {
 	@Override
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
-		
+
 		int w = getMainFrame().getWidth();
 		int h = getMainFrame().getHeight();
-		int square = Math.min(w,h);
-//		System.out.println(square);
-//		System.out.println(width);
+		int square = Math.min(w, h);
 
-//		game.setScaleX((double)square/width);
-//		game.setScaleY((double)square/height);
-
-//		game.setScaleX(square/width);
-		if(game != null)
-			game.setScaleY(square/height);
-
-//		System.out.println(game.getScaleX());
-//		System.out.println(link.getScaleX());
-//		game.update(pressedKeys);
-//	
 		
+		//checks whether button is being touched by ghost, removes door
+		if (link != null && platformHitboxes != null && game != null && ghost != null){
+			if(!game.getChildren().contains(doorSprite)){
+				game.addChild(doorSprite);
+				System.out.println("?");
+			}
+			if(!platformHitboxes.contains(door)){
+				platformHitboxes.add(door);
+				System.out.println("??");
+			}
+			if(!link.getCollidableObjects().contains(door)){
+				link.addCollidable(door);
+				System.out.println("???");
+			}
+			if (ghost.getHitbox().intersects(button)||link.getHitbox().intersects(button)) {
+				if(link.getPlatform() != null){
+					if(link.getPlatform().equals(door)){
+						link.setPlatform(null);
+					}
+				}
+					game.removeChild(doorSprite);
+					platformHitboxes.remove(door);
+					link.getCollidableObjects().remove(door);
+					System.out.println("z");
+				
+			}
+		}
 		
+		// game.setScaleX((double)square/width);
+		// game.setScaleY((double)square/height);
+
+		// game.setScaleX(square/width);
+		// if(game != null)
+		// game.setScaleY((double)square/height);
+
+		// game.update(pressedKeys);
+		//
+
 		if (link != null && link.hasPhysics()) {
 
 			// attempt at fixing some xVel physics
@@ -246,10 +288,12 @@ public class GhostGame extends Game {
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
-					link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
+				link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
 			}
-			//Gravity logic is dependent on being on a platform, ghost is no longer considered a platform, this line allows jumping off the ghost
-			if(onGhost)
+			// Gravity logic is dependent on being on a platform, ghost is no
+			// longer considered a platform, this line allows jumping off the
+			// ghost
+			if (onGhost)
 				link.setAccelerationY(0.0f);
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
@@ -261,9 +305,9 @@ public class GhostGame extends Game {
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
 				link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
-				if(onGhost){
+				if (onGhost) {
 					ghostOffset += -HORIZONTAL_MOVEMENT_DELTA;
-					if(ghostOffset < -GHOST_EXTENSION){
+					if (ghostOffset < -GHOST_EXTENSION) {
 						onGhost = false;
 						ghostOffset = 0;
 					}
@@ -275,9 +319,9 @@ public class GhostGame extends Game {
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))) {
 				link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
-				if(onGhost){
+				if (onGhost) {
 					ghostOffset += HORIZONTAL_MOVEMENT_DELTA;
-					if(ghostOffset > GHOST_EXTENSION){
+					if (ghostOffset > GHOST_EXTENSION) {
 						onGhost = false;
 						ghostOffset = 0;
 					}
@@ -309,8 +353,8 @@ public class GhostGame extends Game {
 			}
 		}
 		/*
-		 * Checks if the player has landed on the ghost
-		 * Still need to make this collision easier for the player to force
+		 * Checks if the player has landed on the ghost Still need to make this
+		 * collision easier for the player to force
 		 */
 		if (link != null && ghost != null && ghost.isVisible() && !onGhost) {
 			if (link.checkPlatformCollision(ghost.getNextHitbox())) {
@@ -318,27 +362,57 @@ public class GhostGame extends Game {
 			}
 		}
 		/*
-		 * Checks to see if the player is still on the platform that he last landed on
+		 * Checks to see if the player is still on the platform that he last
+		 * landed on
 		 */
 		if (link != null && link.getPlatform() != null) {
 			if (!link.checkStillOnPlatform(link.getPlatform())) {
 				link.setPlatform(null);
 			}
 		}
+
+		//checks whether button is being touched by link.
+//		if (link != null && platformHitboxes != null && game != null ){
+//			if(!game.getChildren().contains(doorSprite)){
+//				game.addChild(doorSprite);
+//			}
+//			if(!platformHitboxes.contains(door)){
+//				platformHitboxes.add(door);
+//			}
+//			if(!link.getCollidableObjects().contains(door)){
+//				link.addCollidable(door);
+//			}
+//			if (link.getHitbox().intersects(button)) {
+//				game.removeChild(doorSprite);
+//				platformHitboxes.remove(door);
+//				link.getCollidableObjects().remove(door);
+//
+//			}
+//		}
+		
+
 		/*
-		 * Checks all platforms in the world to see if the player has landed on one
+		 * Checks all platforms in the world to see if the player has landed on
+		 * one
 		 */
 		if (link != null && platformHitboxes != null && link.getPlatform() == null) {
+			
+		
 			for (Rectangle platform : platformHitboxes) {
 				if (link.checkPlatformCollision(platform)) {
 					link.setPlatform(platform);
+
 					break;
 				}
+				
+			
+				
 			}
+
 		}
 		/*
-		 * Checks if the player has collided with an obstacle
-		 * If a collision is present, the player is set back at the spawn point along with a ghost
+		 * Checks if the player has collided with an obstacle If a collision is
+		 * present, the player is set back at the spawn point along with a ghost
 		 */
 		if (spikeHitboxes != null) {
 			for (Rectangle spike : spikeHitboxes) {
@@ -367,11 +441,7 @@ public class GhostGame extends Game {
 		}
 		if (TweenJuggler.getInstance() != null)
 			TweenJuggler.nextFrame();
-		/*
-		 * Make sure mario is not null. Sometimes Swing can auto cause an extra
-		 * frame to go before everything is initialized
-		 */
-		// attempting a reset button:
+
 		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R))) {
 
 			locationTracker.clear();
@@ -397,28 +467,36 @@ public class GhostGame extends Game {
 			record = true;
 		}
 		/*
-		 * Checks if the player has collided with any of the platforms
-		 * Any collisions will knock the player off of the ghost
+		 * Checks if the player has collided with any of the platforms Any
+		 * collisions will knock the player off of the ghost
 		 */
-		if(link != null){
+		if (link != null) {
 			boolean bumped = link.checkCollidables();
-			if(onGhost && bumped){
+			if (onGhost && bumped) {
 				onGhost = false;
 				ghostOffset = 0;
 			}
 		}
 		/*
-		 * Locks the player onto the ghost unless this update loop contained a user input or the player
-		 * hit another platform while riding the ghost
+		 * Locks the player onto the ghost unless this update loop contained a
+		 * user input or the player hit another platform while riding the ghost
 		 */
-		if(onGhost){
-			link.setPositionX(ghost.getPositionX()+ghostOffset);
-			link.setPositionY((float) (ghost.getPositionY()-(link.getUnscaledHeight()*link.getScaleY())));
+		if (onGhost) {
+			link.setPositionX(ghost.getPositionX() + ghostOffset);
+			link.setPositionY((float) (ghost.getPositionY() - (link.getUnscaledHeight() * link.getScaleY())));
 			link.setVelocityX(0);
 			link.setVelocityY(0);
 		}
 		if (link != null)
 			link.update(pressedKeys);
+		if (doorSprite != null)
+			doorSprite.update(pressedKeys);
+		if (buttonSprite != null)
+			buttonSprite.update(pressedKeys);
+		if (game != null) {
+			// game.update(pressedKeys);
+		}
+
 	}
 
 	/**
@@ -430,32 +508,28 @@ public class GhostGame extends Game {
 	public void draw(Graphics g) {
 		if (draw) {
 			super.draw(g);
-			/*
-			 * Same, just check for null in case a frame gets thrown in before
-			 * Mario is initialized
-			 */
-//
-//			
-			game.draw(g);
-//			
-//			
-//			g.drawString("PAR: 3", 450, 110);
-//			g.drawString("Death Count: " + deathCount, 450, 90); 
-//	
-//			
 
-//			if (sprites != null) {
-//				for (Sprite s : sprites) {
-//					s.draw(g);
-//				}
-//			}
-//			if (ghost != null)
-//				ghost.draw(g);
-//			if (link != null)
-//				link.draw(g);
+			//
+			//
+			game.draw(g);
+			//
+			//
+			// g.drawString("PAR: 3", 450, 110);
+			// g.drawString("Death Count: " + deathCount, 450, 90);
+			//
+			//
+
+			// if (sprites != null) {
+			// for (Sprite s : sprites) {
+			// s.draw(g);
+			// }
+			// }
+			// if (ghost != null)
+			// ghost.draw(g);
+			// if (link != null)
+			// link.draw(g);
 			g.drawString("PAR: 3", 450, 110);
 			g.drawString("Death Count: " + deathCount, 450, 90);
-
 
 		}
 	}
@@ -469,8 +543,7 @@ public class GhostGame extends Game {
 	 */
 	public static void main(String[] args) {
 		GhostGame game = new GhostGame();
-		System.out.println(game.getScaleX());
-		
+
 		game.start();
 
 	}

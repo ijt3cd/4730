@@ -247,6 +247,14 @@ public class DisplayObject extends EventDispatcher {
 	public boolean checkCollision(DisplayObject other) {
 		return this.getHitbox().intersects(other.getHitbox());
 	}
+	public List<Rectangle> getCollidableObjects() {
+		return collidableObjects;
+	}
+
+	public void setCollidableObjects(List<Rectangle> collidableObjects) {
+		this.collidableObjects = collidableObjects;
+	}
+
 	public boolean checkCollidables(){
 		for (Rectangle each : collidableObjects) {
 			if (this.collidesWith(each) && (this.platform == null || (this.platform.x != each.x || this.platform.y != each.y))) {
