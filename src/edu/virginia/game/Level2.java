@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import edu.virginia.engine.display.AnimatedSprite;
-import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.DisplayObjectContainer;
 import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;
@@ -30,10 +29,6 @@ import tiled.io.TMXMapReader;
  */
 public class Level2 extends Game {
 
-	private static final int HORIZONTAL_MOVEMENT_DELTA = 6;
-	private static final double JUMP_UP_DELTA = 7.75;
-	private static final double HORIZONTAL_MOVEMENT_DECAY = 0.8;
-	private static final double GHOST_EXTENSION = 50;
 	public static int width = 1050;
 	public static int height = 1050;
 
@@ -86,9 +81,8 @@ public class Level2 extends Game {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		getMainFrame().setSize(map.getWidth()*map.getTileWidth(), map.getHeight()*map.getTileHeight());
+		getMainFrame().setSize(map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileHeight());
 
-		
 		TweenJuggler.getInstance();
 
 		// spikes = new ArrayList<Sprite>();
@@ -128,8 +122,8 @@ public class Level2 extends Game {
 								button = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
 										map.getTileWidth(), map.getTileHeight());
 								buttonSprite = s;
-//								platformHitboxes.add(button);
-							} else if (l.getName().equals("Goal")){
+								// platformHitboxes.add(button);
+							} else if (l.getName().equals("Goal")) {
 								goal = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
 										map.getTileWidth(), map.getTileHeight());
 							}
@@ -248,41 +242,42 @@ public class Level2 extends Game {
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
 
-		if(link!=null&&goal!=null){
-			if(link.getHitbox().intersects(goal)){
+		if (link != null && goal != null) {
+			if (link.getHitbox().intersects(goal)) {
 				Level3 l3 = new Level3();
 				l3.start();
 				exitGame();
 			}
 		}
-		//checks whether button is being touched by ghost, removes door
-		if (link != null && platformHitboxes != null && game != null && ghost != null && button != null && door != null){
-			if(!game.getChildren().contains(doorSprite)){
+		// checks whether button is being touched by ghost, removes door
+		if (link != null && platformHitboxes != null && game != null && ghost != null && button != null
+				&& door != null) {
+			if (!game.getChildren().contains(doorSprite)) {
 				game.addChild(doorSprite);
 
 			}
-			if(!platformHitboxes.contains(door)){
+			if (!platformHitboxes.contains(door)) {
 				platformHitboxes.add(door);
-				System.out.println("??");
+				// System.out.println("??");
 			}
-			if(!link.getCollidableObjects().contains(door)){
+			if (!link.getCollidableObjects().contains(door)) {
 				link.addCollidable(door);
-				System.out.println("???");
+				// System.out.println("???");
 			}
-			if (ghost.getHitbox().intersects(button)||link.getHitbox().intersects(button)) {
-				if(link.getPlatform() != null){
-					if(link.getPlatform().equals(door)){
+			if (ghost.getHitbox().intersects(button) || link.getHitbox().intersects(button)) {
+				if (link.getPlatform() != null) {
+					if (link.getPlatform().equals(door)) {
 						link.setPlatform(null);
 					}
 				}
-					game.removeChild(doorSprite);
-					platformHitboxes.remove(door);
-					link.getCollidableObjects().remove(door);
-					System.out.println("z");
-				
+				game.removeChild(doorSprite);
+				platformHitboxes.remove(door);
+				link.getCollidableObjects().remove(door);
+				// System.out.println("z");
+
 			}
 		}
-		
+
 		// game.setScaleX((double)square/width);
 		// game.setScaleY((double)square/height);
 
@@ -361,11 +356,11 @@ public class Level2 extends Game {
 				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
 				currIndex++;
 			} else {
-				if(onGhost){
+				if (onGhost) {
 					onGhost = false;
 				}
 				currIndex = 0;
-				
+
 			}
 		}
 		/*
@@ -387,42 +382,38 @@ public class Level2 extends Game {
 			}
 		}
 
-		//checks whether button is being touched by link.
-//		if (link != null && platformHitboxes != null && game != null ){
-//			if(!game.getChildren().contains(doorSprite)){
-//				game.addChild(doorSprite);
-//			}
-//			if(!platformHitboxes.contains(door)){
-//				platformHitboxes.add(door);
-//			}
-//			if(!link.getCollidableObjects().contains(door)){
-//				link.addCollidable(door);
-//			}
-//			if (link.getHitbox().intersects(button)) {
-//				game.removeChild(doorSprite);
-//				platformHitboxes.remove(door);
-//				link.getCollidableObjects().remove(door);
-//
-//			}
-//		}
-		
+		// checks whether button is being touched by link.
+		// if (link != null && platformHitboxes != null && game != null ){
+		// if(!game.getChildren().contains(doorSprite)){
+		// game.addChild(doorSprite);
+		// }
+		// if(!platformHitboxes.contains(door)){
+		// platformHitboxes.add(door);
+		// }
+		// if(!link.getCollidableObjects().contains(door)){
+		// link.addCollidable(door);
+		// }
+		// if (link.getHitbox().intersects(button)) {
+		// game.removeChild(doorSprite);
+		// platformHitboxes.remove(door);
+		// link.getCollidableObjects().remove(door);
+		//
+		// }
+		// }
 
 		/*
 		 * Checks all platforms in the world to see if the player has landed on
 		 * one
 		 */
 		if (link != null && platformHitboxes != null && link.getPlatform() == null) {
-			
-		
+
 			for (Rectangle platform : platformHitboxes) {
 				if (link.checkPlatformCollision(platform)) {
 					link.setPlatform(platform);
 
 					break;
 				}
-				
-			
-				
+
 			}
 
 		}
@@ -512,7 +503,7 @@ public class Level2 extends Game {
 		if (game != null) {
 			// game.update(pressedKeys);
 		}
-	
+
 	}
 
 	/**
@@ -557,5 +548,5 @@ public class Level2 extends Game {
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
 	 */
-	
+
 }
