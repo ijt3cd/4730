@@ -125,7 +125,7 @@ public class Level2 extends Game {
 								button = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
 										map.getTileWidth(), map.getTileHeight());
 								buttonSprite = s;
-								platformHitboxes.add(button);
+//								platformHitboxes.add(button);
 							} else if (l.getName().equals("Goal")){
 								goal = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
 										map.getTileWidth(), map.getTileHeight());
@@ -541,7 +541,7 @@ public class Level2 extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
-			g.drawString("PAR: 3", 450, 110);
+			g.drawString("PAR: 1", 450, 110);
 			g.drawString("Death Count: " + deathCount, 450, 90);
 
 		}
