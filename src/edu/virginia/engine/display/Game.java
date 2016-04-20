@@ -36,7 +36,7 @@ public class Game extends DisplayObjectContainer implements ActionListener, KeyL
 	protected static final int HORIZONTAL_MOVEMENT_DELTA = 6;
 	protected static final double JUMP_UP_DELTA = 7.75;
 	protected static final double HORIZONTAL_MOVEMENT_DECAY = 0.8;
-	protected static final double GHOST_EXTENSION = 40;
+	protected static final double GHOST_EXTENSION = 50;
 
 	public Game(String gameId, int width, int height) {
 		super(gameId);

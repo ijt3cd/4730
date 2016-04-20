@@ -72,12 +72,12 @@ public class DisplayObjectContainer extends DisplayObject {
 	@Override
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
-		for (int i = 0; i < children.size(); i++) {
-			children.get(i).setAlpha(this.getAlpha());
-			children.get(i).setScaleX(this.getScaleX());
-			children.get(i).setScaleY(this.getScaleY());
-	
-		}
+//		for (int i = 0; i < children.size(); i++) {
+//			children.get(i).setAlpha(this.getAlpha());
+//			children.get(i).setScaleX(this.getScaleX());
+//			children.get(i).setScaleY(this.getScaleY());
+//	
+//		}
 	}
 
 	@Override
