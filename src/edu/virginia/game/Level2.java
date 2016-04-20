@@ -29,8 +29,9 @@ import tiled.io.TMXMapReader;
  */
 public class Level2 extends Game {
 
-	public static int width = 1050;
-	public static int height = 1050;
+
+	public static int width = 30*22;
+	public static int height = 30*22;
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
@@ -553,8 +554,8 @@ public class Level2 extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
-			g.drawString("PAR: 1", 450, 110);
-			g.drawString("Death Count: " + deathCount, 450, 90);
+			g.drawString("PAR: 1", width/2-30, 110);
+			g.drawString("Death Count: " + deathCount, width/2-60, 90);
 
 		}
 	}

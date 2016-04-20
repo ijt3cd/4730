@@ -3,27 +3,22 @@
  <tileset firstgid="1" source="spritesheet.tsx"/>
  <layer name="Tile Layer 1" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzt01sKglAQgOERyi5Wi+hy1HQrLrANlmW3JfQ/9CAHwUtDBM3DB3IY/AXnlCJSGmOMMX/qiNP7+YwLKlxxwx0PPJVnR4HIGCEmmGKGOSIssMQq0J1dY4MtdnCIkSDFHhly5dnY/CxX+19D9d0V5xm6Vwdp57eauvWzLu/8tOt/w7e6/p3U7BY9uoVyN5NurNvsBS2eKnU=
+   eJztlkkSgjAQReEoXhsVx0PgPBwCZ+Uo/oVUYeob+kuKFYu3IvDTr7tIkjiK+mAAhiAFIzAGEzAFMzAHScC1GViAJViBNdiALdiBPTiAY+C1OTiBM7iAK7iBO3iAJ3iBIvDa0ofiMKRnxaEvT/WsOKyrVfHsc5eRdUpf2PNe9A3zq2SwvjDPbi7zq/Se9YV5dnNTUp/S+6JSu88R86zUV+f91zeYZ6U+S8+tnuv+BXnMZ9z37j/zzP4F+SdXybbOs+WbSq7Vs2W+lBm0erbMlzKDPs8WXyHOQTfX4ovtRT0H3VxLLWwv6n3Dza3mKb1r6rmte52b29a9zufZei8oa2ziuQlNPHd0hOANcqQAHg==
   </data>
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjGRwYNTeUXtH7R21d9TeUUAhqCGAfRkhmFgAU0/IXGLNIsVeaoGRZu8oGLoAAPTbEw0=
-  </data>
- </layer>
- <layer name="Spikes" width="30" height="30">
-  <data encoding="base64" compression="zlib">
-   eJztzjENAAAIwDAUYAv/jrBAwgFHm+xfBPBBXQ8AACzkMH5p36EA1A==
+   eJxjYBgFo2D4ABY0zDpA7lActXfU3lF7R+0dtXfU3lF7B8Re9LYAsXgg2wzEunEUjAJaAACw5wLN
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6Dbv7QxPh0kIAEA4IVpB4BrFhJHAAI=
+   eJztzjENAAAIA7D5Nw0O9hGeVkETuDHfAQAAoFq3AQEA
   </data>
  </layer>
  <layer name="Goal" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjENAAAIA7D5F03QsHDwtAqaAABAb74DwNkCzq0A/w==
+   eJztzjENAAAIA7D5F02QsIvwtAqaAAAAzXwH4MAC4H4A/w==
   </data>
  </layer>
 </map>

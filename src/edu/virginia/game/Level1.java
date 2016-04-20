@@ -30,8 +30,10 @@ import tiled.io.TMXMapReader;
  */
 public class Level1 extends Game {
 
+
 	public static int width = 30 * 22;
 	public static int height = 30 * 22;
+
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
@@ -231,6 +233,7 @@ public class Level1 extends Game {
 		}
 		game.addChild(ghost);
 		game.addChild(link);
+		this.addChild(game);
 	}
 
 	/**
@@ -244,7 +247,15 @@ public class Level1 extends Game {
 		int w = getMainFrame().getWidth();
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
+		
+		System.out.println(game.getScaleX());
+		System.out.println(game.getScaleY());
+		game.setScaleX((double)square/width);
+		game.setScaleY((double)square/height);
 
+
+		game.update(pressedKeys);
+		
 		if (link != null && goal != null) {
 			if (link.getHitbox().intersects(goal)) {
 				Level2 l2 = new Level2();
@@ -277,15 +288,8 @@ public class Level1 extends Game {
 			}
 		}
 
-		// game.setScaleX((double)square/width);
-		// game.setScaleY((double)square/height);
 
-		// game.setScaleX(square/width);
-		// if(game != null)
-		// game.setScaleY((double)square/height);
-
-		// game.update(pressedKeys);
-		//
+		
 
 		if (link != null && link.hasPhysics()) {
 
@@ -534,7 +538,7 @@ public class Level1 extends Game {
 
 			//
 			//
-			game.draw(g);
+//			game.draw(g);
 			//
 			//
 			// g.drawString("PAR: 3", 450, 110);
@@ -551,8 +555,8 @@ public class Level1 extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
-			g.drawString("PAR: 1", 450, 110);
-			g.drawString("Death Count: " + deathCount, 450, 90);
+			g.drawString("PAR: 1", width/2-30, 110);
+			g.drawString("Death Count: " + deathCount, width/2-60, 90);
 
 		}
 	}
