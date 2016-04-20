@@ -76,6 +76,7 @@ public class DisplayObjectContainer extends DisplayObject {
 			children.get(i).setAlpha(this.getAlpha());
 			children.get(i).setScaleX(this.getScaleX());
 			children.get(i).setScaleY(this.getScaleY());
+	
 		}
 	}
 

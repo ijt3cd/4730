@@ -73,7 +73,7 @@ public class GhostGame extends Game {
 		sprites = new ArrayList<Sprite>();
 		TMXMapReader mapReader = new TMXMapReader();
 		try {
-			map = mapReader.readMap("resources/level3.tmx");
+			map = mapReader.readMap("resources/level4.tmx");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,15 +218,17 @@ public class GhostGame extends Game {
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
 		
-		int w = getMainFrame().getWidth();
-		int h = getMainFrame().getHeight();
-		int square = Math.min(w,h);
+//		int w = getMainFrame().getWidth();
+//		int h = getMainFrame().getHeight();
+//		int square = Math.min(w,h);
 //		System.out.println(square);
 //		System.out.println(width);
-//		game.setScaleX(square/width);
-		game.setScaleY(square/height);
+//		game.setScaleX((double)square/width);
+//		game.setScaleY((double)square/height);
 //		System.out.println(game.getScaleX());
-	
+//		System.out.println(link.getScaleX());
+//		game.update(pressedKeys);
+//	
 		
 		
 		if (link != null && link.hasPhysics()) {
@@ -409,7 +411,7 @@ public class GhostGame extends Game {
 			 */
 //
 //			
-//			game.draw(g);
+			game.draw(g);
 //			
 //			
 //			g.drawString("PAR: 3", 450, 110);
@@ -417,15 +419,15 @@ public class GhostGame extends Game {
 //	
 //			
 
-			if (sprites != null) {
-				for (Sprite s : sprites) {
-					s.draw(g);
-				}
-			}
-			if (ghost != null)
-				ghost.draw(g);
-			if (link != null)
-				link.draw(g);
+//			if (sprites != null) {
+//				for (Sprite s : sprites) {
+//					s.draw(g);
+//				}
+//			}
+//			if (ghost != null)
+//				ghost.draw(g);
+//			if (link != null)
+//				link.draw(g);
 			g.drawString("PAR: 3", 450, 110);
 			g.drawString("Death Count: " + deathCount, 450, 90);
 
@@ -442,6 +444,7 @@ public class GhostGame extends Game {
 	 */
 	public static void main(String[] args) {
 		GhostGame game = new GhostGame();
+		System.out.println(game.getScaleX());
 		
 		game.start();
 
