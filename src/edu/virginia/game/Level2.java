@@ -256,7 +256,7 @@ public class Level2 extends Game {
 		if (link != null && platformHitboxes != null && game != null && ghost != null && button != null && door != null){
 			if(!game.getChildren().contains(doorSprite)){
 				game.addChild(doorSprite);
-				System.out.println("?");
+
 			}
 			if(!platformHitboxes.contains(door)){
 				platformHitboxes.add(door);

@@ -245,13 +245,13 @@ public class Level3 extends Game {
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
 
-		if(link!=null&&goal!=null){
-			if(link.getHitbox().intersects(goal)){
-				Level2 l2 = new Level2();
-				l2.start();
-				exitGame();
-			}
-		}
+//		if(link!=null&&goal!=null){
+//			if(link.getHitbox().intersects(goal)){
+//				Level4 l4 = new Level4();
+//				l4.start();
+//				exitGame();
+//			}
+//		}
 		//checks whether button is being touched by ghost, removes door
 		if (link != null && platformHitboxes != null && game != null && ghost != null && button != null && door != null){
 			if(!game.getChildren().contains(doorSprite)){

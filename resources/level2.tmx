@@ -3,12 +3,12 @@
  <tileset firstgid="1" source="spritesheet.tsx"/>
  <layer name="Tile Layer 1" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztwwENAAAMAiBfzv6RDHLY6CVVVVX13QF1l/md
+   eJztz8cNhFAQBFHIbBcWGwRucUHghIubOhDCl0DQh3eaklrj25bli4iIiDzQB184cPGDd94ChIgQG24TpMiQo8AfJSrUaNAabjv0GDBiwnxasGLDbridX6a7YHO7wd/yTAfxbDv6
   </data>
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztw7ENADAIA7Dwbvl/5wWWisWWnAAAAFuvkj4IPwzHcgyo
+   eJxjYBgFo2AUjIJRMApGwSgYBaOAeODLCMEwNr3tpBeA2YlubxaQnz0AeBSMAloAAO5iDxg=
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
@@ -18,7 +18,7 @@
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztyjENAAAIBLF3h39HKGBjgbTJbZcAAMB/NbT1w0UN6U8DVQ==
+   eJztwwENAAAIA6C3s38jE7yAwkYCAAD3TQmfLSOnAas=
   </data>
  </layer>
  <layer name="Tile Layer 2" width="30" height="30">
@@ -28,12 +28,17 @@
  </layer>
  <layer name="Door" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6D3z2UwY9w5SEACAMBn0w4AZy02vQDF
+   eJztzjENAAAIA7D5t4UxNCwcPK2CJgAA0JvvAHC274YAxA==
   </data>
  </layer>
  <layer name="Button" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6AHtH8eY9w5SEACAAA/TTsAxy38wABN
+   eJztzgEJAAAMA6D1e/8+jzEGmsAEAAD2XTsAgx7/eABM
+  </data>
+ </layer>
+ <layer name="Goal" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7D5F02QsIvwtAqaAAAAzXwH4MAC4H4A/w==
   </data>
  </layer>
 </map>

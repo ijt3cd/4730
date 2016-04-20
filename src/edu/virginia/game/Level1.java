@@ -256,15 +256,12 @@ public class Level1 extends Game {
 		if (link != null && platformHitboxes != null && game != null && ghost != null && button != null && door != null){
 			if(!game.getChildren().contains(doorSprite)){
 				game.addChild(doorSprite);
-				System.out.println("?");
 			}
 			if(!platformHitboxes.contains(door)){
 				platformHitboxes.add(door);
-				System.out.println("??");
 			}
 			if(!link.getCollidableObjects().contains(door)){
 				link.addCollidable(door);
-				System.out.println("???");
 			}
 			if (ghost.getHitbox().intersects(button)||link.getHitbox().intersects(button)) {
 				if(link.getPlatform() != null){
@@ -275,7 +272,6 @@ public class Level1 extends Game {
 					game.removeChild(doorSprite);
 					platformHitboxes.remove(door);
 					link.getCollidableObjects().remove(door);
-					System.out.println("z");
 				
 			}
 		}
