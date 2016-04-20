@@ -81,11 +81,14 @@ public class Level3 extends Game {
 		sprites = new ArrayList<Sprite>();
 		TMXMapReader mapReader = new TMXMapReader();
 		try {
-			map = mapReader.readMap("resources/level1.tmx");
+			map = mapReader.readMap("resources/level3.tmx");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		getMainFrame().setSize(map.getWidth()*map.getTileWidth(), map.getHeight()*map.getTileHeight());
+
+		
 		TweenJuggler.getInstance();
 
 		// spikes = new ArrayList<Sprite>();
@@ -245,26 +248,23 @@ public class Level3 extends Game {
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
 
-//		if(link!=null&&goal!=null){
-//			if(link.getHitbox().intersects(goal)){
-//				Level4 l4 = new Level4();
-//				l4.start();
-//				exitGame();
-//			}
-//		}
+		if(link!=null&&goal!=null){
+			if(link.getHitbox().intersects(goal)){
+				Level4 l4 = new Level4();
+				l4.start();
+				exitGame();
+			}
+		}
 		//checks whether button is being touched by ghost, removes door
 		if (link != null && platformHitboxes != null && game != null && ghost != null && button != null && door != null){
 			if(!game.getChildren().contains(doorSprite)){
 				game.addChild(doorSprite);
-				System.out.println("?");
 			}
 			if(!platformHitboxes.contains(door)){
 				platformHitboxes.add(door);
-				System.out.println("??");
 			}
 			if(!link.getCollidableObjects().contains(door)){
 				link.addCollidable(door);
-				System.out.println("???");
 			}
 			if (ghost.getHitbox().intersects(button)||link.getHitbox().intersects(button)) {
 				if(link.getPlatform() != null){
@@ -275,7 +275,6 @@ public class Level3 extends Game {
 					game.removeChild(doorSprite);
 					platformHitboxes.remove(door);
 					link.getCollidableObjects().remove(door);
-					System.out.println("z");
 				
 			}
 		}

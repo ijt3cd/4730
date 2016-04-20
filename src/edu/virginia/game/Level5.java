@@ -28,14 +28,14 @@ import tiled.io.TMXMapReader;
  * with just a couple lines of code although, for now, it won't be a very fun
  * game :)
  */
-public class Level1 extends Game {
+public class Level5 extends Game {
 
 	private static final int HORIZONTAL_MOVEMENT_DELTA = 6;
 	private static final double JUMP_UP_DELTA = 7.75;
 	private static final double HORIZONTAL_MOVEMENT_DECAY = 0.8;
 	private static final double GHOST_EXTENSION = 50;
-	public static int width = 30*22;
-	public static int height = 30*22;
+	public static int width = 1050;
+	public static int height = 1050;
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
@@ -75,13 +75,13 @@ public class Level1 extends Game {
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
 	 */
-	public Level1() {
+	public Level5() {
 		super("Ghost Game", width, height);
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
 		sprites = new ArrayList<Sprite>();
 		TMXMapReader mapReader = new TMXMapReader();
 		try {
-			map = mapReader.readMap("resources/level1.tmx");
+			map = mapReader.readMap("resources/level5.tmx");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -249,8 +249,8 @@ public class Level1 extends Game {
 
 		if(link!=null&&goal!=null){
 			if(link.getHitbox().intersects(goal)){
-				Level2 l2 = new Level2();
-				l2.start();
+				Victory v1 = new Victory();
+				v1.start();
 				exitGame();
 			}
 		}
@@ -552,12 +552,5 @@ public class Level1 extends Game {
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
 	 */
-	public static void main(String[] args) {
-		Level1 game = new Level1();
-		
-		game.start();
-		
-		
 
-	}
 }

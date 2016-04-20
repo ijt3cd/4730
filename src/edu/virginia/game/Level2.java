@@ -86,6 +86,9 @@ public class Level2 extends Game {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		getMainFrame().setSize(map.getWidth()*map.getTileWidth(), map.getHeight()*map.getTileHeight());
+
+		
 		TweenJuggler.getInstance();
 
 		// spikes = new ArrayList<Sprite>();

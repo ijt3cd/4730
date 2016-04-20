@@ -8,12 +8,12 @@
  </layer>
  <layer name="Tile Layer 2" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztyzENADAMBLGUP5cSCakg+KVTpNrjSVcFAAB/6/P23fClDtsMJscCKw==
+   eJztyzENAAAIwDDw7wUjmEIBBx9Hey5ZBAAA0Hl/anm2Dt8MI5cCKw==
   </data>
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzt0FEKABAQhGEO6CLkanJECiU1tQ/i5f9qCqnZ1jkAAADALviRdX7d+crqPHtjv6eZLGba/9zKrohe9X5L/dSr9qn2D7sGnVgSsA==
+   eJzt0FEKABAQhGEO6CLkanJECiU1tQ94+r+aomS2dQ4AAACwC35knX93/rI6z97Y72kmi5n2N7eyK6K3Pt6R+l/Nc4vap9o/7BqhwBKy
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
@@ -23,7 +23,7 @@
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzt0LEJAAAIwDC/8/+P3AUHRyWBPtAIAAD4L4fY6c88vK0AIKYCOQ==
+   eJzt0DENAAAIBLF3h39HGGBghjY5A5cAAMAftYyZN7c026wDDg==
   </data>
  </layer>
  <layer name="Door" width="30" height="30">
