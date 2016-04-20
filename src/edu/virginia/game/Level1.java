@@ -248,8 +248,8 @@ public class Level1 extends Game {
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
 		
-		System.out.println(game.getScaleX());
-		System.out.println(game.getScaleY());
+//		System.out.println(game.getScaleX());
+//		System.out.println(game.getScaleY());
 		game.setScaleX((double)square/width);
 		game.setScaleY((double)square/height);
 
