@@ -154,7 +154,20 @@ public class AnimatedSprite extends Sprite {
 				- spriteRec.getX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
 		boolean abovePlatform = (spriteRec.getY() < platform.getY() - 10);
 		boolean fullLanding = spriteRec.getMaxY() > platform.getY() + 10;
-		return intersection && movingDown && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding;
+		if (intersection && movingDown && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding)
+			return true;
+		else{
+			spriteRec = this.getInBetweenHitbox();
+			intersection = spriteRec.intersects(platform) || currentRec.intersects(platform);
+			movingDown = this.getVelocityY() >= 0;
+			halfOnPlatformRight = (spriteRec.getMaxX()
+					- platform.getMaxX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
+			halfOnPlatformLeft = (platform.getX()
+					- spriteRec.getX() < ((this.getUnscaledWidth() * this.getScaleX()) / 2.0));
+			abovePlatform = (spriteRec.getY() < platform.getY() - 10);
+			fullLanding = spriteRec.getMaxY() > platform.getY() + 10;
+			return intersection && movingDown && halfOnPlatformRight && halfOnPlatformLeft && abovePlatform && fullLanding;
+		}
 	}
 
 }

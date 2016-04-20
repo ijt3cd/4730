@@ -367,6 +367,11 @@ public class DisplayObject extends EventDispatcher {
 				(int) (this.getUnscaledWidth() * this.getScaleX()),
 				(int) (this.getUnscaledHeight() * this.getScaleY()));
 	}
+	public Rectangle getInBetweenHitbox() {
+		return new Rectangle((int) (this.positionX + this.velocityX), (int) (this.positionY + 1.5*this.velocityY),
+				(int) (this.getUnscaledWidth() * this.getScaleX()),
+				(int) (this.getUnscaledHeight() * this.getScaleY()));
+	}
 	public Rectangle getReducedHitbox() {
 		return new Rectangle((int) this.positionX, (int) this.positionY,
 				(int) (this.getUnscaledWidth() * this.getScaleX()),
