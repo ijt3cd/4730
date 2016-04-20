@@ -33,7 +33,7 @@ public class Level2 extends Game {
 	private static final int HORIZONTAL_MOVEMENT_DELTA = 6;
 	private static final double JUMP_UP_DELTA = 7.75;
 	private static final double HORIZONTAL_MOVEMENT_DECAY = 0.8;
-	private static final double GHOST_EXTENSION = 50;
+	private static final double GHOST_EXTENSION = 40;
 	public static int width = 1050;
 	public static int height = 1050;
 
