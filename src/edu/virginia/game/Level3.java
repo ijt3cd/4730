@@ -28,7 +28,7 @@ import tiled.io.TMXMapReader;
  * with just a couple lines of code although, for now, it won't be a very fun
  * game :)
  */
-public class GhostGame extends Game {
+public class Level3 extends Game {
 
 	private static final int HORIZONTAL_MOVEMENT_DELTA = 6;
 	private static final double JUMP_UP_DELTA = 7.75;
@@ -66,6 +66,7 @@ public class GhostGame extends Game {
 	Sprite doorSprite;
 	Rectangle button;
 	Sprite buttonSprite;
+	Rectangle goal;
 
 	/**
 	 * Constructor. See constructor in Game.java for details on the parameters
@@ -74,13 +75,13 @@ public class GhostGame extends Game {
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
 	 */
-	public GhostGame() {
+	public Level3() {
 		super("Ghost Game", width, height);
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
 		sprites = new ArrayList<Sprite>();
 		TMXMapReader mapReader = new TMXMapReader();
 		try {
-			map = mapReader.readMap("resources/level4.tmx");
+			map = mapReader.readMap("resources/level1.tmx");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,7 +126,9 @@ public class GhostGame extends Game {
 										map.getTileWidth(), map.getTileHeight());
 								buttonSprite = s;
 								platformHitboxes.add(button);
-								//link.addCollidable(button);
+							} else if (l.getName().equals("Goal")){
+								goal = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+										map.getTileWidth(), map.getTileHeight());
 							}
 						}
 					}
@@ -242,9 +245,15 @@ public class GhostGame extends Game {
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
 
-		
+		if(link!=null&&goal!=null){
+			if(link.getHitbox().intersects(goal)){
+				Level2 l2 = new Level2();
+				l2.start();
+				exitGame();
+			}
+		}
 		//checks whether button is being touched by ghost, removes door
-		if (link != null && platformHitboxes != null && game != null && ghost != null){
+		if (link != null && platformHitboxes != null && game != null && ghost != null && button != null && door != null){
 			if(!game.getChildren().contains(doorSprite)){
 				game.addChild(doorSprite);
 				System.out.println("?");
@@ -500,7 +509,7 @@ public class GhostGame extends Game {
 		if (game != null) {
 			// game.update(pressedKeys);
 		}
-
+	
 	}
 
 	/**
@@ -545,10 +554,5 @@ public class GhostGame extends Game {
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
 	 */
-	public static void main(String[] args) {
-		GhostGame game = new GhostGame();
 
-		game.start();
-
-	}
 }
