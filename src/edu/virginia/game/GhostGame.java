@@ -349,7 +349,11 @@ public class GhostGame extends Game {
 				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
 				currIndex++;
 			} else {
+				if(onGhost){
+					onGhost = false;
+				}
 				currIndex = 0;
+				
 			}
 		}
 		/*
