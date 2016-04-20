@@ -30,8 +30,8 @@ import tiled.io.TMXMapReader;
 public class Level2 extends Game {
 
 
-	public static int width = 1050;
-	public static int height = 1050;
+	public static int width = 30*22;
+	public static int height = 30*22;
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");

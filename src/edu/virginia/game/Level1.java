@@ -536,6 +536,8 @@ public class Level1 extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
+			g.drawString("PAR: 1", width/2-30, 110);
+			g.drawString("Death Count: " + deathCount, width/2-60, 90);
 
 		}
 	}
