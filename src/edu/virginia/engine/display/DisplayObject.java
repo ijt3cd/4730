@@ -50,8 +50,6 @@ public class DisplayObject extends EventDispatcher {
 	private boolean isCollidable;
 	private List<Rectangle> collidableObjects;
 
-	// private boolean onFloor;
-
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and
 	 * position OR the id and a buffered image and position
@@ -381,7 +379,7 @@ public class DisplayObject extends EventDispatcher {
 	public boolean collideFromBottom(Rectangle each) {
 		Rectangle myRectangle = this.getHitbox();
 		Rectangle otherRectangle = each;
-		boolean withinRange = myRectangle.x > otherRectangle.y && myRectangle.getMaxX() < myRectangle.getMaxX();
+		boolean withinRange = (myRectangle.x + 16) > otherRectangle.x && (myRectangle.getMaxX() - 16) < otherRectangle.getMaxX();
 		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y && withinRange;
 	} 
 
