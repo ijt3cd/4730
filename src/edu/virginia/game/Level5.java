@@ -39,7 +39,7 @@ public class Level5 extends Game {
 	/* Create a sprite object for our game. We'll use mario */
 	DisplayObjectContainer game = new DisplayObjectContainer("game");
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
-	AnimatedSprite ghost = new AnimatedSprite("ghost", "Ghost_Sheet.png", 32, 32);
+	AnimatedSprite ghost = new AnimatedSprite("ghost", "ghost_sheet.png", 32, 32);
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> sprites;
 	ArrayList<Rectangle> platformHitboxes;
