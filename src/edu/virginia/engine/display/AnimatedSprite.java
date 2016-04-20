@@ -106,6 +106,11 @@ public class AnimatedSprite extends Sprite {
 
 	@Override
 	public void update(ArrayList<String> pressedKeys) {
+		this.updateImage();
+		super.update(pressedKeys);
+	}
+	
+	public void updateImage(){
 		if (!playing) {
 			this.stopAnimation();
 		}
@@ -123,7 +128,6 @@ public class AnimatedSprite extends Sprite {
 		currentSprite = spriteSheet.getSubimage(currentIndex * spriteWidth, animationRow * spriteHeight, spriteWidth,
 				spriteHeight);
 		this.setImage(currentSprite);
-		super.update(pressedKeys);
 	}
 
 	private void stopAnimation() {

@@ -39,7 +39,7 @@ public class Level4 extends Game {
 	/* Create a sprite object for our game. We'll use mario */
 	DisplayObjectContainer game = new DisplayObjectContainer("game");
 	AnimatedSprite link = new AnimatedSprite("Link", "LinkSprites.png", 120, 130);
-	AnimatedSprite ghost = new AnimatedSprite("ghost", "GhostSprites.png", 32, 48);
+	AnimatedSprite ghost = new AnimatedSprite("ghost", "Ghost_Sheet.png", 32, 32);
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> sprites;
 	ArrayList<Rectangle> platformHitboxes;
@@ -53,6 +53,7 @@ public class Level4 extends Game {
 	Tween ringGrabbed;
 	Tween ringFade;
 	int deathCount = 0;
+	int animationType = 0;
 	float ghostOffset = 0;
 	boolean draw;
 	boolean onGhost;
@@ -186,8 +187,8 @@ public class Level4 extends Game {
 							spikeIndicators[i][j + length] = false;
 						length += 1;
 					}
-					Rectangle r = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
-							length * map.getTileWidth(), map.getTileHeight());
+					Rectangle r = new Rectangle((j * map.getTileWidth()) + 8, (i * map.getTileHeight()) + 8,
+							(length * map.getTileWidth())-8, (map.getTileHeight() - 8));
 					spikeHitboxes.add(r);
 					j = j + length;
 					continue;
@@ -202,8 +203,8 @@ public class Level4 extends Game {
 						spikeIndicators[j + length][i] = false;
 						length += 1;
 					}
-					Rectangle r = new Rectangle(i * map.getTileWidth(), j * map.getTileHeight(), map.getTileWidth(),
-							length * map.getTileHeight());
+					Rectangle r = new Rectangle(i * map.getTileWidth() + 8, j * map.getTileHeight() + 8, map.getTileWidth() - 8,
+							length * map.getTileHeight() - 8);
 					spikeHitboxes.add(r);
 					j = j + length;
 					continue;
@@ -212,7 +213,8 @@ public class Level4 extends Game {
 		}
 		ghost.setVisible(false);
 		ghost.setHasPhysics(true);
-		ghost.addAnimation("float", 0, 2, 75000000, 1, 0);
+		ghost.addAnimation("run_right", 0, 2, 75000000, 1, 2);
+		ghost.addAnimation("run_left", 0, 2, 75000000, 1, 1);
 		link.setPositionX(startingX);
 		link.setPositionY(startingY);
 		link.setScaleX(.3);
@@ -242,7 +244,7 @@ public class Level4 extends Game {
 		int w = getMainFrame().getWidth();
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
-
+		animationType = 0;
 		if (link != null && goal != null) {
 			if (link.getHitbox().intersects(goal)) {
 				Level5 l5 = new Level5();
@@ -316,6 +318,7 @@ public class Level4 extends Game {
 						ghostOffset = 0;
 					}
 				}
+				animationType = 1;
 				if (link.setAnimation("run_left"))
 					link.play();
 				link.setPlaying(true);
@@ -330,6 +333,7 @@ public class Level4 extends Game {
 						ghostOffset = 0;
 					}
 				}
+				animationType = 2;
 				if (link.setAnimation("run_right"))
 					link.play();
 				link.setPlaying(true);
@@ -339,9 +343,10 @@ public class Level4 extends Game {
 		 * Grabs the position at each frame to give to the ghost
 		 */
 		if (record) {
-			double[] ghostData = new double[4];
+			double[] ghostData = new double[3];
 			ghostData[0] = link.getPositionX();
 			ghostData[1] = link.getPositionY();
+			ghostData[2] = animationType;
 			nextGhost.add(ghostData);
 		}
 		/*
@@ -351,6 +356,17 @@ public class Level4 extends Game {
 			if (locationTracker.size() > currIndex) {
 				ghost.setPositionX((int) locationTracker.get(currIndex)[0]);
 				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
+				int ani = (int)locationTracker.get(currIndex)[2];
+				if(ani == 1){
+					if(ghost.setAnimation("run_left")){
+						ghost.play();
+					}
+				}
+				else if(ani == 2){
+					if(ghost.setAnimation("run_right")){
+						ghost.play();
+					}
+				}
 				currIndex++;
 			} else {
 				if (onGhost) {
@@ -493,6 +509,8 @@ public class Level4 extends Game {
 		}
 		if (link != null)
 			link.update(pressedKeys);
+		if (ghost != null)
+			ghost.updateImage();
 		if (doorSprite != null)
 			doorSprite.update(pressedKeys);
 		if (buttonSprite != null)
