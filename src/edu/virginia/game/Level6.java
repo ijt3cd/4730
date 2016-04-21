@@ -565,9 +565,4 @@ public class Level6 extends Game {
 		}
 	}
 
-	public static void main(String args[]) {
-		Victory v1 = new Victory();
-		v1.start();
-	}
-
 }
