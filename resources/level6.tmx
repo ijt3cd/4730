@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="21" tileheight="21" nextobjectid="1">
+ <tileset firstgid="1" source="spritesheet.tsx"/>
+ <layer name="Tile Layer 1" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzt0kkOgkAQRuHqxHk6hAo4XdhwP8TZI/A6bgyyMF2KSmrx7f7OSzqVi0huGmsXyLrN7dZ1V9+6Z+u+p5uV1NEtN1+l7W4D+bcHHHHCGRdccXv4N7/bV2w13Z4T6WOAIUYYY4IW2uig6563od3Y3SVYYIkV1thgihnmiCq2mm6iYN3f70bWte4Hupqb/reulyreFiILTIo=
+  </data>
+ </layer>
+ <layer name="Platforms" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjIJRMAroC6qhGMauBeIqCjCxYCYBPimAFL0DaS86poe91ASzR+0dtXfU3lF7h5C91RTggQIAPdoeHw==
+  </data>
+ </layer>
+ <layer name="Spikes" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztw7ENAAAIA6B+5/8fuXR3N5CQAAAA/DHNbQGzXACP
+  </data>
+ </layer>
+ <layer name="Spawn" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzjEBAAAIA6DZv7TvEugDCUgAoMx3AAC4shYHAAI=
+  </data>
+ </layer>
+ <layer name="Goal" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7D5F034JwCeVkETAODCfAcAoCydMgD/
+  </data>
+ </layer>
+ <layer name="Button" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzrEAAAAAArD88vcJo2cjWAIAAEDfgYMBVYwATA==
+  </data>
+ </layer>
+ <layer name="Door" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzjEBAAAMAiD711qxxfAQEpAAQMe1AwAw7gHN/wDE
+  </data>
+ </layer>
+ <layer name="PowerUps" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzgENAAAIA6A3tH8bY9w5SEACAADw07QDxy1m8ABQ
+  </data>
+ </layer>
+</map>

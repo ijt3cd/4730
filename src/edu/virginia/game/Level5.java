@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import edu.virginia.engine.display.AnimatedSprite;
-import edu.virginia.engine.display.DisplayObject;
 import edu.virginia.engine.display.DisplayObjectContainer;
 import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;

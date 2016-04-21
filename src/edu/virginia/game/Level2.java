@@ -29,9 +29,8 @@ import tiled.io.TMXMapReader;
  */
 public class Level2 extends Game {
 
-
-	public static int width = 30*22;
-	public static int height = 30*22;
+	public static int width = 30 * 22;
+	public static int height = 30 * 22;
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
@@ -188,7 +187,7 @@ public class Level2 extends Game {
 						length += 1;
 					}
 					Rectangle r = new Rectangle((j * map.getTileWidth()) + 8, (i * map.getTileHeight()) + 8,
-							(length * map.getTileWidth())-8, (map.getTileHeight() - 8));
+							(length * map.getTileWidth()) - 8, (map.getTileHeight() - 8));
 					spikeHitboxes.add(r);
 					j = j + length;
 					continue;
@@ -203,8 +202,8 @@ public class Level2 extends Game {
 						spikeIndicators[j + length][i] = false;
 						length += 1;
 					}
-					Rectangle r = new Rectangle(i * map.getTileWidth() + 8, j * map.getTileHeight() + 8, map.getTileWidth() - 8,
-							length * map.getTileHeight() - 8);
+					Rectangle r = new Rectangle(i * map.getTileWidth() + 8, j * map.getTileHeight() + 8,
+							map.getTileWidth() - 8, length * map.getTileHeight() - 8);
 					spikeHitboxes.add(r);
 					j = j + length;
 					continue;
@@ -360,14 +359,13 @@ public class Level2 extends Game {
 			if (locationTracker.size() > currIndex) {
 				ghost.setPositionX((int) locationTracker.get(currIndex)[0]);
 				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
-				int ani = (int)locationTracker.get(currIndex)[2];
-				if(ani == 1){
-					if(ghost.setAnimation("run_left")){
+				int ani = (int) locationTracker.get(currIndex)[2];
+				if (ani == 1) {
+					if (ghost.setAnimation("run_left")) {
 						ghost.play();
 					}
-				}
-				else if(ani == 2){
-					if(ghost.setAnimation("run_right")){
+				} else if (ani == 2) {
+					if (ghost.setAnimation("run_right")) {
 						ghost.play();
 					}
 				}
@@ -554,8 +552,8 @@ public class Level2 extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
-			g.drawString("PAR: 1", width/2-30, 110);
-			g.drawString("Death Count: " + deathCount, width/2-60, 90);
+			g.drawString("PAR: 1", width / 2 - 30, 110);
+			g.drawString("Death Count: " + deathCount, width / 2 - 60, 90);
 
 		}
 	}
