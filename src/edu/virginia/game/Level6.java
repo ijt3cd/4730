@@ -483,6 +483,8 @@ public class Level6 extends Game {
 			link.setVelocityY(0);
 			record = true;
 			deathCount = 0;
+			reversePowered = false;
+			game.addChild(reversePowerSprite);
 		}
 		/*
 		 * Resets current ghost loop for convenience
@@ -561,6 +563,11 @@ public class Level6 extends Game {
 			g.drawString("Death Count: " + deathCount, width / 2 + 60, 30);
 
 		}
+	}
+
+	public static void main(String args[]) {
+		Level6 l6 = new Level6();
+		l6.start();
 	}
 
 }
