@@ -240,8 +240,8 @@ public class Level6 extends Game {
 		animationType = 0;
 		if (link != null && goal != null) {
 			if (link.getHitbox().intersects(goal)) {
-				Level3 l3 = new Level3();
-				l3.start();
+				Victory v1 = new Victory();
+				v1.start();
 				exitGame();
 			}
 		}
@@ -561,12 +561,6 @@ public class Level6 extends Game {
 			g.drawString("Death Count: " + deathCount, width / 2 + 60, 30);
 
 		}
-	}
-
-	public static void main(String[] args) {
-		Level6 game = new Level6();
-		game.start();
-
 	}
 
 }
