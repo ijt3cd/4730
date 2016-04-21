@@ -13,7 +13,7 @@
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzrEJACAQA8D//RvF+dzFCUSwUMQ7CCmTCABYKxlRN9Py9nsAXtAnfXr3JwM/AA1z
+   eJztzjkKACAQA8Dd/zeK7/Mv9jaCjQczEFImEQCwVjKibqbl6fcAvKBP/fvuDQYLnQyW
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
@@ -38,7 +38,7 @@
  </layer>
  <layer name="Button" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjENAAAIA7Dpxb8AFOwkPK2CJgAAAN18Bziz0ygAaw==
+   eJztzgENAAAIA6DntX8AY9xNSEACAABwz7QDDyyheABr
   </data>
  </layer>
 </map>

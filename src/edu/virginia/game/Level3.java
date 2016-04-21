@@ -246,8 +246,8 @@ public class Level3 extends Game {
 		animationType = 0;
 		if (link != null && goal != null) {
 			if (link.getHitbox().intersects(goal)) {
-				Level4 l4 = new Level4();
-				l4.start();
+				Level5 l5 = new Level5();
+				l5.start();
 				exitGame();
 			}
 		}

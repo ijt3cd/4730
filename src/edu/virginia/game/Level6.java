@@ -566,8 +566,8 @@ public class Level6 extends Game {
 	}
 
 	public static void main(String args[]) {
-		Level6 l6 = new Level6();
-		l6.start();
+		Victory v1 = new Victory();
+		v1.start();
 	}
 
 }
