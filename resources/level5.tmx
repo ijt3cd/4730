@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="21" tileheight="21">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="21" tileheight="21" nextobjectid="1">
  <tileset firstgid="1" source="spritesheet.tsx"/>
  <layer name="Tile Layer 1" width="30" height="30">
   <data encoding="base64" compression="zlib">
@@ -13,7 +13,7 @@
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjkKACAQA8Dd/zeK7/Mv9jaCjQczEFImEQCwVjKibqbl6fcAvKBP/fvuDQYLnQyW
+   eJxjYBgFo2AUjIJRMAoIgwmMDAwTycSTGQfa9aNgFIyCUTAKhgK4i0YPlL30tn8gAQDXWQ1z
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
@@ -23,7 +23,7 @@
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztwzENAAAIA7BhBv8SCSr2tEkTAAAA3k5nywFN6wST
+   eJztxTENAAAIwDAwg3+JhAsH8LTJsggAAABG5f6yLw0p+ARs
   </data>
  </layer>
  <layer name="Goal" width="30" height="30">

@@ -138,7 +138,7 @@ public class Level5 extends Game {
 		 * for both the platforms and spikes(obstacles) to group adjacent tiles
 		 * into one larger hitbox
 		 */
-		for (int i = 0; i < map.getHeight(); i++) {
+		for (int i = 0; i < map.getHeight() - 1; i++) {
 			for (int j = 0; j < map.getWidth(); j++) {
 				if (platformIndicators[i][j] && ((j + 1 != map.getWidth() && platformIndicators[i][j + 1])
 						|| (i + 1 == map.getWidth() || !platformIndicators[i + 1][j]))) {
@@ -158,6 +158,19 @@ public class Level5 extends Game {
 				}
 			}
 		}
+		for(int i = 0; i < map.getWidth(); i++){
+			if(platformIndicators[map.getHeight()-1][i]){
+				int length = 0;
+				while((i + length < map.getWidth()) && platformIndicators[map.getHeight()-1][i+length]){
+					length += 1;
+				}
+				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
+						length * map.getTileWidth(), map.getTileHeight());
+				platformHitboxes.add(r);
+				link.addCollidable(r);
+				i = i + length;
+			}
+		}
 		for (int i = 0; i < map.getWidth(); i++) {
 			for (int j = 0; j < map.getHeight(); j++) {
 				if (platformIndicators[j][i]) {
@@ -175,7 +188,7 @@ public class Level5 extends Game {
 				}
 			}
 		}
-		for (int i = 0; i < map.getHeight(); i++) {
+		for (int i = 0; i < map.getHeight()-1; i++) {
 			for (int j = 0; j < map.getWidth(); j++) {
 				if (spikeIndicators[i][j] && ((j + 1 != map.getWidth() && spikeIndicators[i][j + 1])
 						|| (i + 1 == map.getWidth() || !spikeIndicators[i + 1][j]))) {
@@ -192,6 +205,18 @@ public class Level5 extends Game {
 					j = j + length;
 					continue;
 				}
+			}
+		}
+		for(int i = 0; i < map.getWidth(); i++){
+			if(spikeIndicators[map.getHeight()-1][i]){
+				int length = 0;
+				while((i + length < map.getWidth()) && spikeIndicators[map.getHeight()-1][i+length]){
+					length += 1;
+				}
+				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
+						length * map.getTileWidth(), map.getTileHeight());
+				spikeHitboxes.add(r);
+				i = i + length;
 			}
 		}
 		for (int i = 0; i < map.getWidth(); i++) {
