@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 
 import edu.virginia.engine.events.CollisionEvent;
 import edu.virginia.engine.events.EventDispatcher;
-import edu.virginia.game.Level1;
+import edu.virginia.game.LevelManager;
 
 /**
  * A very basic display object for a java based gaming engine
@@ -282,12 +282,12 @@ public class DisplayObject extends EventDispatcher {
 			this.positionY = 2;
 			this.velocityY = 0;
 		}
-		if (this.positionX > Level1.width - this.getUnscaledWidth() / 2) {
-			this.positionX = Level1.width - this.getUnscaledWidth() / 2 - 2;
+		if (this.positionX > LevelManager.width - this.getUnscaledWidth() / 2) {
+			this.positionX = LevelManager.width - this.getUnscaledWidth() / 2 - 2;
 			this.velocityX = 0;
 		}
-		if (this.positionY > Level1.height) {
-			this.positionY = Level1.height - 2;
+		if (this.positionY > LevelManager.height) {
+			this.positionY = LevelManager.height - 2;
 			this.velocityY = 0;
 		}
 
@@ -395,7 +395,6 @@ public class DisplayObject extends EventDispatcher {
 		boolean withinRange = (myRectangle.x + 16) > otherRectangle.x && (myRectangle.getMaxX() - 16) < otherRectangle.getMaxX();
 		return myRectangle.y < otherRectangle.y + otherRectangle.getHeight() && myRectangle.y > otherRectangle.y && withinRange;
 	} 
-
 	public boolean collideFromLeft(Rectangle each) {
 		Rectangle myRectangle = this.getHitbox();
 		Rectangle otherRectangle = each;
@@ -415,7 +414,9 @@ public class DisplayObject extends EventDispatcher {
 	public void setMass(int mass) {
 		this.mass = mass;
 	}
-
+	public void clearCollidables(){
+		this.collidableObjects.clear();
+	}
 	public float getVelocityX() {
 		return velocityX;
 	}

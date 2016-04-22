@@ -5,10 +5,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.DisplayObjectContainer;
@@ -22,15 +19,10 @@ import tiled.core.Tile;
 import tiled.core.TileLayer;
 import tiled.io.TMXMapReader;
 
-/**
- * Example game that utilizes our engine. We can create a simple prototype game
- * with just a couple lines of code although, for now, it won't be a very fun
- * game :)
- */
-public class Level5 extends Game {
+public class LevelManager extends Game {
 
-	public static int width = 30*22;
-	public static int height = 30*22;
+	public static int width = 30 * 22;
+	public static int height = 30 * 22;
 
 	SoundManager sm = new SoundManager();
 	File bgm = new File("resources/brm.wav");
@@ -41,6 +33,7 @@ public class Level5 extends Game {
 	AnimatedSprite ghost = new AnimatedSprite("ghost", "ghost_sheet.png", 32, 32);
 	QuestManager questManager = new QuestManager();
 	ArrayList<Sprite> sprites;
+	ArrayList<String> levels;
 	ArrayList<Rectangle> platformHitboxes;
 	ArrayList<Rectangle> spikeHitboxes;
 	ArrayList<double[]> locationTracker;
@@ -53,9 +46,11 @@ public class Level5 extends Game {
 	Tween ringFade;
 	int deathCount = 0;
 	int animationType = 0;
+	int level = 0;
 	float ghostOffset = 0;
 	boolean draw;
 	boolean onGhost;
+	boolean reversePowered;
 	Map map;
 
 	Rectangle door;
@@ -63,184 +58,22 @@ public class Level5 extends Game {
 	Rectangle button;
 	Sprite buttonSprite;
 	Rectangle goal;
+	Rectangle reversePower;
+	Sprite reversePowerSprite;
 
-	/**
-	 * Constructor. See constructor in Game.java for details on the parameters
-	 * given
-	 * 
-	 * @throws IOException
-	 * @throws UnsupportedAudioFileException
-	 */
-	public Level5() {
+	public LevelManager() {
 		super("Ghost Game", width, height);
-		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
-		sprites = new ArrayList<Sprite>();
-		TMXMapReader mapReader = new TMXMapReader();
-		try {
-			map = mapReader.readMap("resources/level5.tmx");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		getMainFrame().setSize(map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileHeight());
-		TweenJuggler.getInstance();
-
-		// spikes = new ArrayList<Sprite>();
-
-		// SoundManager.playMusic(bgm);
-		spikeHitboxes = new ArrayList<Rectangle>();
-
-		platformHitboxes = new ArrayList<Rectangle>();
-		boolean[][] platformIndicators = new boolean[map.getHeight()][map.getWidth()];
-		boolean[][] spikeIndicators = new boolean[map.getHeight()][map.getWidth()];
-		for (MapLayer m : map.getLayers()) {
-			if (m instanceof TileLayer) {
-				TileLayer l = (TileLayer) m;
-				for (int i = 0; i < map.getHeight(); i++) {
-					for (int j = 0; j < map.getWidth(); j++) {
-						Tile t = l.getTileAt(j, i);
-						if (t != null) {
-							Sprite s = new Sprite("" + t.getId());
-							s.setImage((BufferedImage) t.getImage());
-							s.setPositionX(j * t.getWidth());
-							s.setPositionY(i * t.getHeight());
-							sprites.add(s);
-							if (l.getName().equals("Platforms")) {
-								platformIndicators[i][j] = true;
-							} else if (l.getName().equals("Spikes")) {
-								spikeIndicators[i][j] = true;
-							} else if (l.getName().equals("Spawn")) {
-								startingX = j * t.getWidth();
-								startingY = i * t.getHeight();
-							} else if (l.getName().equals("Door")) {
-								door = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
-										map.getTileWidth(), map.getTileHeight());
-								doorSprite = s;
-								platformHitboxes.add(door);
-								link.addCollidable(door);
-							} else if (l.getName().equals("Button")) {
-								button = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
-										map.getTileWidth(), map.getTileHeight());
-								buttonSprite = s;
-								// platformHitboxes.add(button);
-							} else if (l.getName().equals("Goal")) {
-								goal = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
-										map.getTileWidth(), map.getTileHeight());
-							}
-						}
-					}
-				}
-			}
-		}
-		/*
-		 * Two passes, grabbing horizontal tile groups then vertical tile groups
-		 * for both the platforms and spikes(obstacles) to group adjacent tiles
-		 * into one larger hitbox
-		 */
-		for (int i = 0; i < map.getHeight() - 1; i++) {
-			for (int j = 0; j < map.getWidth(); j++) {
-				if (platformIndicators[i][j] && ((j + 1 != map.getWidth() && platformIndicators[i][j + 1])
-						|| (i + 1 == map.getWidth() || !platformIndicators[i + 1][j]))) {
-					int length = 0;
-					while (i == map.getHeight() - 1
-							|| (j + length) < map.getWidth() && platformIndicators[i][j + length]) {
-						if (!platformIndicators[i + 1][j + length])
-							platformIndicators[i][j + length] = false;
-						length += 1;
-					}
-					Rectangle r = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
-							length * map.getTileWidth(), map.getTileHeight());
-					platformHitboxes.add(r);
-					link.addCollidable(r);
-					j = j + length;
-					continue;
-				}
-			}
-		}
-		for(int i = 0; i < map.getWidth(); i++){
-			if(platformIndicators[map.getHeight()-1][i]){
-				int length = 0;
-				while((i + length < map.getWidth()) && platformIndicators[map.getHeight()-1][i+length]){
-					length += 1;
-				}
-				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
-						length * map.getTileWidth(), map.getTileHeight());
-				platformHitboxes.add(r);
-				link.addCollidable(r);
-				i = i + length;
-			}
-		}
-		for (int i = 0; i < map.getWidth(); i++) {
-			for (int j = 0; j < map.getHeight(); j++) {
-				if (platformIndicators[j][i]) {
-					int length = 0;
-					while ((j + length) < map.getHeight() && platformIndicators[j + length][i]) {
-						platformIndicators[j + length][i] = false;
-						length += 1;
-					}
-					Rectangle r = new Rectangle(i * map.getTileWidth(), j * map.getTileHeight(), map.getTileWidth(),
-							length * map.getTileHeight());
-					platformHitboxes.add(r);
-					link.addCollidable(r);
-					j = j + length;
-					continue;
-				}
-			}
-		}
-		for (int i = 0; i < map.getHeight()-1; i++) {
-			for (int j = 0; j < map.getWidth(); j++) {
-				if (spikeIndicators[i][j] && ((j + 1 != map.getWidth() && spikeIndicators[i][j + 1])
-						|| (i + 1 == map.getWidth() || !spikeIndicators[i + 1][j]))) {
-					int length = 0;
-					while (i == map.getHeight() - 1
-							|| (j + length) < map.getWidth() && spikeIndicators[i][j + length]) {
-						if (!spikeIndicators[i + 1][j + length])
-							spikeIndicators[i][j + length] = false;
-						length += 1;
-					}
-					Rectangle r = new Rectangle((j * map.getTileWidth()) + 8, (i * map.getTileHeight()) + 8,
-							(length * map.getTileWidth())-8, (map.getTileHeight() - 8));
-					spikeHitboxes.add(r);
-					j = j + length;
-					continue;
-				}
-			}
-		}
-		for(int i = 0; i < map.getWidth(); i++){
-			if(spikeIndicators[map.getHeight()-1][i]){
-				int length = 0;
-				while((i + length < map.getWidth()) && spikeIndicators[map.getHeight()-1][i+length]){
-					length += 1;
-				}
-				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
-						length * map.getTileWidth(), map.getTileHeight());
-				spikeHitboxes.add(r);
-				i = i + length;
-			}
-		}
-		for (int i = 0; i < map.getWidth(); i++) {
-			for (int j = 0; j < map.getHeight(); j++) {
-				if (spikeIndicators[j][i]) {
-					int length = 0;
-					while ((j + length) < map.getHeight() && spikeIndicators[j + length][i]) {
-						spikeIndicators[j + length][i] = false;
-						length += 1;
-					}
-					Rectangle r = new Rectangle(i * map.getTileWidth() + 8, j * map.getTileHeight() + 8, map.getTileWidth() - 8,
-							length * map.getTileHeight() - 8);
-					spikeHitboxes.add(r);
-					j = j + length;
-					continue;
-				}
-			}
-		}
+		levels = new ArrayList<String>();
+		levels.add("resources/level1.tmx");
+		levels.add("resources/level2.tmx");
+		levels.add("resources/level3.tmx");
+		levels.add("resources/level5.tmx");
+		levels.add("resources/level6.tmx");
+		levels.add("resources/victory.tmx");
 		ghost.setVisible(false);
-		ghost.setHasPhysics(true);
+		this.initializeLevel();
 		ghost.addAnimation("run_right", 0, 2, 75000000, 1, 2);
 		ghost.addAnimation("run_left", 0, 2, 75000000, 1, 1);
-		link.setPositionX(startingX);
-		link.setPositionY(startingY);
 		link.setScaleX(.3);
 		link.setScaleY(.3);
 		link.setHasPhysics(true);
@@ -250,11 +83,8 @@ public class Level5 extends Game {
 		nextGhost = new ArrayList<double[]>();
 		record = true;
 		draw = true;
-		for (Sprite s : sprites) {
-			game.addChild(s);
-		}
-		game.addChild(ghost);
-		game.addChild(link);
+		reversePowered = false;
+
 	}
 
 	/**
@@ -271,9 +101,29 @@ public class Level5 extends Game {
 		animationType = 0;
 		if (link != null && goal != null) {
 			if (link.getHitbox().intersects(goal)) {
-				Level6 l6 = new Level6();
-				l6.start();
-				exitGame();
+				draw = false;
+				ghost.setVisible(false);
+				reversePowered = false;
+				deathCount = 0;
+				sprites.clear();
+				platformHitboxes.clear();
+				spikeHitboxes.clear();
+				nextGhost.clear();
+				locationTracker.clear();
+				button = null;
+				door = null;
+				doorSprite = null;
+				buttonSprite = null;
+				goal = null;
+				reversePower = null;
+				reversePowerSprite = null;
+				link.clearCollidables();
+				link.setVelocityX(0);
+				link.setVelocityY(0);
+				link.setHasPhysics(false);
+				link.setAccelerationY(0);
+				game.removeAll();
+				this.initializeLevel();
 			}
 		}
 		// checks whether button is being touched by ghost, removes door
@@ -281,12 +131,15 @@ public class Level5 extends Game {
 				&& door != null) {
 			if (!game.getChildren().contains(doorSprite)) {
 				game.addChild(doorSprite);
+
 			}
 			if (!platformHitboxes.contains(door)) {
 				platformHitboxes.add(door);
+				// System.out.println("??");
 			}
 			if (!link.getCollidableObjects().contains(door)) {
 				link.addCollidable(door);
+				// System.out.println("???");
 			}
 			if (ghost.getHitbox().intersects(button) || link.getHitbox().intersects(button)) {
 				if (link.getPlatform() != null) {
@@ -297,7 +150,15 @@ public class Level5 extends Game {
 				game.removeChild(doorSprite);
 				platformHitboxes.remove(door);
 				link.getCollidableObjects().remove(door);
+				// System.out.println("z");
 
+			}
+		}
+
+		if (link != null && platformHitboxes != null && game != null && reversePower != null && !reversePowered) {
+			if (link.getHitbox().intersects(reversePower)) {
+				game.removeChild(reversePowerSprite);
+				reversePowered = true;
 			}
 		}
 
@@ -378,16 +239,19 @@ public class Level5 extends Game {
 		 */
 		if (ghost != null && ghost.isVisible() && locationTracker != null) {
 			if (locationTracker.size() > currIndex) {
-				ghost.setPositionX((int) locationTracker.get(currIndex)[0]);
-				ghost.setPositionY((int) locationTracker.get(currIndex)[1]);
-				int ani = (int)locationTracker.get(currIndex)[2];
-				if(ani == 1){
-					if(ghost.setAnimation("run_left")){
+				int exactIndex = currIndex;
+				if (reversePowered) {
+					exactIndex = locationTracker.size() - 1 - currIndex;
+				}
+				ghost.setPositionX((float) locationTracker.get(exactIndex)[0]);
+				ghost.setPositionY((float) locationTracker.get(exactIndex)[1]);
+				int ani = (int) locationTracker.get(exactIndex)[2];
+				if (ani == 1) {
+					if (ghost.setAnimation("run_left")) {
 						ghost.play();
 					}
-				}
-				else if(ani == 2){
-					if(ghost.setAnimation("run_right")){
+				} else if (ani == 2) {
+					if (ghost.setAnimation("run_right")) {
 						ghost.play();
 					}
 				}
@@ -500,6 +364,9 @@ public class Level5 extends Game {
 			link.setVelocityY(0);
 			record = true;
 			deathCount = 0;
+			reversePowered = false;
+			if(reversePowerSprite != null)
+				game.addChild(reversePowerSprite);
 		}
 		/*
 		 * Resets current ghost loop for convenience
@@ -544,6 +411,187 @@ public class Level5 extends Game {
 		}
 
 	}
+	public void initializeLevel(){
+		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
+		sprites = new ArrayList<Sprite>();
+		if(levels.get(level).equals("resources/victory.tmx"))
+			link.setVisible(false);
+		TMXMapReader mapReader = new TMXMapReader();
+		try {
+			map = mapReader.readMap(levels.get(level));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		level++;
+		getMainFrame().setSize(map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileHeight());
+		TweenJuggler.getInstance();
+
+		// spikes = new ArrayList<Sprite>();
+
+		// SoundManager.playMusic(bgm);
+		spikeHitboxes = new ArrayList<Rectangle>();
+
+		platformHitboxes = new ArrayList<Rectangle>();
+		boolean[][] platformIndicators = new boolean[map.getHeight()][map.getWidth()];
+		boolean[][] spikeIndicators = new boolean[map.getHeight()][map.getWidth()];
+		for (MapLayer m : map.getLayers()) {
+			if (m instanceof TileLayer) {
+				TileLayer l = (TileLayer) m;
+				for (int i = 0; i < map.getHeight(); i++) {
+					for (int j = 0; j < map.getWidth(); j++) {
+						Tile t = l.getTileAt(j, i);
+						if (t != null) {
+							Sprite s = new Sprite("" + t.getId());
+							s.setImage((BufferedImage) t.getImage());
+							s.setPositionX(j * t.getWidth());
+							s.setPositionY(i * t.getHeight());
+							sprites.add(s);
+							if (l.getName().equals("Platforms")) {
+								platformIndicators[i][j] = true;
+							} else if (l.getName().equals("Spikes")) {
+								spikeIndicators[i][j] = true;
+							} else if (l.getName().equals("Spawn")) {
+								startingX = j * t.getWidth();
+								startingY = i * t.getHeight();
+							} else if (l.getName().equals("Door")) {
+								door = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+										map.getTileWidth(), map.getTileHeight());
+								doorSprite = s;
+								platformHitboxes.add(door);
+								link.addCollidable(door);
+							} else if (l.getName().equals("Button")) {
+								button = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+										map.getTileWidth(), map.getTileHeight());
+								buttonSprite = s;
+								// platformHitboxes.add(button);
+							} else if (l.getName().equals("Goal")) {
+								goal = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+										map.getTileWidth(), map.getTileHeight());
+							} else if (l.getName().equals("PowerUps")) {
+								reversePower = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+										map.getTileWidth(), map.getTileHeight());
+								reversePowerSprite = s;
+							}
+						}
+					}
+				}
+			}
+		}
+		/*
+		 * Two passes, grabbing horizontal tile groups then vertical tile groups
+		 * for both the platforms and spikes(obstacles) to group adjacent tiles
+		 * into one larger hitbox
+		 */
+		for (int i = 0; i < map.getHeight() - 1; i++) {
+			for (int j = 0; j < map.getWidth(); j++) {
+				if (platformIndicators[i][j] && ((j + 1 != map.getWidth() && platformIndicators[i][j + 1])
+						|| (i + 1 == map.getWidth() || !platformIndicators[i + 1][j]))) {
+					int length = 0;
+					while (i == map.getHeight() - 1
+							|| (j + length) < map.getWidth() && platformIndicators[i][j + length]) {
+						if (!platformIndicators[i + 1][j + length])
+							platformIndicators[i][j + length] = false;
+						length += 1;
+					}
+					Rectangle r = new Rectangle(j * map.getTileWidth(), i * map.getTileHeight(),
+							length * map.getTileWidth(), map.getTileHeight());
+					platformHitboxes.add(r);
+					link.addCollidable(r);
+					j = j + length;
+					continue;
+				}
+			}
+		}
+		for(int i = 0; i < map.getWidth(); i++){
+			if(platformIndicators[map.getHeight()-1][i]){
+				int length = 0;
+				while((i + length < map.getWidth()) && platformIndicators[map.getHeight()-1][i+length]){
+					length += 1;
+				}
+				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
+						length * map.getTileWidth(), map.getTileHeight());
+				platformHitboxes.add(r);
+				link.addCollidable(r);
+				i = i + length;
+			}
+		}
+		for (int i = 0; i < map.getWidth(); i++) {
+			for (int j = 0; j < map.getHeight(); j++) {
+				if (platformIndicators[j][i]) {
+					int length = 0;
+					while ((j + length) < map.getHeight() && platformIndicators[j + length][i]) {
+						platformIndicators[j + length][i] = false;
+						length += 1;
+					}
+					Rectangle r = new Rectangle(i * map.getTileWidth(), j * map.getTileHeight(), map.getTileWidth(),
+							length * map.getTileHeight());
+					platformHitboxes.add(r);
+					link.addCollidable(r);
+					j = j + length;
+					continue;
+				}
+			}
+		}
+		for (int i = 0; i < map.getHeight()-1; i++) {
+			for (int j = 0; j < map.getWidth(); j++) {
+				if (spikeIndicators[i][j] && ((j + 1 != map.getWidth() && spikeIndicators[i][j + 1])
+						|| (i + 1 == map.getWidth() || !spikeIndicators[i + 1][j]))) {
+					int length = 0;
+					while (i == map.getHeight() - 1
+							|| (j + length) < map.getWidth() && spikeIndicators[i][j + length]) {
+						if (!spikeIndicators[i + 1][j + length])
+							spikeIndicators[i][j + length] = false;
+						length += 1;
+					}
+					Rectangle r = new Rectangle((j * map.getTileWidth()) + 8, (i * map.getTileHeight()) + 8,
+							(length * map.getTileWidth())-8, (map.getTileHeight() - 8));
+					spikeHitboxes.add(r);
+					j = j + length;
+					continue;
+				}
+			}
+		}
+		for(int i = 0; i < map.getWidth(); i++){
+			if(spikeIndicators[map.getHeight()-1][i]){
+				int length = 0;
+				while((i + length < map.getWidth()) && spikeIndicators[map.getHeight()-1][i+length]){
+					length += 1;
+				}
+				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
+						length * map.getTileWidth(), map.getTileHeight());
+				spikeHitboxes.add(r);
+				i = i + length;
+			}
+		}
+		for (int i = 0; i < map.getWidth(); i++) {
+			for (int j = 0; j < map.getHeight(); j++) {
+				if (spikeIndicators[j][i]) {
+					int length = 0;
+					while ((j + length) < map.getHeight() && spikeIndicators[j + length][i]) {
+						spikeIndicators[j + length][i] = false;
+						length += 1;
+					}
+					Rectangle r = new Rectangle(i * map.getTileWidth() + 8, j * map.getTileHeight() + 8, map.getTileWidth() - 8,
+							length * map.getTileHeight() - 8);
+					spikeHitboxes.add(r);
+					j = j + length;
+					continue;
+				}
+			}
+		}
+		ghost.setHasPhysics(true);
+		link.setPositionX(startingX);
+		link.setPositionY(startingY);
+		for (Sprite s : sprites) {
+			game.addChild(s);
+		}
+		game.addChild(ghost);
+		game.addChild(link);
+		link.setHasPhysics(true);
+		record = true;
+		draw = true;
+	}
 
 	/**
 	 * Engine automatically invokes draw() every frame as well. If we want to
@@ -574,18 +622,16 @@ public class Level5 extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
-			g.drawString("PAR: 1", width/2-30, 110);
-			g.drawString("Death Count: " + deathCount, width/2-60, 90);
+			g.drawString("PAR: 1", width / 2 + 90, 50);
+			g.drawString("Death Count: " + deathCount, width / 2 + 60, 30);
 
 		}
 	}
+	public static void main(String[] args) {
+		LevelManager game = new LevelManager();
 
-	/**
-	 * Quick main class that simply creates an instance of our game and starts
-	 * the timer that calls update() and draw() every frame
-	 * 
-	 * @throws IOException
-	 * @throws UnsupportedAudioFileException
-	 */
+		game.start();
+
+	}
 
 }
