@@ -5,7 +5,6 @@ public class PickedUpEvent extends Event {
 
 	public PickedUpEvent(String type, IEventDispatcher src) {
 		super(type, src);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.DisplayObjectContainer;
@@ -13,6 +14,8 @@ import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;
 import edu.virginia.engine.display.Tween;
 import edu.virginia.engine.display.TweenJuggler;
+import edu.virginia.engine.events.IEventListener;
+import edu.virginia.engine.events.LevelCompleteEvent;
 import tiled.core.Map;
 import tiled.core.MapLayer;
 import tiled.core.Tile;
@@ -63,6 +66,10 @@ public class LevelManager extends Game {
 
 	public LevelManager() {
 		super("Ghost Game", width, height);
+		sm.playMusic(new File("resources/background_2.wav"));
+		ArrayList<IEventListener> soundListeners = new ArrayList<IEventListener>();
+		soundListeners.add(sm);
+		listeners.put(LevelCompleteEvent.LEVEL_COMPLETE, soundListeners);
 		levels = new ArrayList<String>();
 		levels.add("resources/level1.tmx");
 		levels.add("resources/level2.tmx");
@@ -123,6 +130,7 @@ public class LevelManager extends Game {
 				link.setHasPhysics(false);
 				link.setAccelerationY(0);
 				game.removeAll();
+				this.dispatchEvent(new LevelCompleteEvent(LevelCompleteEvent.LEVEL_COMPLETE, this));
 				this.initializeLevel();
 			}
 		}
@@ -365,7 +373,7 @@ public class LevelManager extends Game {
 			record = true;
 			deathCount = 0;
 			reversePowered = false;
-			if(reversePowerSprite != null)
+			if (reversePowerSprite != null)
 				game.addChild(reversePowerSprite);
 		}
 		/*
@@ -411,10 +419,11 @@ public class LevelManager extends Game {
 		}
 
 	}
-	public void initializeLevel(){
+
+	public void initializeLevel() {
 		getMainFrame().setBounds(0, 0, width, height); // Fixing weird size bug.
 		sprites = new ArrayList<Sprite>();
-		if(levels.get(level).equals("resources/victory.tmx"))
+		if (levels.get(level).equals("resources/victory.tmx"))
 			link.setVisible(false);
 		TMXMapReader mapReader = new TMXMapReader();
 		try {
@@ -503,13 +512,13 @@ public class LevelManager extends Game {
 				}
 			}
 		}
-		for(int i = 0; i < map.getWidth(); i++){
-			if(platformIndicators[map.getHeight()-1][i]){
+		for (int i = 0; i < map.getWidth(); i++) {
+			if (platformIndicators[map.getHeight() - 1][i]) {
 				int length = 0;
-				while((i + length < map.getWidth()) && platformIndicators[map.getHeight()-1][i+length]){
+				while ((i + length < map.getWidth()) && platformIndicators[map.getHeight() - 1][i + length]) {
 					length += 1;
 				}
-				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
+				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth() - 1) * map.getTileHeight(),
 						length * map.getTileWidth(), map.getTileHeight());
 				platformHitboxes.add(r);
 				link.addCollidable(r);
@@ -533,7 +542,7 @@ public class LevelManager extends Game {
 				}
 			}
 		}
-		for (int i = 0; i < map.getHeight()-1; i++) {
+		for (int i = 0; i < map.getHeight() - 1; i++) {
 			for (int j = 0; j < map.getWidth(); j++) {
 				if (spikeIndicators[i][j] && ((j + 1 != map.getWidth() && spikeIndicators[i][j + 1])
 						|| (i + 1 == map.getWidth() || !spikeIndicators[i + 1][j]))) {
@@ -545,20 +554,20 @@ public class LevelManager extends Game {
 						length += 1;
 					}
 					Rectangle r = new Rectangle((j * map.getTileWidth()) + 8, (i * map.getTileHeight()) + 8,
-							(length * map.getTileWidth())-8, (map.getTileHeight() - 8));
+							(length * map.getTileWidth()) - 8, (map.getTileHeight() - 8));
 					spikeHitboxes.add(r);
 					j = j + length;
 					continue;
 				}
 			}
 		}
-		for(int i = 0; i < map.getWidth(); i++){
-			if(spikeIndicators[map.getHeight()-1][i]){
+		for (int i = 0; i < map.getWidth(); i++) {
+			if (spikeIndicators[map.getHeight() - 1][i]) {
 				int length = 0;
-				while((i + length < map.getWidth()) && spikeIndicators[map.getHeight()-1][i+length]){
+				while ((i + length < map.getWidth()) && spikeIndicators[map.getHeight() - 1][i + length]) {
 					length += 1;
 				}
-				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth()-1) * map.getTileHeight(),
+				Rectangle r = new Rectangle(i * map.getTileWidth(), (map.getWidth() - 1) * map.getTileHeight(),
 						length * map.getTileWidth(), map.getTileHeight());
 				spikeHitboxes.add(r);
 				i = i + length;
@@ -572,8 +581,8 @@ public class LevelManager extends Game {
 						spikeIndicators[j + length][i] = false;
 						length += 1;
 					}
-					Rectangle r = new Rectangle(i * map.getTileWidth() + 8, j * map.getTileHeight() + 8, map.getTileWidth() - 8,
-							length * map.getTileHeight() - 8);
+					Rectangle r = new Rectangle(i * map.getTileWidth() + 8, j * map.getTileHeight() + 8,
+							map.getTileWidth() - 8, length * map.getTileHeight() - 8);
 					spikeHitboxes.add(r);
 					j = j + length;
 					continue;
@@ -627,6 +636,7 @@ public class LevelManager extends Game {
 
 		}
 	}
+
 	public static void main(String[] args) {
 		LevelManager game = new LevelManager();
 

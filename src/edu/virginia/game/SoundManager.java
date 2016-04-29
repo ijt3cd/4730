@@ -8,8 +8,11 @@ import javax.sound.sampled.spi.AudioFileReader;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+import edu.virginia.engine.events.DeathEvent;
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
+import edu.virginia.engine.events.LevelCompleteEvent;
+import edu.virginia.engine.events.PickedUpEvent;
 
 public class SoundManager implements IEventListener {
 
@@ -39,12 +42,18 @@ public class SoundManager implements IEventListener {
 
 	@Override
 	public void handleEvent(Event event) {
-		if (event.getEventType() == "COIN_PICKED_UP") {
+		String eventType = event.getEventType();
+		if (eventType.equals(LevelCompleteEvent.LEVEL_COMPLETE)) {
 
-			File noise = new File("resources/thunk.wav");
+			File noise = new File("resources/picked_up_powerup.wav");
 			playSound(noise);
 
+		} else if(eventType.equals(DeathEvent.DEAD_EVENT)) {
+			
+		} else if(eventType.equals(PickedUpEvent.COIN_PICKED_UP)) {
+			
 		}
+		
 
 	}
 
