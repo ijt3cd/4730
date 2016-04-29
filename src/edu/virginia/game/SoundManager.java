@@ -20,8 +20,11 @@ public class SoundManager implements IEventListener {
 
 	static void playSound(File sound) {
 		try {
-			Clip clip = AudioSystem.getClip();
-			clip.open(AudioSystem.getAudioInputStream(sound));
+			AudioInputStream soundIn = AudioSystem.getAudioInputStream(sound);
+			AudioFormat format = soundIn.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			Clip clip = (Clip)AudioSystem.getLine(info);
+			clip.open(soundIn);
 			clip.start();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -37,12 +40,6 @@ public class SoundManager implements IEventListener {
 			Clip clip = (Clip)AudioSystem.getLine(info);
 			clip.open(soundIn);
 			clip.start();
-			
-			
-//			Clip clip = AudioSystem.getClip();
-//			clip.open(AudioSystem.getAudioInputStream(sound));
-
-		//	clip.start();
 			clip.loop(clip.LOOP_CONTINUOUSLY);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

@@ -66,7 +66,7 @@ public class LevelManager extends Game {
 
 	public LevelManager() {
 		super("Ghost Game", width, height);
-		sm.playMusic(new File("resources/background_2.wav"));
+		sm.playMusic(new File("resources/background_1.wav"));
 		ArrayList<IEventListener> soundListeners = new ArrayList<IEventListener>();
 		soundListeners.add(sm);
 		listeners.put(LevelCompleteEvent.LEVEL_COMPLETE, soundListeners);
