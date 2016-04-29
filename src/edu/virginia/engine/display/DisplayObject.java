@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import edu.virginia.engine.controller.GamePad;
 import edu.virginia.engine.events.CollisionEvent;
 import edu.virginia.engine.events.EventDispatcher;
 import edu.virginia.game.LevelManager;
@@ -230,7 +231,7 @@ public class DisplayObject extends EventDispatcher {
 	 * objects state before the draw occurs. Should be overridden if necessary
 	 * to update objects appropriately.
 	 */
-	protected void update(ArrayList<String> pressedKeys) {
+	protected void update(ArrayList<String> pressedKeys, ArrayList<GamePad> gamePads) {
 		if (this.hasPhysics) {
 			if (System.nanoTime() - this.lastUpdate > 500000) {
 				if ((this.platform == null)) {

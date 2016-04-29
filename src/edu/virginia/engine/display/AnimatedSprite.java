@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.virginia.engine.controller.GamePad;
+
 public class AnimatedSprite extends Sprite {
 	private BufferedImage spriteSheet;
 	private BufferedImage currentSprite;
@@ -105,9 +107,9 @@ public class AnimatedSprite extends Sprite {
 	}
 
 	@Override
-	public void update(ArrayList<String> pressedKeys) {
+	public void update(ArrayList<String> pressedKeys, ArrayList<GamePad> gamePads) {
 		this.updateImage();
-		super.update(pressedKeys);
+		super.update(pressedKeys, gamePads);
 	}
 	
 	public void updateImage(){

@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import edu.virginia.engine.controller.GamePad;
 
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.DisplayObjectContainer;
@@ -92,8 +93,8 @@ public class LevelManager extends Game {
 	 * to us the set of keys (as strings) that are currently being pressed down
 	 */
 	@Override
-	public void update(ArrayList<String> pressedKeys) {
-		super.update(pressedKeys);
+	public void update(ArrayList<String> pressedKeys, ArrayList<GamePad> gamePads) {
+		super.update(pressedKeys, gamePads);
 
 		int w = getMainFrame().getWidth();
 		int h = getMainFrame().getHeight();
@@ -178,7 +179,7 @@ public class LevelManager extends Game {
 			if (!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)) ) ) {
 				link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
 			}
 			// Gravity logic is dependent on being on a platform, ghost is no
@@ -194,7 +195,7 @@ public class LevelManager extends Game {
 				onGhost = false;
 				ghostOffset = 0;
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||gamePads.contains("DPAD_LEFT")) {
 				link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
 				if (onGhost) {
 					ghostOffset += -HORIZONTAL_MOVEMENT_DELTA;
@@ -399,13 +400,13 @@ public class LevelManager extends Game {
 			link.setVelocityY(0);
 		}
 		if (link != null)
-			link.update(pressedKeys);
+			link.update(pressedKeys, gamePads);
 		if (ghost != null)
 			ghost.updateImage();
 		if (doorSprite != null)
-			doorSprite.update(pressedKeys);
+			doorSprite.update(pressedKeys, gamePads);
 		if (buttonSprite != null)
-			buttonSprite.update(pressedKeys);
+			buttonSprite.update(pressedKeys, gamePads);
 		if (game != null) {
 			// game.update(pressedKeys);
 		}
