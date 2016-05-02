@@ -20,14 +20,19 @@ public class GamePad {
 	public static final String BUTTON_SQUARE = "2"; //Square on ps3
 	public static final String BUTTON_TRIANGLE = "3"; //Triangle on ps3
 	
+	public static final String A = "A";
+	public static final String B = "B";
+	public static final String X = "X";
+	public static final String Y = "Y";
+	
 	public static final String BUTTON_L1 = "4"; //L1 hammer on ps3
 	public static final String BUTTON_R1 = "5"; //R1 hammer on ps3
 	
 	public static final String BUTTON_L3 = "8";
 	public static final String BUTTON_R3 = "9";
 	
-	public static final String BUTTON_SELECT = "6";
-	public static final String BUTTON_START = "7";
+	public static final String BUTTON_SELECT = "Select";
+	public static final String BUTTON_START = "Start";
 	
 	public static final String DPAD_UP = "DPAD_UP"; //X on ps3
 	public static final String DPAD_RIGHT = "DPAD_RIGHT"; //X on ps3

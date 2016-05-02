@@ -110,7 +110,6 @@ public class LevelManager extends Game {
 	@Override
 	public void update(ArrayList<String> pressedKeys, ArrayList<GamePad> gamePads) {
 		super.update(pressedKeys, gamePads);
-
 		int w = getMainFrame().getWidth();
 		int h = getMainFrame().getHeight();
 		int square = Math.min(w, h);
@@ -205,13 +204,13 @@ public class LevelManager extends Game {
 				link.setAccelerationY(0.0f);
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP)))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))||(!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.A)))
 					&& (link.getPlatform() != null || onGhost) && link.getAccelerationY() == 0) {
 				link.setVelocityY((float) -JUMP_UP_DELTA);
 				onGhost = false;
 				ghostOffset = 0;
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||gamePads.contains("DPAD_LEFT")) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||(!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_LEFT))) {
 				link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
 				if (onGhost) {
 					ghostOffset += -HORIZONTAL_MOVEMENT_DELTA;
@@ -226,7 +225,7 @@ public class LevelManager extends Game {
 				link.setPlaying(true);
 
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))||(!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_RIGHT))) {
 				link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
 				if (onGhost) {
 					ghostOffset += HORIZONTAL_MOVEMENT_DELTA;
@@ -367,7 +366,7 @@ public class LevelManager extends Game {
 		if (TweenJuggler.getInstance() != null)
 			TweenJuggler.nextFrame();
 
-		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R))) {
+		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R)) || (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.BUTTON_SELECT)))) {
 
 			locationTracker.clear();
 			nextGhost.clear();
@@ -388,7 +387,7 @@ public class LevelManager extends Game {
 		/*
 		 * Resets current ghost loop for convenience
 		 */
-		if (link != null && pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))) {
+		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y)) || (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.Y)))) {
 			currIndex = 0;
 			onGhost = false;
 			ghostOffset = 0;
