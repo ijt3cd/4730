@@ -76,6 +76,7 @@ public class LevelManager extends Game {
 		listeners.put(LevelCompleteEvent.LEVEL_COMPLETE, soundListeners);
 		levels = new ArrayList<String>();
 
+		levels.add("resources/leveltest.tmx");
 		levels.add("resources/level8.tmx");
 		levels.add("resources/level1.tmx");
 		levels.add("resources/level10.tmx");
