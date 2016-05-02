@@ -75,12 +75,17 @@ public class LevelManager extends Game {
 		soundListeners.add(sm);
 		listeners.put(LevelCompleteEvent.LEVEL_COMPLETE, soundListeners);
 		levels = new ArrayList<String>();
+
+		levels.add("resources/level8.tmx");
 		levels.add("resources/level1.tmx");
-		levels.add("resources/level2.tmx");
 		levels.add("resources/level3.tmx");
+		levels.add("resources/level9.tmx");
+		levels.add("resources/level2.tmx");
+		
 		levels.add("resources/level5.tmx");
 		levels.add("resources/level6.tmx");
 		levels.add("resources/victory.tmx");
+		
 		ghost.setVisible(false);
 		this.initializeLevel();
 		ghost.addAnimation("run_right", 0, 2, 75000000, 1, 2);

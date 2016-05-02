@@ -8,12 +8,12 @@
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjGRwYNTeUXtH7R21d9TeUUAhqCGAfRkhmFgAU0/IXGLNIsVeaoGRZu8oGLoAAPTbEw0=
+   eJxjYCAfeFGglxIwau+ovaP2jto7au+ovaP2jtpLa+A5QPYORVBDAPsyQjCxAKaekLnEmkWKvdQCI83eUTB0AQCVaBCU
   </data>
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjENAAAIwDAUYAv/jrBAwgFHm+xfBPBBXQ8AACzkMH5p36EA1A==
+   eJztwzENAAAIA7ApwL9cLCzh4WiTJgAAADdT5pcF9NgAjQ==
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
@@ -24,6 +24,11 @@
  <layer name="Goal" width="30" height="30">
   <data encoding="base64" compression="zlib">
    eJztzjENAAAIA7D5F03QsHDwtAqaAABAb74DwNkCzq0A/w==
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzDENADAMBLGn0BIJf3ZZCiFDVNnLbZcAAPCrGvqc1zv0A3ZoVz8AUw==
   </data>
  </layer>
 </map>

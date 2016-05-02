@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="21" tileheight="21">
+ <tileset firstgid="1" source="spritesheet.tsx"/>
+ <layer name="Tile Layer 1" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztyrkNg1AUBdGHZLBZi8DsuP+SALMYSmACSvgJ8g2ONMFMZjaJiIjIXxgwXv3FjAUrNvyw43D8PjwzHwGeeCFEhBgJUmSe2zfHGwVKVKjRoEWHHh/HbykichMnuW8cGQ==
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzbEJAAAIBDHn+/0HsnEGEUzg6kvty+Tr6+vr6/v1CwAXNIohCUE=
+  </data>
+ </layer>
+ <layer name="Platforms" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzzENADAMBLEP/6VRCJdF2sGWDsAlAMC2U0kvN/X6GoDfXIFWER4=
+  </data>
+ </layer>
+ <layer name="Spawn" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzjEBAAAMAiDXv/RieAgJSABg3LUDANDxFRMAAg==
+  </data>
+ </layer>
+ <layer name="Goal" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7D5F014pwCeVkETAODKfAcAoCyZOgD/
+  </data>
+ </layer>
+</map>
