@@ -3,42 +3,32 @@
  <tileset firstgid="1" source="spritesheet.tsx"/>
  <layer name="Tile Layer 1" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzt0ksOgkAQRdHqxB/+FqEiim7YDSoqKkvwEiYEGZAuRSU1OLPXuUmnEhFJTGedPFm3u9227upb92zd93SPFW10q82mtN2Dp/ztBVekuOGOB7LSv+W7c81W0x05kQBjTDDFDHP00McAQ/e69e2uXSHCBlvE2GGPBZZYIazZarqRgnV/vxta17of6Gpu+t+6Wk8hk0yI
+   eJzt01sKglAQgOERyi5Wi+hy1HQrLrANlmW3JfQ/9CAHwUtDBM3DB3IY/AXnlCJSGmOMMX/qiNP7+YwLKlxxwx0PPJVnR4HIGCEmmGKGOSIssMQq0J1dY4MtdnCIkSDFHhly5dnY/CxX+19D9d0V5xm6Vwdp57eauvWzLu/8tOt/w7e6/p3U7BY9uoVyN5NurNvsBS2eKnU=
   </data>
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIJRMAroC2qgGJlNCSYWzCTAJwWQoncg7UXH9LCXmmDU3lF7R+0dtXco2UuPuozaAADwQh44
+   eJxjYCANeBEpRm0wau+ovaP2jto7au+ovaP20t9eTyLFRsHIBjUEsC8jBBMLYOoJmUusWaTYSy0w0uwdBUMXAADi+BUz
   </data>
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztw7ENAAAIA6B+5/8fuXR3N5CQAAAA/DHNbQGzXACP
+   eJztwzENAAAIA7ApwL9cLCzh4WiTJgAAADdT5pcF9NgAjQ==
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjEBAAAIA6DZv7TvEugDCUgAoMx3AAC4shYHAAI=
+   eJztzgENAAAIA6Dbv7QxPh0kIAEA4IVpB4BrFhJHAAI=
   </data>
  </layer>
  <layer name="Goal" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjENAAAIA7D5F034JwCeVkETAODCfAcAoCydMgD/
+   eJztzjENAAAIA7D5F03QsHDwtAqaAABAb74DwNkCzq0A/w==
   </data>
  </layer>
- <layer name="Button" width="30" height="30">
+ <layer name="Tile Layer 2" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzrEAAAAAArD88vcJo2cjWAIAAEDfgYMBVYwATA==
-  </data>
- </layer>
- <layer name="Door" width="30" height="30">
-  <data encoding="base64" compression="zlib">
-   eJztzjEBAAAMAiD711qxxfAQEpAAQMe1AwAw7gHN/wDE
-  </data>
- </layer>
- <layer name="PowerUps" width="30" height="30">
-  <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6A3tH8bY9w5SEACAADw07QDxy1m8ABQ
+   eJztzDENADAMBLGn0BIJf3ZZCiFDVNnLbZcAAPCrGvqc1zv0A3ZoVz8AUw==
   </data>
  </layer>
 </map>

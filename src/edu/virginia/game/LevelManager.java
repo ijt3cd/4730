@@ -78,6 +78,7 @@ public class LevelManager extends Game {
 
 		levels.add("resources/level8.tmx");
 		levels.add("resources/level1.tmx");
+		levels.add("resources/level10.tmx");
 		levels.add("resources/level3.tmx");
 		levels.add("resources/level9.tmx");
 		levels.add("resources/level2.tmx");
