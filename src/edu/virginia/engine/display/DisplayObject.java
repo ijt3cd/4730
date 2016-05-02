@@ -315,7 +315,7 @@ public class DisplayObject extends EventDispatcher {
 			 */
 			if (this.isVisible()) {
 				g2d.drawImage(displayImage, -this.getPivotPointX(), -this.getPivotPointY(),
-						(int) (getUnscaledWidth() * this.getScaleX()), (int) (getUnscaledHeight() * this.getScaleY()),
+						(int) (getUnscaledWidth()), (int) (getUnscaledHeight()),
 						null);
 				Rectangle rect = getHitbox();
 
@@ -336,6 +336,7 @@ public class DisplayObject extends EventDispatcher {
 	protected void applyTransformations(Graphics2D g2d) {
 		g2d.translate(this.getPositionX(), this.getPositionY());
 		g2d.rotate(this.getRotation());
+		g2d.scale(this.scaleX, this.scaleY);
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.getAlpha()));
 	}
 
@@ -345,9 +346,9 @@ public class DisplayObject extends EventDispatcher {
 	 */
 	protected void reverseTransformations(Graphics2D g2d) {
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		g2d.scale(1/this.scaleX, 1/this.scaleY);
 		g2d.rotate(-this.getRotation());
 		g2d.translate(-this.getPositionX(), -this.getPositionY());
-
 	}
 
 	public float getGlobalX() {
