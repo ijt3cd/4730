@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="spritesheet.tsx"/>
  <layer name="Tile Layer 1" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztz8cNhFAQBFHIbBcWGwRucUHghIubOhDCl0DQh3eaklrj25bli4iIiDzQB184cPGDd94ChIgQG24TpMiQo8AfJSrUaNAabjv0GDBiwnxasGLDbridX6a7YHO7wd/yTAfxbDv6
+   eJztys0NgkAYBuGPREUULGL5F/ovSRYEpATnYAMkm3jgPTzJHMabmRcREZFDeGH49YgJb8xYsOKDLfB7iszOuCDGFQluuCNFhkcU9nXIUaBEhRoNWjzRoQ/8OhGRnfI/+QJ70xiz
   </data>
  </layer>
  <layer name="Tile Layer 2" width="30" height="30">
@@ -28,7 +28,7 @@
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzt07EJADAIAEGdLks5vI1lekHu4Ef4CADgujcB+7zIT+VODbUjD3w=
+   eJxjYBgFo2AUjIJRMApGwXAHwlA8CkbBKBh44D7QDhgFgxIoMw4MBgCyBASm
   </data>
  </layer>
  <layer name="Button" width="30" height="30">

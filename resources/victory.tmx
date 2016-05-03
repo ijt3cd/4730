@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="21" tileheight="21" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="21" tileheight="21">
  <tileset firstgid="1" source="spritesheet.tsx"/>
+ <tileset firstgid="481" source="spritesheet.tsx"/>
  <layer name="Tile Layer 1" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzllVkOgjAURUviPC1CxXkD7j9speDsErwkNXk821LGGv04IbSPezpASYQQiQfiFuHeY/B5fROLbJutn9fy3BRp8Jly+Nh1/S55rm1lvSl8H11ybOusy8ibh8nbBtKDswqRgn+LkvTV6UtUpiQO6uV9klDl3EhIhi3PxVfGq8vl7U16I5GdP133Il4+VpuX7qnuPXP1mtbJFV1e0X/TCZzBBVzBrWDtHTzAk6ybqbaDs6sLeqAPBmAIRmAMJmAKZkG9tXOwAGvGBmzJ/YHUhmCloLU7sGe1S1Kvyy1CqCjzbBX+1avDl7dJ9zd529h3X/trc/vy/uJ75eLO4wWXI8z/
+   eJzl1VkOgjAQBuCSuG+HUHG//5FKXVCP4G+CyTgZgYJlXB6+B3Gcv50COmOMU5A0SCv3zipkNjlX7TVo+taz5c9iqH087g9LMvizSL+zRJ33hiM98vqVyauSK/Xl10PmJuZ5/3TuPrl8rXm50nqlWRflvppTWVI/3/+mPRzgCCdIPWvPcIErm79U24qMaUMHutCDPgxgCCMYwyR6b+0UZrBkVrAmn3ekNoZFhtZuYMtq56Re6usjzlT5bR3/mivRyg2Z/Um5TZy71vnmZWvl/uJ9VSa7yA3Eme8p
   </data>
  </layer>
  <layer name="Platforms" width="30" height="30">
@@ -38,7 +39,7 @@
  </layer>
  <layer name="PowerUps" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
+   eJxjYBh5wJIRk4ZhZDWE5NHVopuLzz5c5uByKz5z8Kmhlb2E9OAyB184YzODkD9w2TsKUMFRKCZVjlI7sbEJyY0C8gG+cKaH3bRKS6NgFIyCUTAKRsEooB0AAOXoFOI=
   </data>
  </layer>
 </map>
