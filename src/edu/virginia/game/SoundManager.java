@@ -52,7 +52,7 @@ public class SoundManager implements IEventListener {
 		String eventType = event.getEventType();
 		if (eventType.equals(LevelCompleteEvent.LEVEL_COMPLETE)) {
 
-			File noise = new File("resources/LevelCompleted.wav");
+			File noise = new File("resources/picked_up_powerup.wav");
 			playSound(noise);
 
 		} else if(eventType.equals(DeathEvent.DEAD_EVENT)) {
