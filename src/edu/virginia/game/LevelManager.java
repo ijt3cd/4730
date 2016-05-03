@@ -18,8 +18,10 @@ import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;
 import edu.virginia.engine.display.Tween;
 import edu.virginia.engine.display.TweenJuggler;
+import edu.virginia.engine.events.DeathEvent;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.events.LevelCompleteEvent;
+import edu.virginia.engine.events.PickedUpEvent;
 import tiled.core.Map;
 import tiled.core.MapLayer;
 import tiled.core.Tile;
@@ -32,7 +34,6 @@ public class LevelManager extends Game {
 	public static int height = 30 * 22;
 
 	SoundManager sm = new SoundManager();
-	File bgm = new File("resources/brm.wav");
 
 	/* Create a sprite object for our game. We'll use mario */
 	DisplayObjectContainer game = new DisplayObjectContainer("game");
@@ -70,10 +71,12 @@ public class LevelManager extends Game {
 
 	public LevelManager() {
 		super("Ghost Game", width, height);
-		sm.playMusic(new File("resources/background_1.wav"));
+		sm.playMusic(new File("resources/Background.wav"));
 		ArrayList<IEventListener> soundListeners = new ArrayList<IEventListener>();
 		soundListeners.add(sm);
 		listeners.put(LevelCompleteEvent.LEVEL_COMPLETE, soundListeners);
+		listeners.put(DeathEvent.DEAD_EVENT, soundListeners);
+		listeners.put(PickedUpEvent.COIN_PICKED_UP, soundListeners);
 		levels = new ArrayList<String>();
 		levels.add("resources/big_level2.tmx");
 		levels.add("resources/big_level1.tmx");
@@ -175,6 +178,7 @@ public class LevelManager extends Game {
 
 		if (link != null && platformHitboxes != null && game != null && reversePower != null && !reversePowered) {
 			if (link.getHitbox().intersects(reversePower)) {
+				this.dispatchEvent(new PickedUpEvent(PickedUpEvent.COIN_PICKED_UP, this));
 				game.removeChild(reversePowerSprite);
 				reversePowered = true;
 			}
@@ -360,6 +364,7 @@ public class LevelManager extends Game {
 						record = true;
 						deathCount += 1;
 						onGhost = false;
+						this.dispatchEvent(new DeathEvent(DeathEvent.DEAD_EVENT, this));
 						break;
 					}
 				}

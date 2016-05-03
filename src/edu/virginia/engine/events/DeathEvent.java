@@ -6,7 +6,7 @@ public class DeathEvent extends Event {
 	
 	public static String DEAD_EVENT = "dead";
 
-	public DeathEvent(String type, IEventDispatcher src, AnimatedSprite dead) {
+	public DeathEvent(String type, IEventDispatcher src) {
 		super(type, src);
 	}
 
