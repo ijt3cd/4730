@@ -39,8 +39,7 @@ public class SoundManager implements IEventListener {
 			DataLine.Info info = new DataLine.Info(Clip.class, format);
 			Clip clip = (Clip)AudioSystem.getLine(info);
 			clip.open(soundIn);
-			clip.start();
-			clip.loop(clip.LOOP_CONTINUOUSLY);
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 
@@ -57,8 +56,13 @@ public class SoundManager implements IEventListener {
 
 		} else if(eventType.equals(DeathEvent.DEAD_EVENT)) {
 			
+			File noise = new File("resources/Death.wav");
+			playSound(noise);
+			
 		} else if(eventType.equals(PickedUpEvent.COIN_PICKED_UP)) {
 			
+			File noise = new File("resources/PowerUp.wav");
+			playSound(noise);
 		}
 		
 

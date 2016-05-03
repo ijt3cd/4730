@@ -9,17 +9,16 @@ import java.util.ArrayList;
 
 import edu.virginia.engine.controller.GamePad;
 
-import java.util.List;
-
-
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.DisplayObjectContainer;
 import edu.virginia.engine.display.Game;
 import edu.virginia.engine.display.Sprite;
 import edu.virginia.engine.display.Tween;
 import edu.virginia.engine.display.TweenJuggler;
+import edu.virginia.engine.events.DeathEvent;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.events.LevelCompleteEvent;
+import edu.virginia.engine.events.PickedUpEvent;
 import tiled.core.Map;
 import tiled.core.MapLayer;
 import tiled.core.Tile;
@@ -30,9 +29,10 @@ public class LevelManager extends Game {
 
 	public static int width = 30 * 22;
 	public static int height = 30 * 22;
+	
+	private static final int INTERVAL = 10;
 
 	SoundManager sm = new SoundManager();
-	File bgm = new File("resources/brm.wav");
 
 	/* Create a sprite object for our game. We'll use mario */
 	DisplayObjectContainer game = new DisplayObjectContainer("game");
@@ -70,10 +70,12 @@ public class LevelManager extends Game {
 
 	public LevelManager() {
 		super("Ghost Game", width, height);
-		sm.playMusic(new File("resources/background_1.wav"));
+		sm.playMusic(new File("resources/Background.wav"));
 		ArrayList<IEventListener> soundListeners = new ArrayList<IEventListener>();
 		soundListeners.add(sm);
 		listeners.put(LevelCompleteEvent.LEVEL_COMPLETE, soundListeners);
+		listeners.put(DeathEvent.DEAD_EVENT, soundListeners);
+		listeners.put(PickedUpEvent.COIN_PICKED_UP, soundListeners);
 		levels = new ArrayList<String>();
 
 
@@ -83,9 +85,9 @@ public class LevelManager extends Game {
 		levels.add("resources/level1.tmx");
 		levels.add("resources/level10.tmx");
 		levels.add("resources/level3.tmx");
-		levels.add("resources/level9.tmx"); 
+		levels.add("resources/level9.tmx");
 		levels.add("resources/level2.tmx");
-		
+
 		levels.add("resources/level5.tmx");
 		levels.add("resources/level6.tmx");
 		levels.add("resources/leveltest.tmx");
@@ -93,7 +95,7 @@ public class LevelManager extends Game {
 		levels.add("resources/big_level2.tmx");
 		levels.add("resources/big_level1.tmx");
 		levels.add("resources/victory.tmx");
-		
+
 		ghost.setVisible(false);
 		this.initializeLevel();
 		ghost.addAnimation("run_right", 0, 2, 75000000, 1, 2);
@@ -181,6 +183,7 @@ public class LevelManager extends Game {
 
 		if (link != null && platformHitboxes != null && game != null && reversePower != null && !reversePowered) {
 			if (link.getHitbox().intersects(reversePower)) {
+				this.dispatchEvent(new PickedUpEvent(PickedUpEvent.COIN_PICKED_UP, this));
 				game.removeChild(reversePowerSprite);
 				reversePowered = true;
 			}
@@ -202,7 +205,7 @@ public class LevelManager extends Game {
 			if (!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)) ) ) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
 				link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
 			}
 			// Gravity logic is dependent on being on a platform, ghost is no
@@ -212,13 +215,15 @@ public class LevelManager extends Game {
 				link.setAccelerationY(0.0f);
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))||(!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.A)))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))
+					|| (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.A)))
 					&& (link.getPlatform() != null || onGhost) && link.getAccelerationY() == 0) {
 				link.setVelocityY((float) -JUMP_UP_DELTA);
 				onGhost = false;
 				ghostOffset = 0;
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||(!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_LEFT))) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
+					|| (!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_LEFT))) {
 				link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
 				if (onGhost) {
 					ghostOffset += -HORIZONTAL_MOVEMENT_DELTA;
@@ -233,7 +238,8 @@ public class LevelManager extends Game {
 				link.setPlaying(true);
 
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))||(!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_RIGHT))) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))
+					|| (!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_RIGHT))) {
 				link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
 				if (onGhost) {
 					ghostOffset += HORIZONTAL_MOVEMENT_DELTA;
@@ -262,10 +268,11 @@ public class LevelManager extends Game {
 		 * Updates the ghosts position
 		 */
 		if (ghost != null && ghost.isVisible() && locationTracker != null) {
-			if (locationTracker.size() > currIndex) {
-				int exactIndex = currIndex;
+			int idx = currIndex / INTERVAL;
+			if (locationTracker.size() > idx) {
+				int exactIndex = idx;
 				if (reversePowered) {
-					exactIndex = locationTracker.size() - 1 - currIndex;
+					exactIndex = locationTracker.size() - 1 - idx;
 				}
 				ghost.setPositionX((float) locationTracker.get(exactIndex)[0]);
 				ghost.setPositionY((float) locationTracker.get(exactIndex)[1]);
@@ -279,7 +286,11 @@ public class LevelManager extends Game {
 						ghost.play();
 					}
 				}
-				currIndex++;
+				if(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_B))) {
+					currIndex++;
+				} else {
+					currIndex += INTERVAL;
+				}
 			} else {
 				if (onGhost) {
 					onGhost = false;
@@ -366,6 +377,7 @@ public class LevelManager extends Game {
 						record = true;
 						deathCount += 1;
 						onGhost = false;
+						this.dispatchEvent(new DeathEvent(DeathEvent.DEAD_EVENT, this));
 						break;
 					}
 				}
@@ -374,7 +386,8 @@ public class LevelManager extends Game {
 		if (TweenJuggler.getInstance() != null)
 			TweenJuggler.nextFrame();
 
-		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R)) || (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.BUTTON_SELECT)))) {
+		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R))
+				|| (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.BUTTON_SELECT)))) {
 
 			locationTracker.clear();
 			nextGhost.clear();
@@ -395,7 +408,8 @@ public class LevelManager extends Game {
 		/*
 		 * Resets current ghost loop for convenience
 		 */
-		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y)) || (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.Y)))) {
+		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))
+				|| (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.Y)))) {
 			currIndex = 0;
 			onGhost = false;
 			ghostOffset = 0;
