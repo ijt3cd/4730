@@ -123,7 +123,7 @@ public class LevelManager extends Game {
 		int square = Math.min(w, h);
 		animationType = 0;
 		if (link != null && goal != null) {
-			if (link.getHitbox().intersects(goal)) {
+			if (link.getHitbox().intersects(goal)||pressedKeys.contains("P")) {
 				draw = false;
 				ghost.setVisible(false);
 				reversePowered = false;
@@ -196,9 +196,10 @@ public class LevelManager extends Game {
 
 		// game.update(pressedKeys);
 		//
-
+		
+		
 		if (link != null && link.hasPhysics()) {
-
+			
 			// attempt at fixing some xVel physics
 			if (!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
@@ -659,7 +660,7 @@ public class LevelManager extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
-			g.drawString("PAR: 1", width / 2 + 90, 50);
+			g.drawString("Try to hit par!", width / 2 + 60, 50);
 			g.drawString("Death Count: " + deathCount, width / 2 + 60, 30);
 
 		}
