@@ -13,7 +13,7 @@
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzrENADAIwDD6AO/yPi90A7W2lD0RAAD8os70Aa/Ky9ilAd5VAQU=
+   eJztzrENADAIwDAuYOH/X/tCNxDYUvZEAABwRXUPsFZ+xiwPQmMAoA==
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">

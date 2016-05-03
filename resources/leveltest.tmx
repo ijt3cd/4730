@@ -8,37 +8,37 @@
  </layer>
  <layer name="Tile Layer 2" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjENAAAIA7Dpw78gFOwkPK2CJgAAcGe+A0C1Gl8ASw==
+   eJztzjEBAAAIA6Dls38gj3XQBxKQAADUfAcAOLXHzwBL
   </data>
  </layer>
  <layer name="Platforms" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUjIKBBYvRMD3tRXcDve3Fxh+1d9TeUXtH7cVm70CVlcSAbEbKcC4jefYRAp7keWdQgSMjyE562EuMPbjSKTpYTILawQwAj/AltQ==
+   eJxjYBgFo2AUjIJRMApGwUgB2YyU41xG4u3LguohBLzI9xJFYKDs9Rwge6kNiI3fUUAdQEp+zKIw746CkQMA5b4POQ==
   </data>
  </layer>
  <layer name="Spawn" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6Dbv7QxPh0kIAEA4IVpB4BrFhJHAAI=
+   eJztzjEBAAAMAiDXv/RieAgJSACAimsHAFj3FJsAAg==
   </data>
  </layer>
  <layer name="Goal" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjENAAAIA7D5F03wMA6eVkETAADozHcAOFnKtQD/
+   eJztzgEJAAAMA6D1D30eYww0gQkAAOuuHQAmPUHUAP8=
   </data>
  </layer>
  <layer name="Spikes" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztwzENAAAMA6DO98RXRh9ISAAAAFj62yyaUw6n
+   eJzt07EJADAIAEGdLks5vI1lekHu4Ef4CADgujcB+7zIT+VODbUjD3w=
   </data>
  </layer>
  <layer name="Button" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6DntX8AY9xNSEACAABwz7QDDyyheABr
+   eJztzkEJAAAIBLDLa/8AZjgQ/GwJlgAAAI35DsCRBTaXAGs=
   </data>
  </layer>
  <layer name="Door" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzjENAAAIA7D5l4kSNCwcPK2CJgAA0JvvAHC2ZM0A4w==
+   eJztzkEJAAAIBLDrH9MkZjgQ/GwJlgAAcGG+AwClBTi8AOM=
   </data>
  </layer>
 </map>

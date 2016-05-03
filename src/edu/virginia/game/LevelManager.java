@@ -78,19 +78,17 @@ public class LevelManager extends Game {
 		listeners.put(PickedUpEvent.COIN_PICKED_UP, soundListeners);
 		levels = new ArrayList<String>();
 
-
 		
-		levels.add("resources/big_level1.tmx");
 		levels.add("resources/level8.tmx");
 		levels.add("resources/level1.tmx");
 		levels.add("resources/level10.tmx");
 		levels.add("resources/level3.tmx");
 		levels.add("resources/level9.tmx");
 		levels.add("resources/level2.tmx");
-
+		levels.add("resources/leveltest.tmx");
 		levels.add("resources/level5.tmx");
 		levels.add("resources/level6.tmx");
-		levels.add("resources/leveltest.tmx");
+		
 
 		levels.add("resources/big_level2.tmx");
 		levels.add("resources/big_level1.tmx");
