@@ -39,8 +39,7 @@ public class SoundManager implements IEventListener {
 			DataLine.Info info = new DataLine.Info(Clip.class, format);
 			Clip clip = (Clip)AudioSystem.getLine(info);
 			clip.open(soundIn);
-			clip.start();
-			clip.loop(clip.LOOP_CONTINUOUSLY);
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 
