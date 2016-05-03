@@ -9,9 +9,6 @@ import java.util.ArrayList;
 
 import edu.virginia.engine.controller.GamePad;
 
-import java.util.List;
-
-
 import edu.virginia.engine.display.AnimatedSprite;
 import edu.virginia.engine.display.DisplayObjectContainer;
 import edu.virginia.engine.display.Game;
@@ -32,6 +29,8 @@ public class LevelManager extends Game {
 
 	public static int width = 30 * 22;
 	public static int height = 30 * 22;
+	
+	private static final int INTERVAL = 10;
 
 	SoundManager sm = new SoundManager();
 
@@ -84,13 +83,13 @@ public class LevelManager extends Game {
 		levels.add("resources/level1.tmx");
 		levels.add("resources/level10.tmx");
 		levels.add("resources/level3.tmx");
-		levels.add("resources/level9.tmx"); 
+		levels.add("resources/level9.tmx");
 		levels.add("resources/level2.tmx");
-		
+
 		levels.add("resources/level5.tmx");
 		levels.add("resources/level6.tmx");
 		levels.add("resources/victory.tmx");
-		
+
 		ghost.setVisible(false);
 		this.initializeLevel();
 		ghost.addAnimation("run_right", 0, 2, 75000000, 1, 2);
@@ -200,7 +199,7 @@ public class LevelManager extends Game {
 			if (!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)) ) ) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT)))) {
 				link.setVelocityX((float) (link.getVelocityX() * HORIZONTAL_MOVEMENT_DECAY));
 			}
 			// Gravity logic is dependent on being on a platform, ghost is no
@@ -210,13 +209,15 @@ public class LevelManager extends Game {
 				link.setAccelerationY(0.0f);
 			if ((pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_W))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_SPACE))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))||(!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.A)))
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_UP))
+					|| (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.A)))
 					&& (link.getPlatform() != null || onGhost) && link.getAccelerationY() == 0) {
 				link.setVelocityY((float) -JUMP_UP_DELTA);
 				onGhost = false;
 				ghostOffset = 0;
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))||(!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_LEFT))) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
+					|| (!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_LEFT))) {
 				link.setVelocityX(-HORIZONTAL_MOVEMENT_DELTA);
 				if (onGhost) {
 					ghostOffset += -HORIZONTAL_MOVEMENT_DELTA;
@@ -231,7 +232,8 @@ public class LevelManager extends Game {
 				link.setPlaying(true);
 
 			} else if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_D))
-					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))||(!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_RIGHT))) {
+					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_RIGHT))
+					|| (!gamePads.isEmpty() && gamePads.get(0).isDPadPressed(GamePad.DPAD_RIGHT))) {
 				link.setVelocityX(HORIZONTAL_MOVEMENT_DELTA);
 				if (onGhost) {
 					ghostOffset += HORIZONTAL_MOVEMENT_DELTA;
@@ -260,10 +262,11 @@ public class LevelManager extends Game {
 		 * Updates the ghosts position
 		 */
 		if (ghost != null && ghost.isVisible() && locationTracker != null) {
-			if (locationTracker.size() > currIndex) {
-				int exactIndex = currIndex;
+			int idx = currIndex / INTERVAL;
+			if (locationTracker.size() > idx) {
+				int exactIndex = idx;
 				if (reversePowered) {
-					exactIndex = locationTracker.size() - 1 - currIndex;
+					exactIndex = locationTracker.size() - 1 - idx;
 				}
 				ghost.setPositionX((float) locationTracker.get(exactIndex)[0]);
 				ghost.setPositionY((float) locationTracker.get(exactIndex)[1]);
@@ -277,7 +280,11 @@ public class LevelManager extends Game {
 						ghost.play();
 					}
 				}
-				currIndex++;
+				if(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_B))) {
+					currIndex++;
+				} else {
+					currIndex += INTERVAL;
+				}
 			} else {
 				if (onGhost) {
 					onGhost = false;
@@ -373,7 +380,8 @@ public class LevelManager extends Game {
 		if (TweenJuggler.getInstance() != null)
 			TweenJuggler.nextFrame();
 
-		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R)) || (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.BUTTON_SELECT)))) {
+		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_R))
+				|| (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.BUTTON_SELECT)))) {
 
 			locationTracker.clear();
 			nextGhost.clear();
@@ -394,7 +402,8 @@ public class LevelManager extends Game {
 		/*
 		 * Resets current ghost loop for convenience
 		 */
-		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y)) || (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.Y)))) {
+		if (link != null && (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_Y))
+				|| (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.Y)))) {
 			currIndex = 0;
 			onGhost = false;
 			ghostOffset = 0;
