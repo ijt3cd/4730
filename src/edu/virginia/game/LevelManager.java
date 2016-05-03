@@ -30,7 +30,7 @@ public class LevelManager extends Game {
 	public static int width = 30 * 22;
 	public static int height = 30 * 22;
 	
-	private static final int INTERVAL = 10;
+	private static final int INTERVAL = 4;
 
 	SoundManager sm = new SoundManager();
 
@@ -285,7 +285,7 @@ public class LevelManager extends Game {
 						ghost.play();
 					}
 				}
-				if(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_B))) {
+				if(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_B))||(!gamePads.isEmpty()&&gamePads.get(0).isButtonPressed(GamePad.B))) {
 					currIndex++;
 				} else {
 					currIndex += INTERVAL;
