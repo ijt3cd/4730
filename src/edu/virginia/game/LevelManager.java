@@ -191,9 +191,10 @@ public class LevelManager extends Game {
 		// game.setScaleY((double)square/height);
 
 		// game.setScaleX(square/width);
-		// if(game != null)
-		// game.setScaleY((double)square/height);
-
+		if(game != null){
+		 game.setScaleY((double)square/height);
+		 game.setScaleX((double)square/width);
+		}
 		// game.update(pressedKeys);
 		//
 		

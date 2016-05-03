@@ -82,7 +82,7 @@ public class Game extends DisplayObject implements ActionListener, KeyListener {
 	public void setUpMainFrame(String gameId, int width, int height) {
 		this.mainFrame = new JFrame();
 		getMainFrame().setTitle(gameId);
-		getMainFrame().setResizable(false);
+		getMainFrame().setResizable(true);
 		getMainFrame().setVisible(true);
 		getMainFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		getMainFrame().setBounds(0, 0, width, height);
