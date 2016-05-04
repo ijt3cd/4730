@@ -675,8 +675,8 @@ public class LevelManager extends Game {
 			// if (link != null)
 			// link.draw(g);
 			if (level != levels.size() - 1) {
-				g.drawString("DEATH COUNT " + deathCount, 10, 20);
-				g.drawString("PAR " + parMap.get(levels.get(level)), 10, 50);
+				g.drawString(String.format("%-20s %d", "DEATH COUNT", deathCount), 10, 20);
+				g.drawString(String.format("%-43s %d", "PAR", parMap.get(levels.get(level))), 10, 50);
 			}
 		}
 	}
