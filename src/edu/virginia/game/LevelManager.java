@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.virginia.engine.controller.GamePad;
 
@@ -29,8 +30,10 @@ public class LevelManager extends Game {
 
 	public static int width = 30 * 22;
 	public static int height = 30 * 22;
-	
+
 	private static final int INTERVAL = 4;
+
+	private HashMap<String, Integer> parMap;
 
 	SoundManager sm = new SoundManager();
 
@@ -77,21 +80,31 @@ public class LevelManager extends Game {
 		listeners.put(DeathEvent.DEAD_EVENT, soundListeners);
 		listeners.put(PickedUpEvent.COIN_PICKED_UP, soundListeners);
 		levels = new ArrayList<String>();
+		parMap = new HashMap<String, Integer>();
 
-		
 		levels.add("resources/level8.tmx");
+		parMap.put("resources/level8.tmx", 0);
 		levels.add("resources/level1.tmx");
+		parMap.put("resources/level1.tmx", 1);
 		levels.add("resources/level10.tmx");
+		parMap.put("resources/level10.tmx", 1);
 		levels.add("resources/level3.tmx");
+		parMap.put("resources/level3.tmx", 1);
 		levels.add("resources/level9.tmx");
+		parMap.put("resources/level9.tmx", 1);
 		levels.add("resources/level2.tmx");
+		parMap.put("resources/level2.tmx", 2);
 		levels.add("resources/leveltest.tmx");
+		parMap.put("resources/leveltest.tmx", 3);
 		levels.add("resources/level5.tmx");
+		parMap.put("resources/level5.tmx", 1);
 		levels.add("resources/level6.tmx");
-		
+		parMap.put("resources/level6.tmx", 1);
 
 		levels.add("resources/big_level2.tmx");
+		parMap.put("resources/big_level2.tmx", 8);
 		levels.add("resources/big_level1.tmx");
+		parMap.put("resources/big_level1.tmx", 7);
 		levels.add("resources/victory.tmx");
 
 		ghost.setVisible(false);
@@ -123,7 +136,7 @@ public class LevelManager extends Game {
 		int square = Math.min(w, h);
 		animationType = 0;
 		if (link != null && goal != null) {
-			if (link.getHitbox().intersects(goal)||pressedKeys.contains("P")) {
+			if (link.getHitbox().intersects(goal) || pressedKeys.contains("P")) {
 				draw = false;
 				ghost.setVisible(false);
 				reversePowered = false;
@@ -191,16 +204,15 @@ public class LevelManager extends Game {
 		// game.setScaleY((double)square/height);
 
 		// game.setScaleX(square/width);
-		if(game != null){
-		 game.setScaleY((double)square/height);
-		 game.setScaleX((double)square/width);
+		if (game != null) {
+			game.setScaleY((double) square / height);
+			game.setScaleX((double) square / width);
 		}
 		// game.update(pressedKeys);
 		//
-		
-		
+
 		if (link != null && link.hasPhysics()) {
-			
+
 			// attempt at fixing some xVel physics
 			if (!(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_A))
 					|| pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_LEFT))
@@ -286,7 +298,8 @@ public class LevelManager extends Game {
 						ghost.play();
 					}
 				}
-				if(pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_B))||(!gamePads.isEmpty()&&gamePads.get(0).isButtonPressed(GamePad.B))) {
+				if (pressedKeys.contains(KeyEvent.getKeyText(KeyEvent.VK_B))
+						|| (!gamePads.isEmpty() && gamePads.get(0).isButtonPressed(GamePad.B))) {
 					currIndex++;
 				} else {
 					currIndex += INTERVAL;
@@ -661,9 +674,10 @@ public class LevelManager extends Game {
 			// ghost.draw(g);
 			// if (link != null)
 			// link.draw(g);
-			g.drawString("Try to hit par!", width / 2 + 60, 50);
-			g.drawString("Death Count: " + deathCount, width / 2 + 60, 30);
-
+			if (level != levels.size() - 1) {
+				g.drawString("DEATH COUNT " + deathCount, 10, 20);
+				g.drawString("PAR " + parMap.get(levels.get(level)), 10, 50);
+			}
 		}
 	}
 
